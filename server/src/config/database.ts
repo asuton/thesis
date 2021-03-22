@@ -8,6 +8,13 @@ import {
   POSTGRES_PASSWORD,
   POSTGRES_DB,
 } from "../utils/constants";
+import {
+  Admin,
+  DiagnosticTesting,
+  Doctor,
+  MedicalRecord,
+  Patient,
+} from "../models";
 
 dotenv.config();
 
@@ -18,7 +25,7 @@ const dbConfig: ConnectionOptions = {
   username: POSTGRES_USER || "postgres",
   password: POSTGRES_PASSWORD || "postgres",
   database: POSTGRES_DB || "postgres",
-  entities: [],
+  entities: [Admin, DiagnosticTesting, Doctor, MedicalRecord, Patient],
   synchronize: true,
 };
 
