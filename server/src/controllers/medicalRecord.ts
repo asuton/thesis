@@ -1,22 +1,31 @@
 import { Request, Response } from "express";
-import MedicalRecord from "../models/MedicalRecord";
-import { getRepository } from "typeorm";
+import { validate } from "class-validator";
+import { Patient, Doctor, MedicalRecord } from "../models";
 
-export const getMedicalRecords = async (req: Request, res: Response) => {
+export interface IMedicalRecord {
+  title: string;
+  medicalHistory: string;
+  physicalExamination: string;
+  diagnosis: string;
+  treatment: string;
+  recommendation: string;
+  additionalNote?: string;
+  patient: Patient;
+  doctor: Doctor;
+}
+
+export const getMedicalRecords = async (_req: Request, res: Response) => {
   try {
-    const medicalRecordRepository = getRepository(MedicalRecord);
-    const medicalRecords = await medicalRecordRepository.find();
+    const medicalRecords = await MedicalRecord.find();
     return res.json(medicalRecords);
   } catch (err) {
-    console.error(err.message);
     return res.status(500).send(err.message);
   }
 };
 
 export const getMedicalRecord = async (req: Request, res: Response) => {
   try {
-    const medicalRecordRepository = getRepository(MedicalRecord);
-    const medicalRecord = await medicalRecordRepository.findOne({
+    const medicalRecord = await MedicalRecord.findOne({
       id: req.params.medId,
     });
     if (!medicalRecord) {
@@ -30,37 +39,43 @@ export const getMedicalRecord = async (req: Request, res: Response) => {
 
 export const postMedicalRecord = async (req: Request, res: Response) => {
   try {
-    const medicalRecordRepository = getRepository(MedicalRecord);
+    let medicalRecord = new MedicalRecord();
 
-    const medicalRecord = new MedicalRecord();
-    const response = await medicalRecordRepository.save({
-      ...medicalRecord,
-      ...req.body,
-    });
+    Object.assign(medicalRecord, req.body);
 
+    const errors = await validate(medicalRecord);
+    if (errors.length > 0) {
+      throw errors;
+    }
+
+    const response = await MedicalRecord.save(medicalRecord);
     return res.json(response);
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 };
 
 export const putMedicalRecord = async (req: Request, res: Response) => {
   try {
-    const medicalRecordRepository = getRepository(MedicalRecord);
-    const medicalRecord = await medicalRecordRepository.findOne({
+    const medicalRecord = await MedicalRecord.findOne({
       id: req.params.medId,
     });
-    if (medicalRecord) {
-      const response = await medicalRecordRepository.save({
-        ...medicalRecord,
-        ...req.body,
-      });
-      return res.json(response);
-    } else {
+    if (!medicalRecord) {
       return res
         .status(400)
-        .json({ errors: [{ msg: "Record doesn't exist exists" }] });
+        .json({ errors: [{ msg: "Record doesn't exist" }] });
     }
+
+    Object.assign(medicalRecord, req.body);
+
+    const errors = await validate(medicalRecord);
+    if (errors.length > 0) {
+      throw errors;
+    }
+
+    const response = await MedicalRecord.save(medicalRecord);
+
+    return res.json(response);
   } catch (err) {
     return res.status(500).send(err.message);
   }

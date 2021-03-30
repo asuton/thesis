@@ -1,24 +1,17 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Length } from "class-validator";
 import User from "./User";
 import MedicalRecord from "./MedicalRecord";
 import DiagnosticTesting from "./DiagnosticTesting";
 
 @Entity({ name: "doctors" })
 export default class Doctor extends User {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string;
-
-  @Column({ type: "varchar", length: 50 })
+  @Column()
+  @Length(1, 255)
   qualification!: string;
 
-  @Column({ type: "varchar", length: 10 })
+  @Column()
+  @Length(1, 255)
   license!: string;
 
   @OneToMany(() => MedicalRecord, (medicalRecord) => medicalRecord.doctor)

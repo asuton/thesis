@@ -4,10 +4,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Length } from "class-validator";
 import Patient from "./Patient";
 import Doctor from "./Doctor";
 
@@ -22,25 +22,32 @@ export default class MedicalRecord extends BaseEntity {
   @ManyToOne(() => Patient, (patient) => patient)
   patient!: Patient;
 
-  @Column({ type: "varchar", length: 50 })
+  @Column()
+  @Length(1, 255)
   title!: string;
 
-  @Column({ type: "text" })
+  @Column()
+  @Length(1, 500)
   medicalHistory!: string;
 
-  @Column({ type: "text" })
+  @Column()
+  @Length(1, 500)
   physicalExamination!: string;
 
-  @Column({ type: "text" })
+  @Column()
+  @Length(1, 500)
   diagnosis!: string;
 
-  @Column({ type: "text" })
+  @Column()
+  @Length(1, 500)
   treatment!: string;
 
-  @Column({ type: "text" })
+  @Column()
+  @Length(1, 500)
   recommendation!: string;
 
-  @Column({ type: "text" })
+  @Column({ nullable: true })
+  @Length(1, 500)
   additionalNote!: string;
 
   @CreateDateColumn()

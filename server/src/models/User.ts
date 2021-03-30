@@ -1,21 +1,32 @@
-import { Column } from "typeorm";
+import { PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { IsEmail, Length } from "class-validator";
 
-export default abstract class User {
-  @Column({ type: "varchar", length: 25 })
+export default abstract class User extends BaseEntity {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
+
+  @Column()
+  @Length(1, 255)
   name!: string;
 
-  @Column({ type: "varchar", length: 25 })
+  @Column()
+  @Length(1, 255)
   surname!: string;
 
-  @Column({ type: "numeric", precision: 11 })
-  OIB!: number;
+  @Column()
+  @Length(11, 11)
+  OIB!: string;
 
-  @Column({ type: "varchar", length: 15 })
+  @Column()
+  @Length(7, 30)
   phone!: string;
 
-  @Column({ type: "varchar", length: 75 })
+  @Column()
+  @Length(1, 255)
+  @IsEmail()
   email!: string;
 
   @Column()
+  @Length(7, 255)
   password!: string;
 }

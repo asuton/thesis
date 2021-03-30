@@ -4,26 +4,27 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
-  JoinColumn,
 } from "typeorm";
+import { Length } from "class-validator";
 import Patient from "./Patient";
 import Doctor from "./Doctor";
 
-@Entity({ name: "diagnosticTesting" })
+@Entity({ name: "diagnosticTestings" })
 export default class DiagnosticTesting extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @ManyToOne(() => Doctor, (doctor) => doctor)
-  @JoinColumn()
   doctor!: Doctor;
 
   @ManyToOne(() => Patient, (patient) => patient)
   patient!: Patient;
 
-  @Column({ type: "varchar", length: 50 })
+  @Column()
+  @Length(1, 255)
   test!: string;
 
-  @Column({ type: "text" })
+  @Column()
+  @Length(1, 500)
   result!: string;
 }

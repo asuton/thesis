@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
+import { validate } from "class-validator";
 import Doctor from "../models/Doctor";
-import { getRepository } from "typeorm";
+import bcrypt from "bcrypt";
 
 export const getDoctors = async (req: Request, res: Response) => {
   try {
-    const doctorRepository = getRepository(Doctor);
-    const doctors = await doctorRepository.find();
+    const doctors = await Doctor.find();
     return res.json(doctors);
   } catch (err) {
     console.error(err.message);
@@ -15,10 +15,9 @@ export const getDoctors = async (req: Request, res: Response) => {
 
 export const getDoctor = async (req: Request, res: Response) => {
   try {
-    const doctorRepository = getRepository(Doctor);
-    const doctor = await doctorRepository.findOne({ id: req.params.id });
+    const doctor = await Doctor.findOne({ id: req.params.id });
     if (!doctor) {
-      return res.status(400).json({ msg: "User not found" });
+      return res.status(400).json({ msg: "Doctor not found" });
     }
     return res.json(doctor);
   } catch (err) {
@@ -28,18 +27,28 @@ export const getDoctor = async (req: Request, res: Response) => {
 
 export const postDoctor = async (req: Request, res: Response) => {
   try {
-    const doctorRepository = getRepository(Doctor);
-
-    let doctor = await doctorRepository.findOne({ email: req.body.email });
+    let doctor = await Doctor.findOne({ email: req.body.email });
     if (doctor) {
-      return res.status(400).json({ errors: [{ msg: "User already exists" }] });
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "Doctor already exists" }] });
     }
 
-    doctor = new Doctor();
-    const response = await doctorRepository.save({
-      ...doctor,
-      ...req.body,
-    });
+    const saltRound = 10;
+    const salt = await bcrypt.genSalt(saltRound);
+    const hash = await bcrypt.hash(req.body.password, salt);
+
+    let doctorNew = new Doctor();
+    Object.assign(doctorNew, req.body);
+
+    const errors = await validate(doctorNew);
+    if (errors.length > 0) {
+      return res.status(500).send(errors);
+    }
+
+    doctorNew.password = hash;
+
+    const response = await Doctor.save(doctorNew);
 
     return res.json(response);
   } catch (err) {
@@ -49,19 +58,23 @@ export const postDoctor = async (req: Request, res: Response) => {
 
 export const putDoctor = async (req: Request, res: Response) => {
   try {
-    const doctorRepository = getRepository(Doctor);
-    const doctor = await doctorRepository.findOne({ id: req.params.id });
-    if (doctor) {
-      const response = await doctorRepository.save({
-        ...doctor,
-        ...req.body,
-      });
-      return res.json(response);
-    } else {
+    const doctor = await Doctor.findOne({ id: req.params.id });
+    if (!doctor) {
       return res
         .status(400)
-        .json({ errors: [{ msg: "User doesn't exist exists" }] });
+        .json({ errors: [{ msg: "Doctor doesn't exist" }] });
     }
+
+    Object.assign(doctor, req.body);
+
+    const errors = await validate(doctor);
+    if (errors.length > 0) {
+      return res.status(500).send(errors);
+    }
+
+    const response = await Doctor.save(doctor);
+
+    return res.json(response);
   } catch (err) {
     return res.status(500).send(err.message);
   }
