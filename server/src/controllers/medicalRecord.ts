@@ -1,18 +1,6 @@
 import { Request, Response } from "express";
 import { validate } from "class-validator";
-import { Patient, Doctor, MedicalRecord } from "../models";
-
-export interface IMedicalRecord {
-  title: string;
-  medicalHistory: string;
-  physicalExamination: string;
-  diagnosis: string;
-  treatment: string;
-  recommendation: string;
-  additionalNote?: string;
-  patient: Patient;
-  doctor: Doctor;
-}
+import { MedicalRecord } from "../models";
 
 export const getMedicalRecords = async (_req: Request, res: Response) => {
   try {
@@ -45,10 +33,11 @@ export const postMedicalRecord = async (req: Request, res: Response) => {
 
     const errors = await validate(medicalRecord);
     if (errors.length > 0) {
-      throw errors;
+      return res.status(500).send(errors);
     }
 
     const response = await MedicalRecord.save(medicalRecord);
+
     return res.json(response);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -70,7 +59,7 @@ export const putMedicalRecord = async (req: Request, res: Response) => {
 
     const errors = await validate(medicalRecord);
     if (errors.length > 0) {
-      throw errors;
+      return res.status(500).send(errors);
     }
 
     const response = await MedicalRecord.save(medicalRecord);

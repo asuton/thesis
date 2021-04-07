@@ -12,7 +12,7 @@ export interface ILogin {
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  let user: Doctor | Patient | undefined = await Patient.findOne({
+  let user: ILogin | undefined = await Patient.findOne({
     email: email,
   });
   if (!user) {

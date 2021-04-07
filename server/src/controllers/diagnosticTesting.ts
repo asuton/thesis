@@ -33,7 +33,7 @@ export const postDiagnosticTest = async (req: Request, res: Response) => {
 
     const errors = await validate(diagnosticTest);
     if (errors.length > 0) {
-      throw errors;
+      return res.status(500).send(errors);
     }
 
     const response = await DiagnosticTesting.save(diagnosticTest);
