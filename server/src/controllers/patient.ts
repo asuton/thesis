@@ -64,7 +64,6 @@ export const postPatient = async (req: Request, res: Response) => {
     const token = jwt.sign(
       {
         id: patientNew.id,
-        email: patientNew.email,
       },
       JWT_SECRET,
       { expiresIn: 360000 }
@@ -72,7 +71,6 @@ export const postPatient = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       id: patientNew.id,
-      email: patientNew.email,
       token,
     });
   } catch (err) {

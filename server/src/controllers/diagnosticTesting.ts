@@ -31,6 +31,9 @@ export const postDiagnosticTest = async (req: Request, res: Response) => {
 
     Object.assign(diagnosticTest, req.body);
 
+    diagnosticTest.doctorId = req.id;
+    diagnosticTest.patientId = req.params.patId;
+
     const errors = await validate(diagnosticTest);
     if (errors.length > 0) {
       return res.status(500).send(errors);

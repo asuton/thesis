@@ -4,7 +4,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
-  CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
   BeforeInsert,
@@ -13,7 +12,7 @@ import {
 import { Length } from "class-validator";
 import Patient from "./Patient";
 import Doctor from "./Doctor";
-import { encrypt, decrypt } from "../services/crypto";
+import { encrypt, decrypt } from "../services/encryption";
 
 @Entity({ name: "medicalRecords" })
 export default class MedicalRecord extends BaseEntity {
@@ -62,7 +61,7 @@ export default class MedicalRecord extends BaseEntity {
   @Length(0, 500)
   additionalNote!: string;
 
-  @CreateDateColumn()
+  @Column({ type: "timestamp" })
   createdAt!: Date;
 
   @UpdateDateColumn()
@@ -70,57 +69,29 @@ export default class MedicalRecord extends BaseEntity {
 
   @BeforeInsert()
   encryptFields() {
-    this.medicalHistory = encrypt(
-      this.medicalHistory,
-      this.patientId + this.doctorId + this.title
-    );
-    this.physicalExamination = encrypt(
-      this.physicalExamination,
-      this.patientId + this.doctorId + this.title
-    );
-    this.diagnosis = encrypt(
-      this.diagnosis,
-      this.patientId + this.doctorId + this.title
-    );
-    this.treatment = encrypt(
-      this.treatment,
-      this.patientId + this.doctorId + this.title
-    );
-    this.recommendation = encrypt(
-      this.recommendation,
-      this.patientId + this.doctorId + this.title
-    );
-    this.additionalNote = encrypt(
-      this.additionalNote,
-      this.patientId + this.doctorId + this.title
-    );
+    this.createdAt = new Date();
+
+    let AAD = this.patientId + this.doctorId + String(this.createdAt);
+
+    this.title = encrypt(this.title, AAD);
+    this.medicalHistory = encrypt(this.medicalHistory, AAD);
+    this.physicalExamination = encrypt(this.physicalExamination, AAD);
+    this.diagnosis = encrypt(this.diagnosis, AAD);
+    this.treatment = encrypt(this.treatment, AAD);
+    this.recommendation = encrypt(this.recommendation, AAD);
+    this.additionalNote = encrypt(this.additionalNote, AAD);
   }
 
   @AfterLoad()
   decryptFields() {
-    this.medicalHistory = decrypt(
-      this.medicalHistory,
-      this.patientId + this.doctorId + this.title
-    );
-    this.physicalExamination = decrypt(
-      this.physicalExamination,
-      this.patientId + this.doctorId + this.title
-    );
-    this.diagnosis = decrypt(
-      this.diagnosis,
-      this.patientId + this.doctorId + this.title
-    );
-    this.treatment = decrypt(
-      this.treatment,
-      this.patientId + this.doctorId + this.title
-    );
-    this.recommendation = decrypt(
-      this.recommendation,
-      this.patientId + this.doctorId + this.title
-    );
-    this.additionalNote = decrypt(
-      this.additionalNote,
-      this.patientId + this.doctorId + this.title
-    );
+    let AAD = this.patientId + this.doctorId + String(this.createdAt);
+
+    this.title = decrypt(this.title, AAD);
+    this.medicalHistory = decrypt(this.medicalHistory, AAD);
+    this.physicalExamination = decrypt(this.physicalExamination, AAD);
+    this.diagnosis = decrypt(this.diagnosis, AAD);
+    this.treatment = decrypt(this.treatment, AAD);
+    this.recommendation = decrypt(this.recommendation, AAD);
+    this.additionalNote = decrypt(this.additionalNote, AAD);
   }
 }

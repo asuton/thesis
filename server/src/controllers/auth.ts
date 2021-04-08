@@ -6,7 +6,6 @@ import { Doctor, Patient } from "../models";
 
 export interface ILogin {
   id: string;
-  email: string;
   password: string;
 }
 
@@ -28,11 +27,10 @@ export const login = async (req: Request, res: Response) => {
     return res.status(401).send("Invalid Credentials");
   }
 
-  const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET);
+  const token = jwt.sign({ id: user.id }, JWT_SECRET);
 
   return res.status(201).json({
     id: user.id,
-    email: user.email,
     token,
   });
 };
