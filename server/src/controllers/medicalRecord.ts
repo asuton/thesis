@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { validate } from "class-validator";
 import { MedicalRecord } from "../models";
+import { ForbiddenError, subject, RawRuleOf } from "@casl/ability";
 
 export const getMedicalRecords = async (_req: Request, res: Response) => {
   try {
     const medicalRecords = await MedicalRecord.find();
+
     return res.json(medicalRecords);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -16,9 +18,16 @@ export const getMedicalRecord = async (req: Request, res: Response) => {
     const medicalRecord = await MedicalRecord.findOne({
       id: req.params.medId,
     });
+
     if (!medicalRecord) {
       return res.status(400).json({ msg: "Record not found" });
     }
+
+    ForbiddenError.from(req.ability).throwUnlessCan(
+      "read",
+      subject("MedicalRecord", medicalRecord)
+    );
+
     return res.json(medicalRecord);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -52,6 +61,7 @@ export const putMedicalRecord = async (req: Request, res: Response) => {
     const medicalRecord = await MedicalRecord.findOne({
       id: req.params.medId,
     });
+
     if (!medicalRecord) {
       return res
         .status(400)

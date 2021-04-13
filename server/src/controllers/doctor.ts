@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 export const getDoctors = async (req: Request, res: Response) => {
   try {
     const doctors = await Doctor.find();
+
     return res.json(doctors);
   } catch (err) {
     console.error(err.message);
@@ -16,9 +17,11 @@ export const getDoctors = async (req: Request, res: Response) => {
 export const getDoctor = async (req: Request, res: Response) => {
   try {
     const doctor = await Doctor.findOne({ id: req.params.id });
+
     if (!doctor) {
       return res.status(400).json({ msg: "Doctor not found" });
     }
+
     return res.json(doctor);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -28,6 +31,7 @@ export const getDoctor = async (req: Request, res: Response) => {
 export const postDoctor = async (req: Request, res: Response) => {
   try {
     let doctor = await Doctor.findOne({ email: req.body.email });
+
     if (doctor) {
       return res
         .status(400)
@@ -59,6 +63,7 @@ export const postDoctor = async (req: Request, res: Response) => {
 export const putDoctor = async (req: Request, res: Response) => {
   try {
     const doctor = await Doctor.findOne({ id: req.params.id });
+
     if (!doctor) {
       return res
         .status(400)

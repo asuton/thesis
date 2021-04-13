@@ -4,19 +4,11 @@ import Patient from "../models/Patient";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../utils/constants";
+import { packRules } from "@casl/ability/extra";
+import { defineRulesForPatient } from "../auth/abilities";
+import { ForbiddenError, subject } from "@casl/ability";
 
-export interface IPatient {
-  name: string;
-  surname: string;
-  OIB: string;
-  phone: string;
-  email: string;
-  password: string;
-  address: string;
-  dateOfBirth: Date;
-}
-
-export const getPatients = async (_req: Request, res: Response) => {
+export const getPatients = async (req: Request, res: Response) => {
   try {
     const patients = await Patient.find();
     return res.json(patients);
@@ -32,6 +24,10 @@ export const getPatient = async (req: Request, res: Response) => {
     if (!patient) {
       return res.status(400).json({ msg: "Patient not found" });
     }
+    ForbiddenError.from(req.ability).throwUnlessCan(
+      "read",
+      subject("Patient", patient)
+    );
     return res.json(patient);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -61,9 +57,12 @@ export const postPatient = async (req: Request, res: Response) => {
 
     await Patient.save(patientNew);
 
+    const rules = defineRulesForPatient(patientNew);
+
     const token = jwt.sign(
       {
         id: patientNew.id,
+        rules: packRules(rules),
       },
       JWT_SECRET,
       { expiresIn: 360000 }
@@ -71,6 +70,7 @@ export const postPatient = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       id: patientNew.id,
+      rules: packRules(rules),
       token,
     });
   } catch (err) {
