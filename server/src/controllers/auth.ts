@@ -3,17 +3,14 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, Authorization } from "../utils/constants";
 import { Doctor, Patient } from "../models";
-import {
-  defineRulesForPatient,
-  defineRulesForDoctor,
-  AppAbility,
-} from "../auth/abilities";
+import { defineRulesFor, AppAbility } from "../auth/abilities";
 import { packRules, PackRule } from "@casl/ability/extra";
 import { RawRuleOf } from "@casl/ability";
 
 export interface ILogin {
   id: string;
   password: string;
+  authorization: Authorization;
 }
 
 export const login = async (req: Request, res: Response) => {
@@ -24,11 +21,9 @@ export const login = async (req: Request, res: Response) => {
   let user: ILogin | undefined = await Patient.findOne({
     email: email,
   });
-  let authorization = Authorization.Patient;
 
   if (!user) {
     user = await Doctor.findOne({ email: email });
-    authorization = Authorization.Doctor;
   }
 
   if (!user) {
@@ -40,11 +35,9 @@ export const login = async (req: Request, res: Response) => {
   if (!isMatch) {
     return res.status(401).send("Invalid Credentials");
   }
-  if (authorization === Authorization.Patient) {
-    rules = packRules(defineRulesForPatient(user));
-  } else {
-    rules = packRules(defineRulesForDoctor(user));
-  }
+
+  rules = packRules(defineRulesFor(user));
+
   const token = jwt.sign({ id: user.id, rules: rules }, JWT_SECRET);
 
   return res.status(201).json({

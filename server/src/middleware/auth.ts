@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../utils/constants";
 import { unpackRules, PackRule } from "@casl/ability/extra";
-import { RawRuleOf, AbilityBuilder, Ability } from "@casl/ability";
+import { RawRuleOf } from "@casl/ability";
 import { AppAbility, createAbility } from "../auth/abilities";
 export interface IAuthToken {
   id: string;

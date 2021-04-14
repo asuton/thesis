@@ -8,6 +8,8 @@ import {
   JoinColumn,
   BeforeInsert,
   AfterLoad,
+  BeforeUpdate,
+  AfterUpdate,
 } from "typeorm";
 import { Length } from "class-validator";
 import Patient from "./Patient";
@@ -92,6 +94,19 @@ export default class MedicalRecord extends BaseEntity {
     this.diagnosis = decrypt(this.diagnosis, AAD);
     this.treatment = decrypt(this.treatment, AAD);
     this.recommendation = decrypt(this.recommendation, AAD);
+    this.additionalNote = decrypt(this.additionalNote, AAD);
+  }
+
+  @BeforeUpdate()
+  encryptUpdate() {
+    let AAD = this.patientId + this.doctorId + String(this.createdAt);
+
+    this.additionalNote = encrypt(this.additionalNote, AAD);
+  }
+  @AfterUpdate()
+  decryptUpdate() {
+    let AAD = this.patientId + this.doctorId + String(this.createdAt);
+
     this.additionalNote = decrypt(this.additionalNote, AAD);
   }
 }

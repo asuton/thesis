@@ -1,8 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany, BeforeInsert } from "typeorm";
 import { Length } from "class-validator";
 import User from "./User";
 import MedicalRecord from "./MedicalRecord";
 import DiagnosticTesting from "./DiagnosticTesting";
+import { Authorization } from "../utils/constants";
 
 @Entity({ name: "doctors" })
 export default class Doctor extends User {
@@ -22,4 +23,9 @@ export default class Doctor extends User {
     (diagnosticTesting) => diagnosticTesting.doctor
   )
   diagnosticTesting!: DiagnosticTesting[];
+
+  @BeforeInsert()
+  setAuthorization() {
+    this.authorization = Authorization.Doctor;
+  }
 }

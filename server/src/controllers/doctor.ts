@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { validate } from "class-validator";
 import Doctor from "../models/Doctor";
 import bcrypt from "bcrypt";
+import { Patient } from "../models";
+import { ForbiddenError, subject } from "@casl/ability";
 
 export const getDoctors = async (req: Request, res: Response) => {
   try {
     const doctors = await Doctor.find();
-
     return res.json(doctors);
   } catch (err) {
     console.error(err.message);
@@ -30,26 +31,33 @@ export const getDoctor = async (req: Request, res: Response) => {
 
 export const postDoctor = async (req: Request, res: Response) => {
   try {
-    let doctor = await Doctor.findOne({ email: req.body.email });
+    const doctor = await Doctor.findOne({ email: req.body.email });
+    const patient = await Patient.findOne({ email: req.body.email });
 
-    if (doctor) {
+    if (doctor || patient) {
       return res
         .status(400)
-        .json({ errors: [{ msg: "Doctor already exists" }] });
+        .json({ errors: [{ msg: "Email is already in use" }] });
     }
 
-    const saltRound = 10;
-    const salt = await bcrypt.genSalt(saltRound);
-    const hash = await bcrypt.hash(req.body.password, salt);
-
     let doctorNew = new Doctor();
-    Object.assign(doctorNew, req.body);
+    doctorNew.name = req.body.name;
+    doctorNew.surname = req.body.surname;
+    doctorNew.license = req.body.license;
+    doctorNew.qualification = req.body.qualification;
+    doctorNew.OIB = req.body.OIB;
+    doctorNew.phone = req.body.phone;
+    doctorNew.email = req.body.email;
+    doctorNew.password = req.body.password;
 
     const errors = await validate(doctorNew);
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
 
+    const saltRound = 10;
+    const salt = await bcrypt.genSalt(saltRound);
+    const hash = await bcrypt.hash(req.body.password, salt);
     doctorNew.password = hash;
 
     const response = await Doctor.save(doctorNew);
@@ -76,6 +84,11 @@ export const putDoctor = async (req: Request, res: Response) => {
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
+
+    ForbiddenError.from(req.ability).throwUnlessCan(
+      "update",
+      subject("Doctor", doctor)
+    );
 
     const response = await Doctor.save(doctor);
 

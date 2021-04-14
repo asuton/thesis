@@ -5,8 +5,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../utils/constants";
 import { packRules } from "@casl/ability/extra";
-import { defineRulesForPatient } from "../auth/abilities";
+import { defineRulesFor } from "../auth/abilities";
 import { ForbiddenError, subject } from "@casl/ability";
+import { Doctor } from "../models";
 
 export const getPatients = async (req: Request, res: Response) => {
   try {
@@ -36,28 +37,39 @@ export const getPatient = async (req: Request, res: Response) => {
 
 export const postPatient = async (req: Request, res: Response) => {
   try {
-    let patient = await Patient.findOne({ email: req.body.email });
-    if (patient) {
-      return res.status(400).json({ errors: [{ msg: "User already exists" }] });
+    const patient = await Patient.findOne({ email: req.body.email });
+    const doctor = await Doctor.findOne({ email: req.body.email });
+
+    if (patient || doctor) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "Email is already in use" }] });
     }
 
-    const saltRound = 10;
-    const salt = await bcrypt.genSalt(saltRound);
-    const hash = await bcrypt.hash(req.body.password, salt);
-
     let patientNew = new Patient();
-    Object.assign(patientNew, req.body);
+    patientNew.name = req.body.name;
+    patientNew.surname = req.body.surname;
+    patientNew.address = req.body.address;
+    patientNew.dateOfBirth = req.body.dateOfBirth;
+    patientNew.OIB = req.body.OIB;
+    patientNew.phone = req.body.phone;
+    patientNew.email = req.body.email;
+    patientNew.password = req.body.password;
 
     const errors = await validate(patientNew);
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
 
+    const saltRound = 10;
+    const salt = await bcrypt.genSalt(saltRound);
+    const hash = await bcrypt.hash(req.body.password, salt);
+
     patientNew.password = hash;
 
     await Patient.save(patientNew);
 
-    const rules = defineRulesForPatient(patientNew);
+    const rules = defineRulesFor(patientNew);
 
     const token = jwt.sign(
       {

@@ -5,9 +5,11 @@ import {
   RawRuleOf,
   ForcedSubject,
 } from "@casl/ability";
+import { Authorization } from "../utils/constants";
 
 interface User {
   id: string;
+  authorization: Authorization;
 }
 
 type Actions = "create" | "read" | "update" | "delete";
@@ -24,20 +26,29 @@ const AppAbility = Ability as AbilityClass<AppAbility>;
 export const createAbility = (rules: RawRuleOf<AppAbility>[]) =>
   new Ability<AppAbilities>(rules);
 
-export const defineRulesForPatient = (user: User): RawRuleOf<AppAbility>[] => {
+export const defineRulesFor = (user: User): RawRuleOf<AppAbility>[] => {
   const { can, rules } = new AbilityBuilder<AppAbility>(AppAbility);
-  can("read", "Patient", { id: user.id });
-  can("read", "Doctor");
-  can("update", "Patient");
-  can("read", "MedicalRecord", { patientId: user.id });
-  return rules;
-};
 
-export const defineRulesForDoctor = (user: User): RawRuleOf<AppAbility>[] => {
-  const { can, rules } = new AbilityBuilder<AppAbility>(AppAbility);
-  can("read", "Patient");
+  //Common abilities
   can("read", "Doctor");
-  can("update", "MedicalRecord", { doctorId: user.id });
-  can("read", "MedicalRecord");
+
+  //Patient abilities
+  if (user.authorization === Authorization.Patient) {
+    can("read", "Patient", { id: user.id });
+    can("update", "Patient", { id: user.id });
+
+    can("read", "MedicalRecord", { patientId: user.id });
+  }
+
+  //Doctor abilities
+  if (user.authorization === Authorization.Doctor) {
+    can("read", "Patient");
+    can("update", "Patient");
+
+    can("update", "Doctor", { id: user.id });
+    can(["read", "create"], "MedicalRecord");
+    can("update", "MedicalRecord", { doctorId: user.id });
+  }
+
   return rules;
 };
