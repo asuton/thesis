@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Login from "./components/login";
-import Register from "./components/register";
-import PrivateRoute from "./components/privateRoute";
-import Patients from "./components/patients";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import PrivateRoute from "./components/PrivateRoute";
+import Patients from "./components/Patients";
 
 import { Provider } from "react-redux";
 import store from "./redux/store";

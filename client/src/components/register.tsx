@@ -6,8 +6,34 @@ import {
   RegisterActionTypes,
   RegisterState,
 } from "../redux/types/auth/register";
+import { Link, Redirect } from "react-router-dom";
 import { AppState } from "../redux/reducers/rootReducer";
 import { bindActionCreators } from "redux";
+import { LoginState } from "../redux/types/auth/login";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  title: {
+    margin: theme.spacing(7, 0, 4),
+  },
+  form: {
+    width: "100%",
+  },
+  textField: {
+    margin: theme.spacing(1, 0, 1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 3),
+  },
+  link: {
+    marginBottom: theme.spacing(3),
+  },
+}));
 
 interface RegisterFormState {
   name: string;
@@ -23,6 +49,7 @@ interface RegisterFormState {
 type Props = MapStateToProps & MapDispatchToProps;
 
 const Register: React.FC<Props> = (props: Props) => {
+  const classes = useStyles();
   const [formData, setFormData] = useState<RegisterFormState>({
     name: "",
     surname: "",
@@ -45,121 +72,147 @@ const Register: React.FC<Props> = (props: Props) => {
     phone,
   } = formData;
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => setFormData({ ...formData, [e.target.id]: e.target.value });
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
     props.register(formData);
   };
 
+  if (props.loginState.loggedIn) {
+    return <Redirect to="/patients" />;
+  }
+
   return (
-    <>
-      <div>
-        <h3>Registracija</h3>
-        <br></br>
-        <form className="form" onSubmit={(e) => onSubmit(e)}>
-          <div className="form-group">
-            <label htmlFor="InputEmail">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              placeholder="Unesite email"
-              value={email}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="InputPassword">Lozinka</label>
-            <input
-              type="password"
-              className="form-control"
-              id="password"
-              placeholder="Unesite lozinku"
-              value={password}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="InputName">name</label>
-            <input
-              type="text"
-              className="form-control"
+    <Container component="main" maxWidth="sm">
+      <Typography component="h1" variant="h5" className={classes.title}>
+        Registracija
+      </Typography>
+      <form
+        className={classes.form}
+        noValidate
+        autoComplete="off"
+        onSubmit={(e) => onSubmit(e)}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              className={classes.textField}
+              required
+              fullWidth
               id="name"
-              placeholder="name"
+              label="Ime"
               value={name}
               onChange={(e) => onChange(e)}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="Inputsurname">surname</label>
-            <input
-              type="text"
-              className="form-control"
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              className={classes.textField}
+              required
+              fullWidth
               id="surname"
-              placeholder="surname"
+              label="Prezime"
               value={surname}
               onChange={(e) => onChange(e)}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="Inputphone">phone</label>
-            <input
-              type="text"
-              className="form-control"
-              id="phone"
-              placeholder="phone"
-              value={phone}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="OIB">OIB</label>
-            <input
-              type="text"
-              className="form-control"
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              className={classes.textField}
+              required
+              fullWidth
               id="OIB"
-              placeholder="OIB"
+              label="OIB"
               value={OIB}
               onChange={(e) => onChange(e)}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="date">date</label>
-            <input
-              type="date"
-              className="form-control"
-              id="dateOfBirth"
-              placeholder="dateOfBirth"
-              value={dateOfBirth}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="address">address</label>
-            <input
-              type="text"
-              className="form-control"
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              className={classes.textField}
+              required
+              fullWidth
               id="address"
-              placeholder="address"
+              label="Adresa"
               value={address}
               onChange={(e) => onChange(e)}
             />
-          </div>
-          <button type="submit" className="btn btn-primary">
-            Prijava
-          </button>
-        </form>
-        <br></br>
-        <h6>Nemate profil? Registrirajte se.</h6>
-      </div>
-    </>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              className={classes.textField}
+              required
+              fullWidth
+              id="phone"
+              label="Kontakt"
+              value={phone}
+              onChange={(e) => onChange(e)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              className={classes.textField}
+              required
+              fullWidth
+              type="date"
+              id="dateOfBirth"
+              label="Datum rođenja"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={dateOfBirth}
+              onChange={(e) => onChange(e)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              className={classes.textField}
+              required
+              fullWidth
+              id="email"
+              label="E-mail"
+              value={email}
+              onChange={(e) => onChange(e)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              className={classes.textField}
+              required
+              fullWidth
+              id="password"
+              label="Lozinka"
+              type="password"
+              value={password}
+              onChange={(e) => onChange(e)}
+            />
+          </Grid>
+        </Grid>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          fullWidth
+          className={classes.submit}
+        >
+          Prijava
+        </Button>
+        <Grid container justify="flex-start" className={classes.link}>
+          <Grid item>
+            Imate zdravstveni karton? Prijavite se <Link to="/">ovdje</Link>.{" "}
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
   );
 };
 
 interface MapStateToProps {
-  register: RegisterState;
+  registerState: RegisterState;
+  loginState: LoginState;
 }
 
 interface MapDispatchToProps {
@@ -167,7 +220,8 @@ interface MapDispatchToProps {
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  register: state.register,
+  registerState: state.register,
+  loginState: state.login,
 });
 
 const mapDispatchToProps = (

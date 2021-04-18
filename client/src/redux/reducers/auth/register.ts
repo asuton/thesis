@@ -8,7 +8,7 @@ import {
 
 const initState: RegisterState = {};
 
-const register = (
+const registerReducer = (
   state = initState,
   action: RegisterActionTypes
 ): RegisterState => {
@@ -18,6 +18,7 @@ const register = (
         registering: true,
       };
     case REGISTER_SUCCESS:
+      localStorage.setItem("user", JSON.stringify(action.payload));
       return {
         registered: true,
       };
@@ -30,4 +31,4 @@ const register = (
   }
 };
 
-export default register;
+export default registerReducer;
