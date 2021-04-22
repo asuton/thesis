@@ -1,27 +1,41 @@
 import { Request, Response } from "express";
 import { validate } from "class-validator";
 import Patient from "../models/Patient";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../utils/constants";
 import { packRules } from "@casl/ability/extra";
-import { defineRulesFor } from "../auth/abilities";
 import { ForbiddenError, subject } from "@casl/ability";
-import { Doctor } from "../models";
+import { defineRulesFor } from "../services/abilities";
+import {
+  getPatientsQuery,
+  getPatientByIdQuery,
+  getPatientByEmailQuery,
+  insertPatientQuery,
+} from "../services/patient";
+import { getDoctorByEmailQuery } from "../services/doctor";
+import { hashPassword } from "../services/hash";
+import { signToken } from "../services/token";
 
-export const getPatients = async (req: Request, res: Response) => {
+export const getPatients = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
-    const patients = await Patient.find();
+    const patients = await getPatientsQuery();
+    ForbiddenError.from(req.ability).throwUnlessCan(
+      "read",
+      subject("Patient", { id: true })
+    );
     return res.json(patients);
   } catch (err) {
-    console.error(err.message);
     return res.status(500).send(err.message);
   }
 };
 
-export const getPatient = async (req: Request, res: Response) => {
+export const getPatient = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
-    const patient = await Patient.findOne({ id: req.params.id });
+    const patient = await getPatientByIdQuery(req.params.id);
     if (!patient) {
       return res.status(400).json({ msg: "Patient not found" });
     }
@@ -35,10 +49,13 @@ export const getPatient = async (req: Request, res: Response) => {
   }
 };
 
-export const postPatient = async (req: Request, res: Response) => {
+export const postPatient = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
-    const patient = await Patient.findOne({ email: req.body.email });
-    const doctor = await Doctor.findOne({ email: req.body.email });
+    const patient = await getPatientByEmailQuery(req.body.email);
+    const doctor = await getDoctorByEmailQuery(req.body.email);
 
     if (patient || doctor) {
       return res
@@ -46,39 +63,20 @@ export const postPatient = async (req: Request, res: Response) => {
         .json({ errors: [{ msg: "Email is already in use" }] });
     }
 
-    let patientNew = new Patient();
-    patientNew.name = req.body.name;
-    patientNew.surname = req.body.surname;
-    patientNew.address = req.body.address;
-    patientNew.dateOfBirth = req.body.dateOfBirth;
-    patientNew.OIB = req.body.OIB;
-    patientNew.phone = req.body.phone;
-    patientNew.email = req.body.email;
-    patientNew.password = req.body.password;
+    let patientNew = insertPatientQuery(req.body);
 
     const errors = await validate(patientNew);
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
 
-    const saltRound = 10;
-    const salt = await bcrypt.genSalt(saltRound);
-    const hash = await bcrypt.hash(req.body.password, salt);
-
-    patientNew.password = hash;
+    patientNew.password = await hashPassword(patientNew.password);
 
     await Patient.save(patientNew);
 
     const rules = defineRulesFor(patientNew);
 
-    const token = jwt.sign(
-      {
-        id: patientNew.id,
-        rules: packRules(rules),
-      },
-      JWT_SECRET,
-      { expiresIn: 360000 }
-    );
+    const token = signToken(patientNew.id, rules);
 
     return res.status(201).json({
       id: patientNew.id,
@@ -90,9 +88,12 @@ export const postPatient = async (req: Request, res: Response) => {
   }
 };
 
-export const putPatient = async (req: Request, res: Response) => {
+export const putPatient = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
-    const patient = await Patient.findOne({ id: req.params.id });
+    const patient = await getPatientByIdQuery(req.params.id);
 
     if (!patient) {
       return res

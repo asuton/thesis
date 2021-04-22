@@ -1,13 +1,19 @@
 import { Request, Response } from "express";
 import { validate } from "class-validator";
 import Doctor from "../models/Doctor";
-import bcrypt from "bcrypt";
-import { Patient } from "../models";
 import { ForbiddenError, subject } from "@casl/ability";
+import {
+  getDoctorsQuery,
+  getDoctorByIdQuery,
+  getDoctorByEmailQuery,
+  insertDoctorQuery,
+} from "../services/doctor";
+import { getPatientByEmailQuery } from "../services/patient";
+import { hashPassword } from "../services/hash";
 
-export const getDoctors = async (req: Request, res: Response) => {
+export const getDoctors = async (_req: Request, res: Response) => {
   try {
-    const doctors = await Doctor.find();
+    const doctors = await getDoctorsQuery();
     return res.json(doctors);
   } catch (err) {
     console.error(err.message);
@@ -17,7 +23,7 @@ export const getDoctors = async (req: Request, res: Response) => {
 
 export const getDoctor = async (req: Request, res: Response) => {
   try {
-    const doctor = await Doctor.findOne({ id: req.params.id });
+    const doctor = await getDoctorByIdQuery(req.params.id);
 
     if (!doctor) {
       return res.status(400).json({ msg: "Doctor not found" });
@@ -31,8 +37,8 @@ export const getDoctor = async (req: Request, res: Response) => {
 
 export const postDoctor = async (req: Request, res: Response) => {
   try {
-    const doctor = await Doctor.findOne({ email: req.body.email });
-    const patient = await Patient.findOne({ email: req.body.email });
+    const doctor = await getDoctorByEmailQuery(req.body.email);
+    const patient = await getPatientByEmailQuery(req.body.email);
 
     if (doctor || patient) {
       return res
@@ -40,25 +46,14 @@ export const postDoctor = async (req: Request, res: Response) => {
         .json({ errors: [{ msg: "Email is already in use" }] });
     }
 
-    let doctorNew = new Doctor();
-    doctorNew.name = req.body.name;
-    doctorNew.surname = req.body.surname;
-    doctorNew.license = req.body.license;
-    doctorNew.qualification = req.body.qualification;
-    doctorNew.OIB = req.body.OIB;
-    doctorNew.phone = req.body.phone;
-    doctorNew.email = req.body.email;
-    doctorNew.password = req.body.password;
+    let doctorNew = insertDoctorQuery(req.body);
 
     const errors = await validate(doctorNew);
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
 
-    const saltRound = 10;
-    const salt = await bcrypt.genSalt(saltRound);
-    const hash = await bcrypt.hash(req.body.password, salt);
-    doctorNew.password = hash;
+    doctorNew.password = await hashPassword(doctorNew.password);
 
     const response = await Doctor.save(doctorNew);
 

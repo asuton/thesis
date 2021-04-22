@@ -9,6 +9,8 @@ import { IAuth } from "../../types/auth/user";
 import { Dispatch } from "redux";
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
+import store from "../../store";
+import { loadUser } from "./loadUser";
 
 export const login = ({
   email,
@@ -36,6 +38,7 @@ export const login = ({
     });
 
     setAuthToken(payload.token);
+    store.dispatch(loadUser());
   } catch (err) {
     dispatch({
       type: LOGIN_FAIL,

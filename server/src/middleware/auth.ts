@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../utils/constants";
 import { unpackRules, PackRule } from "@casl/ability/extra";
 import { RawRuleOf } from "@casl/ability";
-import { AppAbility, createAbility } from "../auth/abilities";
+import { AppAbility, createAbility } from "../services/abilities";
 
 export interface IAuthToken {
   id: string;

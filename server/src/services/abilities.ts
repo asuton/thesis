@@ -27,20 +27,16 @@ export const createAbility = (rules: RawRuleOf<AppAbility>[]) =>
   new Ability<AppAbilities>(rules);
 
 export const defineRulesFor = (user: User): RawRuleOf<AppAbility>[] => {
-  const { can, rules } = new AbilityBuilder<AppAbility>(AppAbility);
+  const { can, rules, cannot } = new AbilityBuilder<AppAbility>(AppAbility);
 
-  //Common abilities
   can("read", "Doctor");
 
-  //Patient abilities
   if (user.authorization === Authorization.Patient) {
     can("read", "Patient", { id: user.id });
     can("update", "Patient", { id: user.id });
-
     can("read", "MedicalRecord", { patientId: user.id });
   }
 
-  //Doctor abilities
   if (user.authorization === Authorization.Doctor) {
     can("read", "Patient");
     can("update", "Patient");

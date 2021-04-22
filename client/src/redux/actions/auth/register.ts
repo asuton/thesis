@@ -8,6 +8,9 @@ import { IAuth } from "../../types/auth/user";
 import { config } from "../../types/config";
 import { Dispatch } from "redux";
 import axios from "axios";
+import setAuthToken from "../../utils/setAuthToken";
+import store from "../../store";
+import { loadUser } from "./loadUser";
 
 interface RegisterFormState {
   name: string;
@@ -41,7 +44,8 @@ export const register = (form: RegisterFormState) => async (
       type: REGISTER_SUCCESS,
       payload: payload,
     });
-
+    setAuthToken(payload.token);
+    store.dispatch(loadUser());
     window.location.reload();
   } catch (err) {
     const errors = err.response.data.errors;

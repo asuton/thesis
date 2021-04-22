@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, Authorization } from "../utils/constants";
 import { Doctor, Patient } from "../models";
-import { defineRulesFor, AppAbility } from "../auth/abilities";
+import { defineRulesFor, AppAbility } from "../services/abilities";
 import { packRules, PackRule } from "@casl/ability/extra";
 import { RawRuleOf } from "@casl/ability";
 
@@ -45,4 +45,18 @@ export const login = async (req: Request, res: Response) => {
     rules: rules,
     token,
   });
+};
+
+export const auth = async (req: Request, res: Response) => {
+  try {
+    let user: ILogin | undefined = await Patient.findOne({
+      id: req.id,
+    });
+    if (!user) {
+      user = await Doctor.findOne({ id: req.id });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).send("Server Error");
+  }
 };
