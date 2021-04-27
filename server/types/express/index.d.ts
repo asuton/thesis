@@ -8,3 +8,11 @@ declare global {
     }
   }
 }
+
+declare module "express-session" {
+  interface SessionData {
+    challenge: string;
+    displayName: string;
+    loggedIn: boolean;
+  }
+}

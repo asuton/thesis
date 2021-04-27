@@ -10,17 +10,30 @@ import {
   medicalRecordRoute,
   diagnosticTestRoute,
   auth,
+  webauthn,
 } from "./routes";
+import { COOKIE_KEY } from "./utils/constants";
 
 const app: Application = express();
 
-app.use(cors());
+app.use(
+  cookieSession({
+    name: "session",
+    keys: [COOKIE_KEY],
+    maxAge: 24 * 60 * 60 * 1000,
+  })
+);
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 app.use(morgan("tiny"));
-app.use(cookieSession({ name: "session", maxAge: 24 * 60 * 60 * 1000 }));
-app.use(cookieParser());
 
 app.get("/", (_req: Request, res: Response) => res.send("API Running"));
 app.use("/patients", patientRoute);
@@ -28,5 +41,5 @@ app.use("/doctors", doctorRoute);
 app.use("/patients", medicalRecordRoute);
 app.use("/patients", diagnosticTestRoute);
 app.use("/login", auth);
-
+app.use("/webauthn", webauthn);
 export default app;

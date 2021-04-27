@@ -3,6 +3,7 @@ import doctorRoute from "./doctor";
 import medicalRecordRoute from "./medicalRecord";
 import diagnosticTestRoute from "./diagnosticTest";
 import auth from "./auth";
+import webauthn from "./webauthn";
 
 export {
   patientRoute,
@@ -10,4 +11,5 @@ export {
   medicalRecordRoute,
   diagnosticTestRoute,
   auth,
+  webauthn,
 };

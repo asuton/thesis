@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { loadUser } from "./redux/actions/auth/loadUser";
 import { IAuth } from "./redux/types/auth/user";
 import setAuthToken from "./redux/utils/setAuthToken";
+import WebAuthnRegister from "./components/WebAuthnRegister";
 
 const storage = localStorage.getItem("user");
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/register" component={Register} />
         <MiniDrawer>
           <PrivateRoute path="/patients" component={Patients} />
+          <WebAuthnRegister></WebAuthnRegister>
         </MiniDrawer>
       </Router>
     </Provider>

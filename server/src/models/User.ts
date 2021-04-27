@@ -37,4 +37,10 @@ export default abstract class User extends BaseEntity {
     default: Authorization.Patient,
   })
   authorization!: Authorization;
+
+  @Column({ array: true, type: "json", nullable: true })
+  authenticators?: JsonWebKey[];
+
+  @Column({ default: false })
+  webAuthnRegistered?: boolean;
 }

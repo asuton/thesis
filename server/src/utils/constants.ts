@@ -9,6 +9,7 @@ export const POSTGRES_DB = process.env.POSTGRES_DB as string;
 export const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD as string;
 export const JWT_SECRET = process.env.JWT_SECRET as string;
 export const KEY = process.env.KEY as string;
+export const COOKIE_KEY = process.env.COOKIE_KEY as string;
 
 export enum Authorization {
   Doctor = "DOCTOR",
