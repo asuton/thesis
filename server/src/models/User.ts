@@ -38,8 +38,17 @@ export default abstract class User extends BaseEntity {
   })
   authorization!: Authorization;
 
-  @Column({ array: true, type: "json", nullable: true })
-  authenticators?: JsonWebKey[];
+  @Column({
+    type: "json",
+    nullable: true,
+    array: false,
+  })
+  authenticators?: Array<{
+    ftm: string;
+    pubKey: any;
+    counter: number;
+    credId: string;
+  }>;
 
   @Column({ default: false })
   webAuthnRegistered?: boolean;

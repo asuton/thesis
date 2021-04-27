@@ -51,7 +51,6 @@ export const getMakeCredChallenge = async () => {
       },
       type,
     };
-    console.log(body);
     const response = await sendWebAuthnResponse(body);
     console.log(response);
   } catch (err) {
