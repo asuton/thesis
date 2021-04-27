@@ -60,5 +60,3 @@ export const auth = async (req: Request, res: Response) => {
     res.status(500).send("Server Error");
   }
 };
-
-//
