@@ -31,6 +31,7 @@ export const getDoctorByIdQuery = async (
       "doctor.OIB",
       "doctor.phone",
       "doctor.email",
+      "doctor.webAuthnRegistered",
     ])
     .from(Doctor, "doctor")
     .where("doctor.id = :id", { id: id })
@@ -78,7 +79,7 @@ export const insertDoctorAuthInfoQuery = async (
   const doctor = await Doctor.findOne(id);
   if (doctor) {
     console.log(authenticators);
-    doctor.authenticators = authenticators;
+    (await doctor.authenticator).push(authenticators);
     doctor.webAuthnRegistered = true;
     return Doctor.save(doctor);
   } else {

@@ -1,5 +1,6 @@
 import { config } from "../../types/config";
 import axios from "axios";
+import base64url from "base64url";
 
 interface Credential {
   id: string;
@@ -52,7 +53,6 @@ export const getMakeCredChallenge = async () => {
       type,
     };
     const response = await sendWebAuthnResponse(body);
-    console.log(response);
   } catch (err) {
     console.log(err);
   }
@@ -72,6 +72,19 @@ const preformatMakeCredReq = (
   return makeCredReq;
 };
 
+let preformatGetAssertReq = (getAssert: any) => {
+  console.log(getAssert.challenge);
+  getAssert.challenge = Uint8Array.from(
+    atob(getAssert.challenge.replace(/\-/g, "+").replace(/\_/g, "/")),
+    (c) => c.charCodeAt(0)
+  );
+  for (let allowCred of getAssert.allowCredentials) {
+    allowCred.id = base64url.decode(allowCred.id);
+  }
+
+  return getAssert;
+};
+
 function bufferToString(buffer: ArrayBuffer): string {
   return Buffer.from(buffer)
     .toString("base64")
@@ -80,13 +93,39 @@ function bufferToString(buffer: ArrayBuffer): string {
     .replace(/=/g, "");
 }
 
-let sendWebAuthnResponse = async (body: sendWebAuthnResponse) => {
+let sendWebAuthnResponse = async (body: any) => {
   try {
     const res = await axios.post(
       "http://localhost:5000/webauthn/response",
       body,
       config
     );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const login = async () => {
+  try {
+    const res = await axios.get("http://localhost:5000/webauthn/login", config);
+    const payload = res.data;
+    console.log(payload);
+    const publicKey = preformatGetAssertReq(payload);
+
+    const assertion = (await navigator.credentials.get({
+      publicKey,
+    })) as Credential;
+
+    const response = await sendWebAuthnResponse(assertion);
+    console.log(response);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getDummy = async () => {
+  try {
+    const res = await axios.get("http://localhost:5000/webauthn/dummy", config);
     console.log(res);
   } catch (err) {
     console.log(err);

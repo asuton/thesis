@@ -1,9 +1,12 @@
 import crypto from "crypto";
 import base64url from "base64url";
 import cbor from "cbor";
-import { AttestationStruct, WebAuthnResponse } from "../types/webauthn";
 import {
-  parseAuthData,
+  AttestationStruct,
+  WebAuthnResponseAttestation,
+} from "../types/webauthn";
+import {
+  parseGetAttestAuthData,
   hash,
   base64ToPem,
   getCertificateInfo,
@@ -12,7 +15,9 @@ import { COSEKEYS, COSEALGHASH, COSECRV, COSEKTY, COSERSASCHEME } from "./COSE";
 import elliptic from "elliptic";
 import nodeRSA from "node-rsa";
 
-export const verifyPackedAttestation = (webAuthnResponse: WebAuthnResponse) => {
+export const verifyPackedAttestation = (
+  webAuthnResponse: WebAuthnResponseAttestation
+) => {
   const attestationBuffer = base64url.toBuffer(
     webAuthnResponse.response.attestationObject
   );
@@ -20,10 +25,9 @@ export const verifyPackedAttestation = (webAuthnResponse: WebAuthnResponse) => {
   const attestationStruct = cbor.decodeAllSync(
     attestationBuffer
   )[0] as AttestationStruct;
-  const authDataStruct = parseAuthData(attestationStruct.authData);
+  const authDataStruct = parseGetAttestAuthData(attestationStruct.authData);
 
   const clientDataHashBuf = hash(
-    "sha256",
     base64url.toBuffer(webAuthnResponse.response.clientDataJSON)
   );
 
@@ -91,7 +95,7 @@ export const verifyPackedAttestation = (webAuthnResponse: WebAuthnResponse) => {
 
       const ansiKey = Buffer.concat([Buffer.from([0x04]), x, y]);
 
-      const signatureBaseHash = hash(hashAlg, signatureBaseBuffer);
+      const signatureBaseHash = hash(signatureBaseBuffer, hashAlg);
 
       const ec = new elliptic.ec(COSECRV[pubKeyCose.get(COSEKEYS.crv)]);
       const key = ec.keyFromPublic(ansiKey);
@@ -134,7 +138,7 @@ export const verifyPackedAttestation = (webAuthnResponse: WebAuthnResponse) => {
       }
     } else if (pubKeyCose.get(COSEKEYS.kty) === COSEKTY.OKP) {
       const x = pubKeyCose.get(COSEKEYS.x);
-      const signatureBaseHash = hash(hashAlg, signatureBaseBuffer);
+      const signatureBaseHash = hash(signatureBaseBuffer, hashAlg);
 
       const key = new elliptic.eddsa("ed25519");
       key.keyFromPublic(x);

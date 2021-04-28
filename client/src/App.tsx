@@ -12,6 +12,8 @@ import { loadUser } from "./redux/actions/auth/loadUser";
 import { IAuth } from "./redux/types/auth/user";
 import setAuthToken from "./redux/utils/setAuthToken";
 import WebAuthnRegister from "./components/WebAuthnRegister";
+import WebAuthnLogin from "./components/WebAuthnLogin";
+import Dummy from "./components/Dummy";
 
 const storage = localStorage.getItem("user");
 
@@ -32,6 +34,8 @@ function App() {
         <MiniDrawer>
           <PrivateRoute path="/patients" component={Patients} />
           <WebAuthnRegister></WebAuthnRegister>
+          <WebAuthnLogin></WebAuthnLogin>
+          <Dummy></Dummy>
         </MiniDrawer>
       </Router>
     </Provider>

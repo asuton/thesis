@@ -11,7 +11,7 @@ declare global {
 declare module "express-session" {
   interface SessionData {
     challenge: string;
-    displayName: string;
+    user: string;
     loggedIn: boolean;
   }
 }

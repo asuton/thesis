@@ -1,10 +1,13 @@
 import base64url from "base64url";
 import cbor from "cbor";
 import { verifyPackedAttestation } from "./verifyPackedAttestation";
-import { WebAuthnResponse, AttestationStruct } from "../types/webauthn";
+import {
+  WebAuthnResponseAttestation,
+  AttestationStruct,
+} from "../types/webauthn";
 
 export const verifyAuthenticatorAttestationResponse = (
-  webAuthnResponse: WebAuthnResponse
+  webAuthnResponse: WebAuthnResponseAttestation
 ) => {
   const attestationBuffer = base64url.toBuffer(
     webAuthnResponse.response.attestationObject

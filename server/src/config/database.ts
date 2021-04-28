@@ -10,6 +10,7 @@ import {
 } from "../utils/constants";
 import {
   Admin,
+  Authenticator,
   DiagnosticTesting,
   Doctor,
   MedicalRecord,
@@ -25,7 +26,14 @@ const dbConfig: ConnectionOptions = {
   username: POSTGRES_USER || "postgres",
   password: POSTGRES_PASSWORD || "postgres",
   database: POSTGRES_DB || "postgres",
-  entities: [Admin, DiagnosticTesting, Doctor, MedicalRecord, Patient],
+  entities: [
+    Admin,
+    DiagnosticTesting,
+    Doctor,
+    MedicalRecord,
+    Patient,
+    Authenticator,
+  ],
   synchronize: true,
 };
 

@@ -2,12 +2,24 @@ type fmt = "packed" | "none";
 type typeWebAuthnResponse = "public-key";
 type typeClientDataJSON = "webauthn.create" | "webauthn.get";
 
-export interface WebAuthnResponse {
+export interface WebAuthnResponseAttestation {
   rawId: string;
   id: string;
   response: {
     attestationObject: string;
+    clientDataJSON: string;
+  };
+  getClientExtenstionResults?: {};
+  type: typeWebAuthnResponse;
+}
+
+export interface WebAuthnResponseAssertion {
+  rawId: string;
+  id: string;
+  response: {
     authenticatorData: string;
+    signature: string;
+    userHandle: string;
     clientDataJSON: string;
   };
   getClientExtenstionResults?: {};
@@ -31,7 +43,14 @@ export interface AttestationStruct {
   };
 }
 
-export interface AuthData {
+export interface Authr {
+  fmt: string;
+  pubKey: any;
+  counter: number;
+  credId: string;
+}
+
+export interface AttestAuthData {
   rpIdHash: Buffer;
   flagsBuf: Buffer;
   flags: {
@@ -41,10 +60,23 @@ export interface AuthData {
     ed: boolean;
     flagsInt: number;
   };
-
   counter: number;
   counterBuf: Buffer;
   aaguid: Buffer;
   credId: Buffer;
   COSEPubKey: Buffer;
+}
+
+export interface AssertAuthData {
+  rpIdHash: Buffer;
+  flagsBuf: Buffer;
+  flags: {
+    up: boolean;
+    uv: boolean;
+    at: boolean;
+    ed: boolean;
+    flagsInt: number;
+  };
+  counter: number;
+  counterBuf: Buffer;
 }

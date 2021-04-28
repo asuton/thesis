@@ -5,10 +5,17 @@ import {
   insertDoctorAuthInfoQuery,
 } from "../services/doctor";
 import { getPatientByIdQuery } from "../services/patient";
-import { WebAuthnResponse, clientDataJSON } from "../types/webauthn";
-import crypto from "crypto";
+import {
+  WebAuthnResponseAttestation,
+  clientDataJSON,
+  WebAuthnResponseAssertion,
+  Authr,
+} from "../types/webauthn";
 import base64url from "base64url";
 import { verifyAuthenticatorAttestationResponse } from "../helpers/verifyAuthenticatorAttestationResponse";
+import { verifyAuthenticatorAssertionResponse } from "../helpers/verifyAuthenticatorAssertionResponse";
+import { generateServerGetAssertion } from "../helpers/generateServerGetAssertion";
+import { generateBase64BufferChallenge } from "../helpers/webauthn";
 
 export const generateServerMakeCredRequest = async (
   req: Request,
@@ -16,7 +23,7 @@ export const generateServerMakeCredRequest = async (
 ) => {
   let user: Patient | Doctor | undefined = await getPatientByIdQuery(req.id);
   if (!user) {
-    user = (await getDoctorByIdQuery(req.id)) as Doctor;
+    user = (await Doctor.findOne(req.id)) as Doctor;
   }
 
   const publicKeyCredentialCreationOptions = {
@@ -39,14 +46,21 @@ export const generateServerMakeCredRequest = async (
   };
 
   req.session.challenge = publicKeyCredentialCreationOptions.challenge;
-  req.session.displayName = publicKeyCredentialCreationOptions.user.displayName;
+  req.session.user = publicKeyCredentialCreationOptions.user.displayName;
 
   return res.send(publicKeyCredentialCreationOptions);
 };
 
-const generateBase64BufferChallenge = () => {
-  const buffer = crypto.randomBytes(32);
-  return base64url(buffer);
+export const webAuthnLogin = async (req: Request, res: Response) => {
+  let user: Patient | Doctor | undefined = await getPatientByIdQuery(req.id);
+  if (!user) {
+    user = (await Doctor.findOne(req.id)) as Doctor;
+  }
+  if (!user.webAuthnRegistered) return res.send("Not registered");
+  let getAssertion = generateServerGetAssertion(await user.authenticator);
+  req.session.challenge = getAssertion.challenge;
+  req.session.user = user.id;
+  return res.send(getAssertion);
 };
 
 export const checkWebAuthnResponse = async (req: Request, res: Response) => {
@@ -64,7 +78,8 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
         "Response missing one or more of id/rawId/response/type fields or type is not public key",
     });
   }
-  const webAuthnResponse = req.body as WebAuthnResponse;
+  const webAuthnResponse = req.body as WebAuthnResponseAttestation &
+    WebAuthnResponseAssertion;
   const clientData = JSON.parse(
     base64url.decode(webAuthnResponse.response.clientDataJSON)
   ) as clientDataJSON;
@@ -88,6 +103,14 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
   if (webAuthnResponse.response.attestationObject !== undefined) {
     result = verifyAuthenticatorAttestationResponse(webAuthnResponse);
   } else if (webAuthnResponse.response.authenticatorData !== undefined) {
+    let user: Patient | Doctor | undefined = await getPatientByIdQuery(req.id);
+    if (!user) {
+      user = (await Doctor.findOne(req.id)) as Doctor;
+    }
+    result = verifyAuthenticatorAssertionResponse(
+      webAuthnResponse,
+      await user.authenticator
+    );
   } else {
     res.send({
       status: "failed",
@@ -105,5 +128,13 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
       status: "failed",
       message: "Can not authenticate signature!",
     });
+  }
+};
+
+export const dummyRoute = (req: Request, res: Response) => {
+  if (req.session.loggedIn) {
+    return res.send("yaaaaaaaaaaaay");
+  } else {
+    return res.send("nay");
   }
 };

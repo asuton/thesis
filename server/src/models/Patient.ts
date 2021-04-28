@@ -3,6 +3,7 @@ import { Length, IsDateString } from "class-validator";
 import User from "./User";
 import MedicalRecord from "./MedicalRecord";
 import DiagnosticTesting from "./DiagnosticTesting";
+import Authenticator from "./Authenticator";
 
 @Entity({ name: "patients" })
 export default class Patient extends User {
@@ -22,4 +23,7 @@ export default class Patient extends User {
     (diagnosticTesting) => diagnosticTesting.patient
   )
   diagnosticTesting!: DiagnosticTesting[];
+
+  @OneToMany(() => Authenticator, (authenticator) => authenticator.patient)
+  authenticator!: Promise<Authenticator[]>;
 }

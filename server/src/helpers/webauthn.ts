@@ -1,8 +1,14 @@
-import { AuthData } from "../types/webauthn";
+import { AttestAuthData, AssertAuthData, Authr } from "../types/webauthn";
 import crypto from "crypto";
 import jsrsasign from "jsrsasign";
+import base64url from "base64url";
 
-export const parseAuthData = (buffer: Buffer): AuthData => {
+export const generateBase64BufferChallenge = () => {
+  const buffer = crypto.randomBytes(32);
+  return base64url(buffer);
+};
+
+export const parseGetAttestAuthData = (buffer: Buffer): AttestAuthData => {
   const rpIdHash = buffer.slice(0, 32);
   buffer = buffer.slice(32);
 
@@ -44,7 +50,7 @@ export const parseAuthData = (buffer: Buffer): AuthData => {
   };
 };
 
-export const hash = (alg: string, message: Buffer) => {
+export const hash = (message: Buffer, alg: string = "SHA256") => {
   return crypto.createHash(alg).update(message).digest();
 };
 
@@ -79,4 +85,76 @@ export const getCertificateInfo = (certificate: string) => {
     version,
     basicConstraintsCA,
   };
+};
+
+export const findAuthr = (credID: string, authenticators: Array<Authr>) => {
+  for (let authr of authenticators) {
+    if (authr.credId === credID) return authr;
+  }
+
+  throw new Error(`Unknown authenticator with credID ${credID}!`);
+};
+
+export const parseGetAssertAuthData = (buffer: Buffer): AssertAuthData => {
+  const rpIdHash = buffer.slice(0, 32);
+  buffer = buffer.slice(32);
+
+  const flagsBuf = buffer.slice(0, 1);
+  buffer = buffer.slice(1);
+  const flagsInt = flagsBuf[0];
+  const flags = {
+    up: !!(flagsInt & 0x01),
+    uv: !!(flagsInt & 0x04),
+    at: !!(flagsInt & 0x40),
+    ed: !!(flagsInt & 0x80),
+    flagsInt,
+  };
+
+  const counterBuf = buffer.slice(0, 4);
+  buffer = buffer.slice(4);
+  const counter = counterBuf.readUInt32BE(0);
+
+  return { rpIdHash, flagsBuf, flags, counter, counterBuf };
+};
+
+export const ASN1toPEM = (pkBuffer: Buffer) => {
+  if (!Buffer.isBuffer(pkBuffer))
+    throw new Error("ASN1toPEM: pkBuffer must be Buffer.");
+
+  let type: string;
+  if (pkBuffer.length == 65 && pkBuffer[0] == 0x04) {
+    pkBuffer = Buffer.concat([
+      Buffer.from(
+        "3059301306072a8648ce3d020106082a8648ce3d030107034200",
+        "hex"
+      ),
+      pkBuffer,
+    ]);
+    type = "PUBLIC KEY";
+  } else {
+    type = "CERTIFICATE";
+  }
+
+  const b64cert = pkBuffer.toString("base64");
+
+  let PEMKey = "";
+  for (let i = 0; i < Math.ceil(b64cert.length / 64); i++) {
+    let start = 64 * i;
+    PEMKey += b64cert.substr(start, 64) + "\n";
+  }
+
+  PEMKey = `-----BEGIN ${type}-----\n` + PEMKey + `-----END ${type}-----\n`;
+
+  return PEMKey;
+};
+
+export const verifySignature = (
+  signature: Buffer,
+  data: Buffer,
+  publicKey: string
+) => {
+  return crypto
+    .createVerify("SHA256")
+    .update(data)
+    .verify(publicKey, signature);
 };

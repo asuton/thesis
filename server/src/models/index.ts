@@ -4,5 +4,14 @@ import Doctor from "./Doctor";
 import MedicalRecord from "./MedicalRecord";
 import Patient from "./Patient";
 import User from "./User";
+import Authenticator from "./Authenticator";
 
-export { Admin, DiagnosticTesting, Doctor, MedicalRecord, Patient, User };
+export {
+  Admin,
+  DiagnosticTesting,
+  Doctor,
+  MedicalRecord,
+  Patient,
+  User,
+  Authenticator,
+};

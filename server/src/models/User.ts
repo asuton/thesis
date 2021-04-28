@@ -1,6 +1,13 @@
-import { PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import {
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  OneToMany,
+  JoinColumn,
+} from "typeorm";
 import { IsEmail, Length } from "class-validator";
 import { Authorization } from "../utils/constants";
+import Authenticator from "./Authenticator";
 
 export default abstract class User extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
@@ -38,18 +45,6 @@ export default abstract class User extends BaseEntity {
   })
   authorization!: Authorization;
 
-  @Column({
-    type: "json",
-    nullable: true,
-    array: false,
-  })
-  authenticators?: Array<{
-    ftm: string;
-    pubKey: any;
-    counter: number;
-    credId: string;
-  }>;
-
   @Column({ default: false })
-  webAuthnRegistered?: boolean;
+  webAuthnRegistered!: boolean;
 }
