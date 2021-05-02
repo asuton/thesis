@@ -45,7 +45,7 @@ export interface AttestationStruct {
 
 export interface Authr {
   fmt: string;
-  pubKey: any;
+  pubKey: string;
   counter: number;
   credId: string;
 }

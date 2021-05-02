@@ -1,7 +1,30 @@
-import { AttestAuthData, AssertAuthData, Authr } from "../types/webauthn";
+import { AttestAuthData, AssertAuthData, Authr } from "../../types/webauthn";
+import { Authenticator, User } from "../../models";
 import crypto from "crypto";
 import jsrsasign from "jsrsasign";
 import base64url from "base64url";
+import cbor from "cbor";
+
+export const publicKeyCredentialCreation = (user: User) => {
+  return {
+    challenge: generateBase64BufferChallenge(),
+    rp: {
+      name: "thesis",
+      //id: "thesis",
+    },
+    user: {
+      id: user.id,
+      name: user.email,
+      displayName: user.name + " " + user.surname,
+    },
+    pubKeyCredParams: [
+      { type: "public-key", alg: -7 },
+      { type: "public-key", alg: -257 },
+    ],
+    timeout: 60000,
+    attestation: "direct",
+  };
+};
 
 export const generateBase64BufferChallenge = () => {
   const buffer = crypto.randomBytes(32);
@@ -87,7 +110,16 @@ export const getCertificateInfo = (certificate: string) => {
   };
 };
 
-export const findAuthr = (credID: string, authenticators: Array<Authr>) => {
+export const COSEECDHAtoPKCS = (COSEPublicKey: Buffer) => {
+  const coseStruct = cbor.decodeAllSync(COSEPublicKey)[0];
+  const tag = Buffer.from([0x04]);
+  const x = coseStruct.get(-2);
+  const y = coseStruct.get(-3);
+
+  return Buffer.concat([tag, x, y]);
+};
+
+export const findAuthr = (credID: string, authenticators: Authenticator[]) => {
   for (let authr of authenticators) {
     if (authr.credId === credID) return authr;
   }
@@ -148,7 +180,7 @@ export const ASN1toPEM = (pkBuffer: Buffer) => {
   return PEMKey;
 };
 
-export const verifySignature = (
+export const verifySignature = async (
   signature: Buffer,
   data: Buffer,
   publicKey: string

@@ -1,10 +1,10 @@
-import { login } from "../redux/actions/webauthn/register";
+import { getGetAssertionChallenge } from "../redux/actions/webauthn";
 import Button from "@material-ui/core/Button";
 
 const WebAuthnLogin = () => {
   const register = async (e: any) => {
     e.preventDefault();
-    login();
+    getGetAssertionChallenge();
   };
 
   return (

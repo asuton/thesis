@@ -1,4 +1,4 @@
-import { getMakeCredChallenge } from "../redux/actions/webauthn/register";
+import { getMakeCredChallenge } from "../redux/actions/webauthn/";
 import Button from "@material-ui/core/Button";
 
 const WebAuthnRegister = () => {

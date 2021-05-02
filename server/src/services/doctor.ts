@@ -71,18 +71,3 @@ export const insertDoctorQuery = (form: Doctor): Doctor => {
   doctor.password = form.password;
   return doctor;
 };
-
-export const insertDoctorAuthInfoQuery = async (
-  authenticators: any,
-  id: string
-) => {
-  const doctor = await Doctor.findOne(id);
-  if (doctor) {
-    console.log(authenticators);
-    (await doctor.authenticator).push(authenticators);
-    doctor.webAuthnRegistered = true;
-    return Doctor.save(doctor);
-  } else {
-    return "nop";
-  }
-};

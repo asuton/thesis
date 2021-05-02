@@ -1,23 +1,30 @@
-import crypto from "crypto";
-import base64url from "base64url";
-import cbor from "cbor";
 import {
   AttestationStruct,
+  Authr,
   WebAuthnResponseAttestation,
-} from "../types/webauthn";
+} from "../../types/webauthn";
 import {
   parseGetAttestAuthData,
   hash,
   base64ToPem,
   getCertificateInfo,
-} from "./webauthn";
+  COSEECDHAtoPKCS,
+} from ".";
 import { COSEKEYS, COSEALGHASH, COSECRV, COSEKTY, COSERSASCHEME } from "./COSE";
 import elliptic from "elliptic";
 import nodeRSA from "node-rsa";
+import crypto from "crypto";
+import base64url from "base64url";
+import cbor from "cbor";
+
+interface VerifyPackedAttestation {
+  signatureIsValid: boolean;
+  response: Authr | undefined;
+}
 
 export const verifyPackedAttestation = (
   webAuthnResponse: WebAuthnResponseAttestation
-) => {
+): VerifyPackedAttestation => {
   const attestationBuffer = base64url.toBuffer(
     webAuthnResponse.response.attestationObject
   );
@@ -39,7 +46,7 @@ export const verifyPackedAttestation = (
   const signatureBuffer = attestationStruct.attStmt.sig;
 
   let signatureIsValid = false;
-  let response: any;
+  let response: Authr | undefined;
 
   if (attestationStruct.attStmt.x5c) {
     const leafCert = base64ToPem(
@@ -72,13 +79,16 @@ export const verifyPackedAttestation = (
       .createVerify("sha256")
       .update(signatureBaseBuffer)
       .verify(leafCert, signatureBuffer);
+
+    const publicKey = COSEECDHAtoPKCS(authDataStruct.COSEPubKey);
     if (signatureIsValid) {
       response = {
         fmt: "packed",
-        pubKey: base64url(authDataStruct.COSEPubKey),
+        pubKey: base64url(publicKey),
         counter: authDataStruct.counter,
         credId: base64url(authDataStruct.credId),
       };
+      return { signatureIsValid, response };
     }
   } else if (attestationStruct.attStmt.ecdaaKeyId) {
     throw new Error("ECDAA IS NOT SUPPORTED YET!");
@@ -90,10 +100,7 @@ export const verifyPackedAttestation = (
     const hashAlg = COSEALGHASH[pubKeyCose.get(COSEKEYS.alg)];
 
     if (pubKeyCose.get(COSEKEYS.kty) === COSEKTY.EC2) {
-      const x = pubKeyCose.get(COSEKEYS.x);
-      const y = pubKeyCose.get(COSEKEYS.y);
-
-      const ansiKey = Buffer.concat([Buffer.from([0x04]), x, y]);
+      const ansiKey = COSEECDHAtoPKCS(pubKeyCose);
 
       const signatureBaseHash = hash(signatureBaseBuffer, hashAlg);
 
@@ -101,13 +108,15 @@ export const verifyPackedAttestation = (
       const key = ec.keyFromPublic(ansiKey);
 
       signatureIsValid = key.verify(signatureBaseHash, signatureBuffer);
+
       if (signatureIsValid) {
         response = {
           fmt: "packed",
-          pubKey: key,
+          pubKey: base64url(ansiKey),
           counter: authDataStruct.counter,
           credId: base64url(authDataStruct.credId),
         };
+        return { signatureIsValid, response };
       }
     } else if (pubKeyCose.get(COSEKEYS.kty) === COSEKTY.RSA) {
       const signingScheme = COSERSASCHEME[pubKeyCose.get(COSEKEYS.alg)];
@@ -135,22 +144,26 @@ export const verifyPackedAttestation = (
           counter: authDataStruct.counter,
           credId: base64url.encode(authDataStruct.credId),
         };
+        return { signatureIsValid, response };
       }
     } else if (pubKeyCose.get(COSEKEYS.kty) === COSEKTY.OKP) {
       const x = pubKeyCose.get(COSEKEYS.x);
+
       const signatureBaseHash = hash(signatureBaseBuffer, hashAlg);
 
       const key = new elliptic.eddsa("ed25519");
       key.keyFromPublic(x);
 
-      signatureIsValid = key.verify(signatureBaseHash, signatureBuffer, "");
+      signatureIsValid = key.verify(signatureBaseHash, signatureBuffer, x);
+
       if (signatureIsValid) {
         response = {
           fmt: "packed",
-          pubKey: key,
+          pubKey: x,
           counter: authDataStruct.counter,
           credId: base64url(authDataStruct.credId),
         };
+        return { signatureIsValid, response };
       }
     }
   }
@@ -158,5 +171,6 @@ export const verifyPackedAttestation = (
   if (!signatureIsValid) throw new Error("Failed to verify the signature!");
 
   const res = { signatureIsValid, response };
+
   return res;
 };

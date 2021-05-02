@@ -1,4 +1,3 @@
-import { createCanBoundTo } from "@casl/react";
 import { ability } from "../config/ability";
 import { createContext } from "react";
 import { createContextualCan } from "@casl/react";

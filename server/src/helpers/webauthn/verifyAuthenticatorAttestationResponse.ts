@@ -4,11 +4,17 @@ import { verifyPackedAttestation } from "./verifyPackedAttestation";
 import {
   WebAuthnResponseAttestation,
   AttestationStruct,
-} from "../types/webauthn";
+  Authr,
+} from "../../types/webauthn";
+
+interface VerifyAuthenticatorAttestationResponse {
+  signatureIsValid: boolean;
+  response: Authr | undefined;
+}
 
 export const verifyAuthenticatorAttestationResponse = (
   webAuthnResponse: WebAuthnResponseAttestation
-) => {
+): VerifyAuthenticatorAttestationResponse => {
   const attestationBuffer = base64url.toBuffer(
     webAuthnResponse.response.attestationObject
   );
@@ -16,7 +22,10 @@ export const verifyAuthenticatorAttestationResponse = (
     attestationBuffer
   )[0] as AttestationStruct;
 
-  let result: any;
+  let result: VerifyAuthenticatorAttestationResponse = {
+    signatureIsValid: false,
+    response: undefined,
+  };
 
   if (attestationStruct.fmt === "packed") {
     result = verifyPackedAttestation(webAuthnResponse);
