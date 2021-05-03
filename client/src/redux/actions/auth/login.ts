@@ -3,8 +3,8 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
-  LoginActiontypes,
-} from "../../types/auth/login";
+  AuthActionTypes,
+} from "../../types/auth/";
 import { IAuth } from "../../types/auth/user";
 import { Dispatch } from "redux";
 import axios from "axios";
@@ -18,7 +18,7 @@ export const login = ({
 }: {
   email: string;
   password: string;
-}) => async (dispatch: Dispatch<LoginActiontypes>) => {
+}) => async (dispatch: Dispatch<AuthActionTypes>) => {
   dispatch({ type: LOGIN_REQUEST });
 
   const body = JSON.stringify({ email, password });
@@ -47,6 +47,6 @@ export const login = ({
   }
 };
 
-export const logout = () => (dispatch: Dispatch<LoginActiontypes>) => {
+export const logout = () => (dispatch: Dispatch<AuthActionTypes>) => {
   dispatch({ type: LOGOUT });
 };

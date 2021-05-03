@@ -1,10 +1,14 @@
-export const WEBAUTHN_REGISTER_REQUEST = "REGISTER_REQUEST";
+export const WEBAUTHN_REGISTER_REQUEST = "WEBAUTHN_REGISTER_REQUEST";
 export const WEBAUTHN_REGISTER_SUCCESS = "WEBAUTHN_REGISTER_SUCCESS";
 export const WEBAUTHN_REGISTER_FAIL = "WEBAUTHN_REGISTER_FAIL";
 
 export const WEBAUTHN_LOGIN_REQUEST = "WEBAUTHN_LOGIN_REQUEST";
 export const WEBAUTHN_LOGIN_SUCCESS = "WEBAUTHN_LOGIN_SUCCESS";
 export const WEBAUTHN_LOGIN_FAIL = "WEBAUTHN_LOGIN_FAIL";
+
+export const WEBAUTH_RESPONSE_REQUEST = "WEBAUTH_RESPONSE_REQUEST";
+export const WEBAUTH_RESPONSE_SUCCESS = "WEBAUTH_RESPONSE_SUCCESS";
+export const WEBAUTH_RESPONSE_FAIL = "WEBAUTH_RESPONSE_FAIL";
 
 export interface WebAuthnRegisterRequest {
   type: typeof WEBAUTHN_REGISTER_REQUEST;
@@ -32,17 +36,33 @@ export interface WebAuthnLoginFail {
   payload: any;
 }
 
+export interface WebauthnResponseRequest {
+  type: typeof WEBAUTH_RESPONSE_REQUEST;
+}
+
+export interface WebauthnResponseSuccess {
+  type: typeof WEBAUTH_RESPONSE_SUCCESS;
+}
+
+export interface WebauthnResponseFail {
+  type: typeof WEBAUTH_RESPONSE_FAIL;
+  payload: any;
+}
+
 export type WebAuthnActionTypes =
   | WebAuthnRegisterRequest
   | WebAuthnRegisterSuccess
   | WebAuthnRegisterFail
   | WebAuthnLoginRequest
   | WebAuthnLoginSuccess
-  | WebAuthnLoginFail;
+  | WebAuthnLoginFail
+  | WebauthnResponseRequest
+  | WebauthnResponseSuccess
+  | WebauthnResponseFail;
 
 export type WebAuthnState = {
-  apiCall: boolean;
-  credential: any;
-  isLoggedIn: boolean;
+  apiCall?: boolean;
+  credential?: any;
+  isAuthenticated?: boolean;
   errors?: any;
 };

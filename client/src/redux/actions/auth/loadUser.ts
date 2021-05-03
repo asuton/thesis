@@ -1,14 +1,10 @@
-import {
-  USER_LOADED,
-  AUTH_ERROR,
-  UserActionTypes,
-} from "../../types/auth/loadUser";
+import { USER_LOADED, AUTH_ERROR, AuthActionTypes } from "../../types/auth/";
 import { IAuth } from "../../types/auth/user";
 import { Dispatch } from "redux";
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
 
-export const loadUser = () => async (dispatch: Dispatch<UserActionTypes>) => {
+export const loadUser = () => async (dispatch: Dispatch<AuthActionTypes>) => {
   const storage = localStorage.getItem("user");
 
   if (storage) {

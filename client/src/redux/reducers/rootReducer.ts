@@ -1,14 +1,12 @@
 import { combineReducers } from "redux";
-import loadUserReducer from "./auth/loadUser";
-import loginReducer from "./auth/login";
-import registerReducer from "./auth/register";
 import getPatientsReducer from "./patients/patients";
+import webAuthnReducer from "./webauthn";
+import authReducer from "./auth";
 
 const rootReducer = combineReducers({
-  login: loginReducer,
-  register: registerReducer,
+  auth: authReducer,
   patients: getPatientsReducer,
-  user: loadUserReducer,
+  webatuhn: webAuthnReducer,
 });
 
 export default rootReducer;

@@ -2,20 +2,16 @@ import React, { useState } from "react";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { register } from "../redux/actions/auth/register";
-import {
-  RegisterActionTypes,
-  RegisterState,
-} from "../redux/types/auth/register";
 import { Link, Redirect } from "react-router-dom";
 import { AppState } from "../redux/reducers/rootReducer";
 import { bindActionCreators } from "redux";
-import { LoginState } from "../redux/types/auth/login";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, Theme } from "@material-ui/core/styles";
+import { AuthActionTypes, AuthState } from "../redux/types/auth";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -81,7 +77,7 @@ const Register: React.FC<Props> = (props: Props) => {
     props.register(formData);
   };
 
-  if (props.loginState.loggedIn) {
+  if (props.authState.isAuthenticated) {
     return <Redirect to="/patients" />;
   }
 
@@ -211,8 +207,7 @@ const Register: React.FC<Props> = (props: Props) => {
 };
 
 interface MapStateToProps {
-  registerState: RegisterState;
-  loginState: LoginState;
+  authState: AuthState;
 }
 
 interface MapDispatchToProps {
@@ -220,12 +215,11 @@ interface MapDispatchToProps {
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  registerState: state.register,
-  loginState: state.login,
+  authState: state.auth,
 });
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<any, any, RegisterActionTypes>
+  dispatch: ThunkDispatch<any, any, AuthActionTypes>
 ): MapDispatchToProps => ({
   register: bindActionCreators(register, dispatch),
 });

@@ -3,7 +3,6 @@ import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { login } from "../redux/actions/auth/login";
-import { LoginActiontypes, LoginState } from "../redux/types/auth/login";
 import { AppState } from "../redux/reducers/rootReducer";
 import { Link, Redirect } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
@@ -12,6 +11,7 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, Theme } from "@material-ui/core/styles";
+import { AuthActionTypes, AuthState } from "../redux/types/auth";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -54,7 +54,7 @@ const Login: React.FC<Props> = (props: Props) => {
     props.login(formData);
   };
 
-  if (props.loginState.loggedIn) {
+  if (props.authState.isAuthenticated) {
     return <Redirect to="/patients" />;
   }
 
@@ -109,7 +109,7 @@ const Login: React.FC<Props> = (props: Props) => {
 };
 
 interface MapStateToProps {
-  loginState: LoginState;
+  authState: AuthState;
 }
 
 interface MapDispatchToProps {
@@ -117,11 +117,11 @@ interface MapDispatchToProps {
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  loginState: state.login,
+  authState: state.auth,
 });
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<any, any, LoginActiontypes>
+  dispatch: ThunkDispatch<any, any, AuthActionTypes>
 ): MapDispatchToProps => ({
   login: bindActionCreators(login, dispatch),
 });

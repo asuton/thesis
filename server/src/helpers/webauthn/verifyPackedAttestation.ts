@@ -140,7 +140,7 @@ export const verifyPackedAttestation = (
       if (signatureIsValid) {
         response = {
           fmt: "packed",
-          pubKey: key.exportKey(),
+          pubKey: key.exportKey("pkcs1-public-pem"),
           counter: authDataStruct.counter,
           credId: base64url.encode(authDataStruct.credId),
         };
@@ -159,7 +159,7 @@ export const verifyPackedAttestation = (
       if (signatureIsValid) {
         response = {
           fmt: "packed",
-          pubKey: x,
+          pubKey: base64url(key.keyFromPublic(x).getPublic()),
           counter: authDataStruct.counter,
           credId: base64url(authDataStruct.credId),
         };

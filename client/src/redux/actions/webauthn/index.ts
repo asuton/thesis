@@ -7,6 +7,9 @@ import {
   WEBAUTHN_LOGIN_REQUEST,
   WEBAUTHN_LOGIN_SUCCESS,
   WEBAUTHN_LOGIN_FAIL,
+  WEBAUTH_RESPONSE_REQUEST,
+  WEBAUTH_RESPONSE_SUCCESS,
+  WEBAUTH_RESPONSE_FAIL,
 } from "../../types/webauthn";
 import {
   preformatMakeCredReq,
@@ -17,6 +20,7 @@ import {
 } from "../../../helpers/webauthn";
 import axios from "axios";
 import { Dispatch } from "redux";
+import store from "../../store";
 
 export const getMakeCredChallenge = () => async (
   dispatch: Dispatch<WebAuthnActionTypes>
@@ -37,16 +41,19 @@ export const getMakeCredChallenge = () => async (
 
     const body = convertCredToRes(attestation);
 
-    const response = await sendWebAuthnResponse(body);
+    store.dispatch(sendWebAuthnResponse(body));
 
     dispatch({ type: WEBAUTHN_REGISTER_SUCCESS });
+    dispatch({ type: WEBAUTH_RESPONSE_SUCCESS });
   } catch (err) {
-    const errors = err.response.data.errors;
-    dispatch({ type: WEBAUTHN_REGISTER_FAIL, payload: errors });
+    dispatch({ type: WEBAUTHN_REGISTER_FAIL, payload: err });
   }
 };
 
-export const getGetAssertionChallenge = async () => {
+export const getGetAssertionChallenge = () => async (
+  dispatch: Dispatch<WebAuthnActionTypes>
+) => {
+  dispatch({ type: WEBAUTHN_LOGIN_REQUEST });
   try {
     const res = await axios.get("http://localhost:5000/webauthn/login", config);
     const payload = res.data;
@@ -58,15 +65,17 @@ export const getGetAssertionChallenge = async () => {
     })) as Credential;
 
     const body = convertCredToRes(assertion);
-
-    const response = await sendWebAuthnResponse(body);
-    console.log(response);
+    store.dispatch(sendWebAuthnResponse(body));
+    dispatch({ type: WEBAUTHN_LOGIN_SUCCESS });
   } catch (err) {
-    console.log(err);
+    dispatch({ type: WEBAUTHN_LOGIN_FAIL, payload: err });
   }
 };
 
-const sendWebAuthnResponse = async (body: WebAuthnResponse) => {
+export const sendWebAuthnResponse = (body: WebAuthnResponse) => async (
+  dispatch: Dispatch<WebAuthnActionTypes>
+) => {
+  dispatch({ type: WEBAUTH_RESPONSE_REQUEST });
   try {
     const res = await axios.post(
       "http://localhost:5000/webauthn/response",
@@ -75,6 +84,6 @@ const sendWebAuthnResponse = async (body: WebAuthnResponse) => {
     );
     return res;
   } catch (err) {
-    return;
+    dispatch({ type: WEBAUTH_RESPONSE_FAIL, payload: err });
   }
 };

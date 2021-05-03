@@ -1,8 +1,8 @@
 import React from "react";
 import { Route, Redirect, RouteProps, RouteComponentProps } from "react-router";
 import { connect } from "react-redux";
-import { LoginState } from "../redux/types/auth/login";
 import { AppState } from "../redux/reducers/rootReducer";
+import { AuthState } from "../redux/types/auth";
 
 type Props = MapStateToProps & RouteProps;
 
@@ -19,18 +19,22 @@ const PrivateRoute: React.FC<Props> = ({
     <Route
       {...rest}
       render={(props: RouteComponentProps<any>): React.ReactNode =>
-        !authenticated.loggedIn ? <Redirect to="/" /> : <Component {...props} />
+        !authenticated.isAuthenticated ? (
+          <Redirect to="/" />
+        ) : (
+          <Component {...props} />
+        )
       }
     />
   );
 };
 
 interface MapStateToProps {
-  authenticated: LoginState;
+  authenticated: AuthState;
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  authenticated: state.login,
+  authenticated: state.auth,
 });
 
 export default connect(mapStateToProps)(PrivateRoute);

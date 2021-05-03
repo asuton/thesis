@@ -1,6 +1,7 @@
 import base64url from "base64url";
 import cbor from "cbor";
 import { verifyPackedAttestation } from "./verifyPackedAttestation";
+import { verifyNoneAttestation } from "./verifyNoneAttestation";
 import {
   WebAuthnResponseAttestation,
   AttestationStruct,
@@ -29,6 +30,9 @@ export const verifyAuthenticatorAttestationResponse = (
 
   if (attestationStruct.fmt === "packed") {
     result = verifyPackedAttestation(webAuthnResponse);
+  }
+  if (attestationStruct.fmt === "none") {
+    result = verifyNoneAttestation(webAuthnResponse);
   }
 
   return result;

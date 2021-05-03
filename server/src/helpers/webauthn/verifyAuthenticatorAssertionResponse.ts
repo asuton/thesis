@@ -20,7 +20,7 @@ export let verifyAuthenticatorAssertionResponse = async (
 
   let response: any = { verified: false };
 
-  if (authr.fmt === "packed") {
+  if (authr.fmt === "packed" || authr.fmt === "none") {
     const authrDataStruct = parseGetAssertAuthData(authenticatorData);
 
     if (!authrDataStruct.flags.up)

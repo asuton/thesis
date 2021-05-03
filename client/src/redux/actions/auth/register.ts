@@ -2,8 +2,8 @@ import {
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
-  RegisterActionTypes,
-} from "../../types/auth/register";
+  AuthActionTypes,
+} from "../../types/auth/";
 import { IAuth } from "../../types/auth/user";
 import { config } from "../../types/config";
 import { Dispatch } from "redux";
@@ -24,7 +24,7 @@ interface RegisterFormState {
 }
 
 export const register = (form: RegisterFormState) => async (
-  dispatch: Dispatch<RegisterActionTypes>
+  dispatch: Dispatch<AuthActionTypes>
 ) => {
   dispatch({
     type: REGISTER_REQUEST,
