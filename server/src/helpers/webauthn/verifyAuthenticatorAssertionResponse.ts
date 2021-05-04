@@ -9,7 +9,7 @@ import base64url from "base64url";
 import { WebAuthnResponseAssertion } from "../../types/webauthn";
 import { Authenticator } from "../../models";
 
-export let verifyAuthenticatorAssertionResponse = async (
+export const verifyAuthenticatorAssertionResponse = async (
   webAuthnResponse: WebAuthnResponseAssertion,
   authenticators: Authenticator[]
 ) => {
@@ -20,7 +20,11 @@ export let verifyAuthenticatorAssertionResponse = async (
 
   let response: any = { verified: false };
 
-  if (authr.fmt === "packed" || authr.fmt === "none") {
+  if (
+    authr.fmt === "packed" ||
+    authr.fmt === "none" ||
+    authr.fmt === "fido-u2f"
+  ) {
     const authrDataStruct = parseGetAssertAuthData(authenticatorData);
 
     if (!authrDataStruct.flags.up)

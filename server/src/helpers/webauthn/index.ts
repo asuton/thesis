@@ -1,4 +1,8 @@
-import { AttestAuthData, AssertAuthData, Authr } from "../../types/webauthn";
+import {
+  AttestAuthData,
+  AssertAuthData,
+  GenerateServerGetAssertion,
+} from "../../types/webauthn";
 import { Authenticator, User } from "../../models";
 import crypto from "crypto";
 import jsrsasign from "jsrsasign";
@@ -189,4 +193,22 @@ export const verifySignature = async (
     .createVerify("SHA256")
     .update(data)
     .verify(publicKey, signature);
+};
+
+export const generateServerGetAssertion = (
+  authenticators: Authenticator[]
+): GenerateServerGetAssertion => {
+  let allowCredentials = [];
+  for (let authr of authenticators) {
+    allowCredentials.push({
+      type: "public-key",
+      id: authr.credId,
+      transports: ["usb", "nfc", "ble", "internal"],
+    });
+  }
+  return {
+    challenge: generateBase64BufferChallenge(),
+    allowCredentials: allowCredentials,
+    userVerification: "discouraged",
+  };
 };

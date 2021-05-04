@@ -2,6 +2,7 @@ import {
   AttestationStruct,
   Authr,
   WebAuthnResponseAttestation,
+  VerifyAttestation,
 } from "../../types/webauthn";
 import {
   parseGetAttestAuthData,
@@ -9,22 +10,17 @@ import {
   base64ToPem,
   getCertificateInfo,
   COSEECDHAtoPKCS,
+  verifySignature,
 } from ".";
 import { COSEKEYS, COSEALGHASH, COSECRV, COSEKTY, COSERSASCHEME } from "./COSE";
 import elliptic from "elliptic";
 import nodeRSA from "node-rsa";
-import crypto from "crypto";
 import base64url from "base64url";
 import cbor from "cbor";
 
-interface VerifyPackedAttestation {
-  signatureIsValid: boolean;
-  response: Authr | undefined;
-}
-
-export const verifyPackedAttestation = (
+export const verifyPackedAttestation = async (
   webAuthnResponse: WebAuthnResponseAttestation
-): VerifyPackedAttestation => {
+): Promise<VerifyAttestation> => {
   const attestationBuffer = base64url.toBuffer(
     webAuthnResponse.response.attestationObject
   );
@@ -75,10 +71,11 @@ export const verifyPackedAttestation = (
     if (certInfo.basicConstraintsCA)
       throw new Error("Batch certificate CA is not false!");
 
-    signatureIsValid = crypto
-      .createVerify("sha256")
-      .update(signatureBaseBuffer)
-      .verify(leafCert, signatureBuffer);
+    signatureIsValid = await verifySignature(
+      signatureBuffer,
+      signatureBaseBuffer,
+      leafCert
+    );
 
     const publicKey = COSEECDHAtoPKCS(authDataStruct.COSEPubKey);
     if (signatureIsValid) {
@@ -100,7 +97,7 @@ export const verifyPackedAttestation = (
     const hashAlg = COSEALGHASH[pubKeyCose.get(COSEKEYS.alg)];
 
     if (pubKeyCose.get(COSEKEYS.kty) === COSEKTY.EC2) {
-      const ansiKey = COSEECDHAtoPKCS(pubKeyCose);
+      const ansiKey = COSEECDHAtoPKCS(authDataStruct.COSEPubKey);
 
       const signatureBaseHash = hash(signatureBaseBuffer, hashAlg);
 

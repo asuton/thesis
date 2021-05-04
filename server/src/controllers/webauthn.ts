@@ -1,16 +1,18 @@
 import { Request, Response } from "express";
-import { findUser, insertAuthInfoQuery } from "../services/user";
 import {
   WebAuthnResponseAttestation,
   clientDataJSON,
   WebAuthnResponseAssertion,
   Authr,
 } from "../types/webauthn";
-import base64url from "base64url";
 import { verifyAuthenticatorAttestationResponse } from "../helpers/webauthn/verifyAuthenticatorAttestationResponse";
 import { verifyAuthenticatorAssertionResponse } from "../helpers/webauthn/verifyAuthenticatorAssertionResponse";
-import { generateServerGetAssertion } from "../helpers/webauthn/generateServerGetAssertion";
-import { publicKeyCredentialCreation } from "../helpers/webauthn";
+import {
+  publicKeyCredentialCreation,
+  generateServerGetAssertion,
+} from "../helpers/webauthn";
+import base64url from "base64url";
+import { findUser, insertAuthInfoQuery } from "../services/user";
 
 export const generateServerMakeCredRequest = async (
   req: Request,
@@ -87,7 +89,7 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
   } = { signatureIsValid: false, verified: false };
 
   if (webAuthnResponse.response.attestationObject !== undefined) {
-    result = verifyAuthenticatorAttestationResponse(webAuthnResponse);
+    result = await verifyAuthenticatorAttestationResponse(webAuthnResponse);
   } else if (webAuthnResponse.response.authenticatorData !== undefined) {
     const user = await findUser(req.session.user);
 

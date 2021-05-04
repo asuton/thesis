@@ -2,6 +2,7 @@ import base64url from "base64url";
 import cbor from "cbor";
 import { verifyPackedAttestation } from "./verifyPackedAttestation";
 import { verifyNoneAttestation } from "./verifyNoneAttestation";
+import { verifyU2FAttestation } from "./verifyU2FAttestation";
 import {
   WebAuthnResponseAttestation,
   AttestationStruct,
@@ -13,9 +14,9 @@ interface VerifyAuthenticatorAttestationResponse {
   response: Authr | undefined;
 }
 
-export const verifyAuthenticatorAttestationResponse = (
+export const verifyAuthenticatorAttestationResponse = async (
   webAuthnResponse: WebAuthnResponseAttestation
-): VerifyAuthenticatorAttestationResponse => {
+): Promise<VerifyAuthenticatorAttestationResponse> => {
   const attestationBuffer = base64url.toBuffer(
     webAuthnResponse.response.attestationObject
   );
@@ -29,10 +30,11 @@ export const verifyAuthenticatorAttestationResponse = (
   };
 
   if (attestationStruct.fmt === "packed") {
-    result = verifyPackedAttestation(webAuthnResponse);
-  }
-  if (attestationStruct.fmt === "none") {
+    result = await verifyPackedAttestation(webAuthnResponse);
+  } else if (attestationStruct.fmt === "none") {
     result = verifyNoneAttestation(webAuthnResponse);
+  } else if (attestationStruct.fmt === "fido-u2f") {
+    result = await verifyU2FAttestation(webAuthnResponse);
   }
 
   return result;

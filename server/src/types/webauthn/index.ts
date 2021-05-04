@@ -1,4 +1,4 @@
-type fmt = "packed" | "none";
+type fmt = "packed" | "none" | "fido-u2f";
 type typeWebAuthnResponse = "public-key";
 type typeClientDataJSON = "webauthn.create" | "webauthn.get";
 
@@ -79,4 +79,19 @@ export interface AssertAuthData {
   };
   counter: number;
   counterBuf: Buffer;
+}
+
+export interface VerifyAttestation {
+  signatureIsValid: boolean;
+  response: Authr | undefined;
+}
+
+export interface GenerateServerGetAssertion {
+  challenge: string;
+  allowCredentials: {
+    type: string;
+    id: string;
+    transports: string[];
+  }[];
+  userVerification: string;
 }

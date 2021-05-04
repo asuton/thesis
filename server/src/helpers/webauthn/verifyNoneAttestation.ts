@@ -1,8 +1,9 @@
-import { parseGetAttestAuthData, COSEECDHAtoPKCS } from ".";
+import { COSEECDHAtoPKCS, parseGetAttestAuthData } from ".";
 import {
   AttestationStruct,
   Authr,
   WebAuthnResponseAttestation,
+  VerifyAttestation,
 } from "../../types/webauthn";
 import { COSEKEYS, COSEKTY } from "./COSE";
 import base64url from "base64url";
@@ -10,14 +11,9 @@ import cbor from "cbor";
 import nodeRSA from "node-rsa";
 import elliptic from "elliptic";
 
-interface VerifyNoneAttestation {
-  signatureIsValid: boolean;
-  response: Authr | undefined;
-}
-
 export const verifyNoneAttestation = (
   webAuthnResponse: WebAuthnResponseAttestation
-): VerifyNoneAttestation => {
+): VerifyAttestation => {
   let signatureIsValid = false;
   let response: Authr | undefined;
 
@@ -30,13 +26,11 @@ export const verifyNoneAttestation = (
   )[0] as AttestationStruct;
 
   const authDataStruct = parseGetAttestAuthData(attestationStruct.authData);
-  console.log(authDataStruct);
+
   const pubKeyCose = cbor.decodeAllSync(authDataStruct.COSEPubKey as Buffer)[0];
 
   if (pubKeyCose.get(COSEKEYS.kty) === COSEKTY.EC2) {
-    const x = pubKeyCose.get(COSEKEYS.x);
-    const y = pubKeyCose.get(COSEKEYS.y);
-    const ansiKey = Buffer.concat([Buffer.from([0x04]), x, y]);
+    const ansiKey = COSEECDHAtoPKCS(authDataStruct.COSEPubKey);
     signatureIsValid = true;
 
     response = {
