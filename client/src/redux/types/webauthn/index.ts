@@ -7,7 +7,6 @@ export const WEBAUTHN_LOGIN_SUCCESS = "WEBAUTHN_LOGIN_SUCCESS";
 export const WEBAUTHN_LOGIN_FAIL = "WEBAUTHN_LOGIN_FAIL";
 
 export const WEBAUTH_RESPONSE_REQUEST = "WEBAUTH_RESPONSE_REQUEST";
-export const WEBAUTH_RESPONSE_SUCCESS = "WEBAUTH_RESPONSE_SUCCESS";
 export const WEBAUTH_RESPONSE_FAIL = "WEBAUTH_RESPONSE_FAIL";
 
 export interface WebAuthnRegisterRequest {
@@ -40,10 +39,6 @@ export interface WebauthnResponseRequest {
   type: typeof WEBAUTH_RESPONSE_REQUEST;
 }
 
-export interface WebauthnResponseSuccess {
-  type: typeof WEBAUTH_RESPONSE_SUCCESS;
-}
-
 export interface WebauthnResponseFail {
   type: typeof WEBAUTH_RESPONSE_FAIL;
   payload: any;
@@ -57,7 +52,6 @@ export type WebAuthnActionTypes =
   | WebAuthnLoginSuccess
   | WebAuthnLoginFail
   | WebauthnResponseRequest
-  | WebauthnResponseSuccess
   | WebauthnResponseFail;
 
 export type WebAuthnState = {

@@ -2,7 +2,7 @@ import { createQueryBuilder } from "typeorm";
 import Doctor from "../models/Doctor";
 
 export const getDoctorsQuery = async (): Promise<Doctor[] | undefined> => {
-  const doctor = await createQueryBuilder("Doctor")
+  const doctor = await createQueryBuilder<Doctor>("Doctor")
     .select([
       "doctor.id",
       "doctor.name",
@@ -21,7 +21,7 @@ export const getDoctorsQuery = async (): Promise<Doctor[] | undefined> => {
 export const getDoctorByIdQuery = async (
   id: string
 ): Promise<Doctor | undefined> => {
-  const doctor = await createQueryBuilder("Doctor")
+  const doctor = await createQueryBuilder<Doctor>("Doctor")
     .select([
       "doctor.id",
       "doctor.name",
@@ -31,7 +31,6 @@ export const getDoctorByIdQuery = async (
       "doctor.OIB",
       "doctor.phone",
       "doctor.email",
-      "doctor.webAuthnRegistered",
     ])
     .from(Doctor, "doctor")
     .where("doctor.id = :id", { id: id })
@@ -42,7 +41,7 @@ export const getDoctorByIdQuery = async (
 export const getDoctorByEmailQuery = async (
   email: string
 ): Promise<Doctor | undefined> => {
-  const doctor = await createQueryBuilder("Doctor")
+  const doctor = await createQueryBuilder<Doctor>("Doctor")
     .select([
       "doctor.id",
       "doctor.name",
@@ -69,5 +68,18 @@ export const insertDoctorQuery = (form: Doctor): Doctor => {
   doctor.phone = form.phone;
   doctor.email = form.email;
   doctor.password = form.password;
+  return doctor;
+};
+
+export const updatePatientQuery = async (
+  id: string,
+  form: Doctor
+): Promise<Doctor | undefined> => {
+  let doctor = await Doctor.findOne(id);
+  if (doctor) {
+    doctor.qualification = form.qualification;
+    doctor.phone = form.phone;
+    return doctor;
+  }
   return doctor;
 };

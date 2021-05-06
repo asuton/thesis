@@ -7,12 +7,12 @@ import { defineRulesFor } from "../services/abilities";
 import {
   getPatientsQuery,
   getPatientByIdQuery,
-  getPatientByEmailQuery,
   insertPatientQuery,
+  updatePatientQuery,
 } from "../services/patient";
-import { getDoctorByEmailQuery } from "../services/doctor";
-import { hashPassword } from "../services/hash";
-import { signToken } from "../services/token";
+import { findUserByEmail } from "../services/user";
+import { hashPassword } from "../helpers/hash";
+import { signToken } from "../helpers/token";
 
 export const getPatients = async (
   req: Request,
@@ -37,7 +37,7 @@ export const getPatient = async (
   try {
     const patient = await getPatientByIdQuery(req.params.id);
     if (!patient) {
-      return res.status(400).json({ msg: "Patient not found" });
+      return res.status(400).send("Patient not found");
     }
     ForbiddenError.from(req.ability).throwUnlessCan(
       "read",
@@ -54,32 +54,47 @@ export const postPatient = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const patient = await getPatientByEmailQuery(req.body.email);
-    const doctor = await getDoctorByEmailQuery(req.body.email);
-
-    if (patient || doctor) {
+    if (
+      !req.body ||
+      !req.body.name ||
+      !req.body.surname ||
+      !req.body.OIB ||
+      !req.body.phone ||
+      !req.body.email ||
+      !req.body.password ||
+      !req.body.dateOfBirth ||
+      !req.body.address
+    ) {
       return res
-        .status(400)
-        .json({ errors: [{ msg: "Email is already in use" }] });
+        .status(500)
+        .send(
+          "Invalid request body, missing one or more of fields: name, surname, OIB, phone, email, password, dateOfBirth, address"
+        );
     }
 
-    let patientNew = insertPatientQuery(req.body);
+    const user = await findUserByEmail(req.body.email);
 
-    const errors = await validate(patientNew);
+    if (user) {
+      return res.status(400).send("Email is already in use");
+    }
+
+    let patient = insertPatientQuery(req.body);
+
+    const errors = await validate(patient);
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
 
-    patientNew.password = await hashPassword(patientNew.password);
+    patient.password = await hashPassword(patient.password);
 
-    await Patient.save(patientNew);
+    await Patient.save(patient);
 
-    const rules = defineRulesFor(patientNew);
+    const rules = defineRulesFor(patient);
 
-    const token = signToken(patientNew.id, rules);
+    const token = signToken(patient.id, rules);
 
     return res.status(201).json({
-      id: patientNew.id,
+      id: patient.id,
       rules: packRules(rules),
       token,
     });
@@ -93,20 +108,28 @@ export const putPatient = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const patient = await getPatientByIdQuery(req.params.id);
+    if (!req.body || !req.body.phone || !req.body.address) {
+      return res
+        .status(500)
+        .send(
+          "Invalid request body, missing one or more of fields: phone, address"
+        );
+    }
+    const patient = await updatePatientQuery(req.params.id, req.body);
 
     if (!patient) {
-      return res
-        .status(400)
-        .json({ errors: [{ msg: "Patient doesn't exist" }] });
+      return res.status(400).send("Patient update error");
     }
-
-    Object.assign(patient, req.body);
 
     const errors = await validate(patient);
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
+
+    ForbiddenError.from(req.ability).throwUnlessCan(
+      "update",
+      subject("Patient", patient)
+    );
 
     const response = await Patient.save(patient);
     return res.json(response);

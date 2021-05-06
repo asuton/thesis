@@ -8,7 +8,6 @@ import {
   WEBAUTHN_LOGIN_SUCCESS,
   WEBAUTHN_LOGIN_FAIL,
   WEBAUTH_RESPONSE_REQUEST,
-  WEBAUTH_RESPONSE_SUCCESS,
   WEBAUTH_RESPONSE_FAIL,
 } from "../../types/webauthn";
 import {
@@ -44,7 +43,6 @@ export const getMakeCredChallenge = () => async (
     store.dispatch(sendWebAuthnResponse(body));
 
     dispatch({ type: WEBAUTHN_REGISTER_SUCCESS });
-    dispatch({ type: WEBAUTH_RESPONSE_SUCCESS });
   } catch (err) {
     dispatch({ type: WEBAUTHN_REGISTER_FAIL, payload: err });
   }

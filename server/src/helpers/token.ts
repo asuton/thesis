@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { RawRuleOf } from "@casl/ability";
 import { packRules } from "@casl/ability/extra";
-import { AppAbility } from "./abilities";
+import { AppAbility } from "../services/abilities";
 import { JWT_SECRET } from "../utils/constants";
 
 export const signToken = (

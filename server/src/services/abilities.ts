@@ -13,7 +13,7 @@ interface User {
 }
 
 type Actions = "create" | "read" | "update" | "delete";
-type Subjects = "Patient" | "Doctor" | "MedicalRecord";
+type Subjects = "Patient" | "Doctor" | "MedicalRecord" | "DiagnosticTesting";
 
 export type AppAbilities = [
   Actions,
@@ -34,7 +34,7 @@ export const defineRulesFor = (user: User): RawRuleOf<AppAbility>[] => {
   if (user.authorization === Authorization.Patient) {
     can("read", "Patient", { id: user.id });
     can("update", "Patient", { id: user.id });
-    can("read", "MedicalRecord", { patientId: user.id });
+    can("read", ["MedicalRecord", "DiagnosticTesting"], { patientId: user.id });
   }
 
   if (user.authorization === Authorization.Doctor) {
@@ -42,8 +42,10 @@ export const defineRulesFor = (user: User): RawRuleOf<AppAbility>[] => {
     can("update", "Patient");
 
     can("update", "Doctor", { id: user.id });
-    can(["read", "create"], "MedicalRecord");
-    can("update", "MedicalRecord", { doctorId: user.id });
+    can(["read", "create"], ["MedicalRecord", "DiagnosticTesting"]);
+    can("update", ["MedicalRecord", "DiagnosticTesting"], {
+      doctorId: user.id,
+    });
   }
 
   return rules;

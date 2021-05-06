@@ -12,13 +12,16 @@ import {
   generateServerGetAssertion,
 } from "../helpers/webauthn";
 import base64url from "base64url";
-import { findUser, insertAuthInfoQuery } from "../services/user";
+import { findUserById, insertAuthInfoQuery } from "../services/user";
 
 export const generateServerMakeCredRequest = async (
   req: Request,
   res: Response
 ) => {
-  const user = await findUser(req.id);
+  const user = await findUserById(req.id);
+  if (!user) {
+    return res.status(500).send("Could not find user");
+  }
 
   const publicKeyCredentialCreationOptions = publicKeyCredentialCreation(user);
 
@@ -29,10 +32,10 @@ export const generateServerMakeCredRequest = async (
 };
 
 export const webAuthnLogin = async (req: Request, res: Response) => {
-  const user = await findUser(req.id);
+  const user = await findUserById(req.id);
 
-  if (!user.webAuthnRegistered)
-    return res.status(401).send({ msg: "Not registered" });
+  if (!user || !user.webAuthnRegistered)
+    return res.status(401).send("Not registered");
 
   const getAssertion = generateServerGetAssertion(await user.authenticator);
 
@@ -51,10 +54,11 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
     !req.body.type ||
     req.body.type !== "public-key"
   ) {
-    return res.status(400).send({
-      msg:
-        "Response missing one or more of id/rawId/response/type fields or type is not public key",
-    });
+    return res
+      .status(400)
+      .send(
+        "Response missing one or more of id/rawId/response/type fields or type is not public key"
+      );
   }
 
   const webAuthnResponse = req.body as WebAuthnResponseAttestation &
@@ -65,21 +69,15 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
   ) as clientDataJSON;
 
   if (req.session && clientData.challenge !== req.session.challenge) {
-    return res.status(400).send({
-      msg: "Challenges don't match!",
-    });
+    return res.status(400).send("Challenges don't match!");
   }
 
   if (clientData.origin !== "http://localhost:3000") {
-    return res.status(400).send({
-      msg: "Origins don't match!",
-    });
+    return res.status(400).send("Origins don't match!");
   }
 
   if (!req.session.user && req.session.user !== req.id) {
-    return res.status(400).send({
-      msg: "Invalid session",
-    });
+    return res.status(400).send("Invalid session");
   }
 
   let result: {
@@ -91,28 +89,26 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
   if (webAuthnResponse.response.attestationObject !== undefined) {
     result = await verifyAuthenticatorAttestationResponse(webAuthnResponse);
   } else if (webAuthnResponse.response.authenticatorData !== undefined) {
-    const user = await findUser(req.session.user);
-
+    const user = await findUserById(req.session.user);
+    if (!user) {
+      return res.status(500).send("Could not find user");
+    }
     result = await verifyAuthenticatorAssertionResponse(
       webAuthnResponse,
       await user.authenticator
     );
   } else {
-    res.status(400).send({
-      msg: "Can not determine type of response!",
-    });
+    res.status(400).send("Can not determine type of response!");
   }
 
   if (result.signatureIsValid && result.response) {
     req.session.loggedIn = true;
     await insertAuthInfoQuery(result.response, req.id);
-    res.status(200).send({ msg: "Registered" });
+    res.status(200).send("Registered");
   } else if (result.verified) {
     req.session.loggedIn = true;
-    return res.status(200).send({ msg: "Logged in" });
+    return res.status(200).send("Logged in");
   } else {
-    return res.status(500).send({
-      msg: "Can not authenticate signature!",
-    });
+    return res.status(500).send("Can not authenticate signature!");
   }
 };

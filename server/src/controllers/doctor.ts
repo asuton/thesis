@@ -5,11 +5,11 @@ import { ForbiddenError, subject } from "@casl/ability";
 import {
   getDoctorsQuery,
   getDoctorByIdQuery,
-  getDoctorByEmailQuery,
   insertDoctorQuery,
+  updatePatientQuery,
 } from "../services/doctor";
-import { getPatientByEmailQuery } from "../services/patient";
-import { hashPassword } from "../services/hash";
+import { hashPassword } from "../helpers/hash";
+import { findUserByEmail } from "../services/user";
 
 export const getDoctors = async (_req: Request, res: Response) => {
   try {
@@ -37,25 +37,40 @@ export const getDoctor = async (req: Request, res: Response) => {
 
 export const postDoctor = async (req: Request, res: Response) => {
   try {
-    const doctor = await getDoctorByEmailQuery(req.body.email);
-    const patient = await getPatientByEmailQuery(req.body.email);
-
-    if (doctor || patient) {
+    if (
+      !req.body ||
+      !req.body.name ||
+      !req.body.surname ||
+      !req.body.email ||
+      !req.body.password ||
+      !req.body.qualification ||
+      !req.body.license ||
+      !req.body.OIB ||
+      !req.body.phone
+    ) {
       return res
         .status(400)
-        .json({ errors: [{ msg: "Email is already in use" }] });
+        .send(
+          "Invalid request body, missing one or more of fields: name, surname, email, password, qualification, license, OIB, phone"
+        );
     }
 
-    let doctorNew = insertDoctorQuery(req.body);
+    const user = await findUserByEmail(req.body.email);
 
-    const errors = await validate(doctorNew);
+    if (user) {
+      return res.status(400).send("Email is already in use");
+    }
+
+    let doctor = insertDoctorQuery(req.body);
+
+    const errors = await validate(doctor);
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
 
-    doctorNew.password = await hashPassword(doctorNew.password);
+    doctor.password = await hashPassword(doctor.password);
 
-    const response = await Doctor.save(doctorNew);
+    const response = await Doctor.save(doctor);
 
     return res.json(response);
   } catch (err) {
@@ -65,15 +80,18 @@ export const postDoctor = async (req: Request, res: Response) => {
 
 export const putDoctor = async (req: Request, res: Response) => {
   try {
-    const doctor = await Doctor.findOne({ id: req.params.id });
+    if (!req.body || !req.body.phone || !req.body.qualification) {
+      return res
+        .status(500)
+        .send(
+          "Invalid request body, missing one or more of fields: phone, qualification"
+        );
+    }
+    const doctor = await updatePatientQuery(req.params.id, req.body);
 
     if (!doctor) {
-      return res
-        .status(400)
-        .json({ errors: [{ msg: "Doctor doesn't exist" }] });
+      return res.status(400).send("Doctor doesn't exist");
     }
-
-    Object.assign(doctor, req.body);
 
     const errors = await validate(doctor);
     if (errors.length > 0) {

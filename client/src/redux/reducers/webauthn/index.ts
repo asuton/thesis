@@ -6,7 +6,6 @@ import {
   WEBAUTHN_LOGIN_SUCCESS,
   WEBAUTHN_LOGIN_FAIL,
   WEBAUTH_RESPONSE_REQUEST,
-  WEBAUTH_RESPONSE_SUCCESS,
   WEBAUTH_RESPONSE_FAIL,
   WebAuthnState,
   WebAuthnActionTypes,
@@ -29,7 +28,6 @@ const webAuthnReducer = (
       };
     case WEBAUTHN_REGISTER_SUCCESS:
     case WEBAUTHN_LOGIN_SUCCESS:
-    case WEBAUTH_RESPONSE_SUCCESS:
       return {
         isAuthenticated: true,
       };

@@ -16,7 +16,7 @@ import Patient from "./Patient";
 import Doctor from "./Doctor";
 import { encrypt, decrypt } from "../services/encryption";
 
-@Entity({ name: "medicalRecords" })
+@Entity({ name: "medical_record" })
 export default class MedicalRecord extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;

@@ -1,13 +1,6 @@
-import {
-  PrimaryGeneratedColumn,
-  Column,
-  BaseEntity,
-  OneToMany,
-  JoinColumn,
-} from "typeorm";
+import { PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 import { IsEmail, Length } from "class-validator";
 import { Authorization } from "../utils/constants";
-import Authenticator from "./Authenticator";
 
 export default abstract class User extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
@@ -42,6 +35,7 @@ export default abstract class User extends BaseEntity {
     type: "enum",
     enum: Authorization,
     default: Authorization.Patient,
+    readonly: true,
   })
   authorization!: Authorization;
 

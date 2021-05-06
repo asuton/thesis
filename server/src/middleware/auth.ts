@@ -19,9 +19,7 @@ export const authJWT = async (
     const token = req.header("x-auth-token");
 
     if (!token) {
-      return res
-        .status(401)
-        .send({ msg: "Missing authJWT token. Not authorized." });
+      return res.status(401).send("Missing authJWT token. Not authorized.");
     }
 
     const response = jwt.verify(token, JWT_SECRET) as IAuthToken;
@@ -36,6 +34,6 @@ export const authJWT = async (
 
     next();
   } catch (err) {
-    return res.status(500).send({ msg: "Not authorized" });
+    return res.status(500).send("Not authorized");
   }
 };

@@ -1,10 +1,25 @@
 import { Request, Response } from "express";
 import { validate } from "class-validator";
 import { DiagnosticTesting } from "../models";
+import { ForbiddenError, subject } from "@casl/ability";
+import {
+  getPatientsDiagnosticTestings,
+  getPatientsDiagnosticTesting,
+  insertDiagnosticTesting,
+} from "../services/diagnosticTesting";
 
-export const getDiagnosticTests = async (_req: Request, res: Response) => {
+export const getDiagnosticTests = async (req: Request, res: Response) => {
   try {
-    const diagnosticTests = await DiagnosticTesting.find();
+    const diagnosticTests = await getPatientsDiagnosticTestings(
+      req.params.patId
+    );
+
+    if (diagnosticTests) {
+      ForbiddenError.from(req.ability).throwUnlessCan(
+        "read",
+        subject("DiagnosticTesting", diagnosticTests)
+      );
+    }
 
     return res.json(diagnosticTests);
   } catch (err) {
@@ -14,13 +29,19 @@ export const getDiagnosticTests = async (_req: Request, res: Response) => {
 
 export const getDiagnosticTest = async (req: Request, res: Response) => {
   try {
-    const diagnosticTest = await DiagnosticTesting.findOne({
-      id: req.params.testId,
-    });
+    const diagnosticTest = await getPatientsDiagnosticTesting(
+      req.params.testId,
+      req.params.patId
+    );
 
     if (!diagnosticTest) {
-      return res.status(400).json({ msg: "Test not found" });
+      return res.status(400).send("Test not found");
     }
+
+    ForbiddenError.from(req.ability).throwUnlessCan(
+      "read",
+      subject("DiagnosticTesting", diagnosticTest)
+    );
 
     return res.json(diagnosticTest);
   } catch (err) {
@@ -30,12 +51,24 @@ export const getDiagnosticTest = async (req: Request, res: Response) => {
 
 export const postDiagnosticTest = async (req: Request, res: Response) => {
   try {
-    let diagnosticTest = new DiagnosticTesting();
+    if (!req.body || !req.body.test || !req.body.result) {
+      return res
+        .status(400)
+        .send(
+          "Invalid request body, missing one or more of fields: test, result"
+        );
+    }
 
-    Object.assign(diagnosticTest, req.body);
+    let diagnosticTest = insertDiagnosticTesting(
+      req.body,
+      req.id,
+      req.params.patId
+    );
 
-    diagnosticTest.doctorId = req.id;
-    diagnosticTest.patientId = req.params.patId;
+    ForbiddenError.from(req.ability).throwUnlessCan(
+      "create",
+      subject("DiagnosticTesting", diagnosticTest)
+    );
 
     const errors = await validate(diagnosticTest);
     if (errors.length > 0) {

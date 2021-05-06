@@ -2,7 +2,7 @@ import { createQueryBuilder } from "typeorm";
 import Patient from "../models/Patient";
 
 export const getPatientsQuery = async (): Promise<Patient[] | undefined> => {
-  const patient = await createQueryBuilder("Patient")
+  const patient = await createQueryBuilder<Patient>("Patient")
     .select([
       "patient.id",
       "patient.name",
@@ -21,7 +21,7 @@ export const getPatientsQuery = async (): Promise<Patient[] | undefined> => {
 export const getPatientByIdQuery = async (
   id: string
 ): Promise<Patient | undefined> => {
-  const patient = await createQueryBuilder("Patient")
+  const patient = await createQueryBuilder<Patient>("Patient")
     .select([
       "patient.id",
       "patient.name",
@@ -41,7 +41,7 @@ export const getPatientByIdQuery = async (
 export const getPatientByEmailQuery = async (
   email: string
 ): Promise<Patient | undefined> => {
-  const patient = await createQueryBuilder("Patient")
+  const patient = await createQueryBuilder<Patient>("Patient")
     .select([
       "patient.id",
       "patient.name",
@@ -69,4 +69,16 @@ export const insertPatientQuery = (form: Patient): Patient => {
   patient.email = form.email;
   patient.password = form.password;
   return patient;
+};
+
+export const updatePatientQuery = async (
+  id: string,
+  form: Patient
+): Promise<Patient | undefined> => {
+  let patient = await Patient.findOne(id);
+  if (patient) {
+    patient.address = form.address;
+    patient.phone = form.address;
+    return patient;
+  } else return patient;
 };

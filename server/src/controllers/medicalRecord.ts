@@ -2,18 +2,22 @@ import { Request, Response } from "express";
 import { validate } from "class-validator";
 import { MedicalRecord } from "../models";
 import { ForbiddenError, subject } from "@casl/ability";
+import {
+  getPatientsMedicalRecords,
+  getPatientsMedicalRecord,
+  insertMedicalRecord,
+} from "../services/medicalRecord";
 
 export const getMedicalRecords = async (req: Request, res: Response) => {
   try {
-    const medicalRecords = await MedicalRecord.find({
-      patientId: req.params.patId,
-    });
-    console.log(medicalRecords);
+    const medicalRecords = await getPatientsMedicalRecords(req.params.patId);
 
-    ForbiddenError.from(req.ability).throwUnlessCan(
-      "read",
-      subject("MedicalRecord", medicalRecords)
-    );
+    if (medicalRecords) {
+      ForbiddenError.from(req.ability).throwUnlessCan(
+        "read",
+        subject("MedicalRecord", medicalRecords)
+      );
+    }
 
     return res.json(medicalRecords);
   } catch (err) {
@@ -23,10 +27,10 @@ export const getMedicalRecords = async (req: Request, res: Response) => {
 
 export const getMedicalRecord = async (req: Request, res: Response) => {
   try {
-    const medicalRecord = await MedicalRecord.findOne({
-      id: req.params.medId,
-      patientId: req.params.patId,
-    });
+    const medicalRecord = await getPatientsMedicalRecord(
+      req.params.medId,
+      req.params.patId
+    );
 
     if (!medicalRecord) {
       return res.status(400).json({ msg: "Record not found" });
@@ -45,17 +49,23 @@ export const getMedicalRecord = async (req: Request, res: Response) => {
 
 export const postMedicalRecord = async (req: Request, res: Response) => {
   try {
-    let medicalRecord = new MedicalRecord();
+    if (
+      !req.body ||
+      !req.body.title ||
+      !req.body.medicalHistory ||
+      !req.body.physicalExamination ||
+      !req.body.diagnosis ||
+      !req.body.treatment ||
+      !req.body.recommendation
+    ) {
+      return res
+        .status(400)
+        .send(
+          "Invalid request body, missing one or more of fields: title, medical history, physical examination, diagnosis, treatment, recommendation"
+        );
+    }
 
-    medicalRecord.patientId = req.params.patId;
-    medicalRecord.doctorId = req.id;
-    medicalRecord.title = req.body.title;
-    medicalRecord.medicalHistory = req.body.medicalHistory;
-    medicalRecord.physicalExamination = req.body.physicalExamination;
-    medicalRecord.diagnosis = req.body.diagnosis;
-    medicalRecord.treatment = req.body.treatment;
-    medicalRecord.recommendation = req.body.recommendation;
-    medicalRecord.additionalNote = req.body.recommendation;
+    let medicalRecord = insertMedicalRecord(req.body, req.id, req.params.patId);
 
     ForbiddenError.from(req.ability).throwUnlessCan(
       "create",
