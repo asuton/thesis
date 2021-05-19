@@ -4,7 +4,7 @@ import {
   IPatient,
 } from "../redux/types/patients/patients";
 import { getPatients } from "../redux/actions/patients/patients";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AppState } from "../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
@@ -12,27 +12,53 @@ import { bindActionCreators } from "redux";
 import { Can } from "./Can";
 import { subject } from "@casl/ability";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import { Container, Divider } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import moment from "moment";
+import Grid from "@material-ui/core/Grid";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      marginTop: theme.spacing(12),
-    },
     root: {
-      width: "100%",
       maxWidth: 1200,
-      backgroundColor: theme.palette.background.paper,
+      margin: "auto",
+      marginBottom: "50px",
     },
-    item: {
+    list: {
       display: "flex",
-      justifyContent: "space-between",
+      overflowX: "hidden",
+      marginTop: "25px",
+      "@media (max-width: 400px)": {
+        overflowX: "scroll",
+      },
     },
-    text: {
+    mobile: {
+      "@media (max-width: 450px)": {
+        display: "none",
+      },
+    },
+    search: {
+      marginTop: "100px",
+    },
+    table: {
+      minWidth: 320,
+    },
+    tableCell: {
+      textAlign: "start",
+    },
+    tableRow: {
       width: "100%",
+      "&:hover": {
+        backgroundColor: "aliceblue",
+        cursor: "pointer",
+      },
     },
   })
 );
@@ -40,12 +66,38 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = MapStateToProps & MapDispatchToProps;
 
 export const Patients: React.FC<Props> = (props: Props) => {
-  const classes = useStyles();
   useEffect(() => {
     props.getPatients();
   }, [props.getPatients]);
 
-  if (props.patientsState.loading || !props.patientsState.patients) {
+  const [Search, setSearch] = useState({
+    search: "",
+  });
+
+  const { search } = Search;
+  let filteredPatients: IPatient[] = [];
+  if (props.patientsState.patients) {
+    filteredPatients = props.patientsState.patients.filter(
+      (patients) =>
+        (patients.name + " " + patients.surname)
+          .toLowerCase()
+          .indexOf(search.toLowerCase()) !== -1
+    );
+  }
+
+  const updateSearch = (e: any) => {
+    setSearch({
+      ...Search,
+      search: e.target.value.substr(0, 30),
+    });
+  };
+
+  const classes = useStyles();
+
+  if (
+    props.patientsState.loading ||
+    props.patientsState.patients === undefined
+  ) {
     return (
       <>
         <div>"Restricted"</div>
@@ -54,43 +106,79 @@ export const Patients: React.FC<Props> = (props: Props) => {
   }
   return (
     <Can I="read" this={subject("Patient", { id: true })}>
-      <Container className={classes.container}>
-        <List component="nav" className={classes.root}>
-          <ListItem className={classes.item}>
-            <div className={classes.text}>
-              <ListItemText inset primary="Ime" />
-            </div>
-            <div className={classes.text}>
-              <ListItemText inset primary="Prezime" />
-            </div>
-            <div className={classes.text}>
-              <ListItemText inset primary="Datum rođenja" />
-            </div>
-            <div className={classes.text}>
-              <ListItemText inset primary="OIB" />
-            </div>
-          </ListItem>
-        </List>
-        <Divider></Divider>
-        <List component="nav" className={classes.root}>
-          {props.patientsState.patients.map((patient: IPatient) => (
-            <ListItem button key={patient.id} className={classes.item}>
-              <div className={classes.text}>
-                <ListItemText inset primary={patient.name} />
-              </div>
-              <div className={classes.text}>
-                <ListItemText inset primary={patient.surname} />
-              </div>
-              <div className={classes.text}>
-                <ListItemText inset primary={patient.dateOfBirth} />
-              </div>
-              <div className={classes.text}>
-                <ListItemText inset primary={patient.OIB} />
-              </div>
-            </ListItem>
-          ))}
-        </List>
-      </Container>
+      <div className={classes.root}>
+        <TextField
+          placeholder="Search patients"
+          fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          className={classes.search}
+          variant="outlined"
+          value={search}
+          onChange={(e) => updateSearch(e)}
+        />
+        <Paper className={classes.list}>
+          <Grid item xs={12}>
+            <Table className={classes.table}>
+              <colgroup>
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "25%" }} />
+              </colgroup>
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.tableCell}>
+                    <Typography variant="h6">Name</Typography>
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    <Typography variant="h6">Surname</Typography>
+                  </TableCell>
+                  <TableCell className={(classes.tableCell, classes.mobile)}>
+                    <Typography variant="h6">DOB</Typography>
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    <Typography variant="h6">OIB</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredPatients.map((patient) => {
+                  return (
+                    <TableRow
+                      key={patient.id}
+                      className={classes.tableRow}
+                      component={Link}
+                      to={`/patients/${patient.id}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        className={classes.tableCell}
+                      >
+                        {patient.name}
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {patient.surname}
+                      </TableCell>
+                      <TableCell
+                        className={(classes.tableCell, classes.mobile)}
+                      >
+                        {moment(patient.dateOfBirth).format("DD/MM/YYYY")}
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {patient.OIB}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Grid>
+        </Paper>
+      </div>
     </Can>
   );
 };

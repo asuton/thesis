@@ -23,36 +23,34 @@ interface RegisterFormState {
   phone: string;
 }
 
-export const register = (form: RegisterFormState) => async (
-  dispatch: Dispatch<AuthActionTypes>
-) => {
-  dispatch({
-    type: REGISTER_REQUEST,
-  });
-
-  const body = JSON.stringify(form);
-
-  try {
-    const res = await axios.post(
-      "http://localhost:5000/patients",
-      body,
-      config
-    );
-    const payload: IAuth = res.data;
-
+export const register =
+  (form: RegisterFormState) => async (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({
-      type: REGISTER_SUCCESS,
-      payload: payload,
+      type: REGISTER_REQUEST,
     });
-    setAuthToken(payload.token);
-    store.dispatch(loadUser());
-    window.location.reload();
-  } catch (err) {
-    const errors = err.response.data.errors;
 
-    dispatch({
-      type: REGISTER_FAIL,
-      payload: errors,
-    });
-  }
-};
+    const body = JSON.stringify(form);
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/patients",
+        body,
+        config
+      );
+      const payload: IAuth = res.data;
+      dispatch({
+        type: REGISTER_SUCCESS,
+        payload: payload,
+      });
+      setAuthToken(payload.token);
+      store.dispatch(loadUser());
+      window.location.reload();
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      dispatch({
+        type: REGISTER_FAIL,
+        payload: errors,
+      });
+    }
+  };

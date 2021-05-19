@@ -47,7 +47,7 @@ export default class DiagnosticTesting extends BaseEntity {
   encryptFields() {
     this.createdAt = new Date();
 
-    let AAD = this.id + this.patientId + this.doctorId + String(this.createdAt);
+    let AAD = this.patientId + this.doctorId + String(this.createdAt);
 
     this.test = encrypt(this.test, AAD);
     this.result = encrypt(this.result, AAD);

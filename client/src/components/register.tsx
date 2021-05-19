@@ -15,7 +15,13 @@ import { AuthActionTypes, AuthState } from "../redux/types/auth";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
-    margin: theme.spacing(7, 0, 4),
+    margin: theme.spacing(3, 0, 1),
+  },
+  container: {
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   form: {
     width: "100%",
@@ -82,7 +88,7 @@ const Register: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Container component="main" maxWidth="sm" className={classes.container}>
       <Typography component="h1" variant="h5" className={classes.title}>
         Registracija
       </Typography>

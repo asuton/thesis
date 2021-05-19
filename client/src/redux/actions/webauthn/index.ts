@@ -7,8 +7,11 @@ import {
   WEBAUTHN_LOGIN_REQUEST,
   WEBAUTHN_LOGIN_SUCCESS,
   WEBAUTHN_LOGIN_FAIL,
-  WEBAUTH_RESPONSE_REQUEST,
-  WEBAUTH_RESPONSE_FAIL,
+  WEBAUTHN_RESPONSE_REQUEST,
+  WEBAUTHN_RESPONSE_FAIL,
+  WEBAUTHN_SESSION_REQUEST,
+  WEBAUTHN_SESSION_SUCCESS,
+  WEBAUTHN_SESSION_FAIL,
 } from "../../types/webauthn";
 import {
   preformatMakeCredReq,
@@ -21,67 +24,82 @@ import axios from "axios";
 import { Dispatch } from "redux";
 import store from "../../store";
 
-export const getMakeCredChallenge = () => async (
-  dispatch: Dispatch<WebAuthnActionTypes>
-) => {
-  dispatch({ type: WEBAUTHN_REGISTER_REQUEST });
-  try {
-    const res = await axios.get(
-      "http://localhost:5000/webauthn/register",
-      config
-    );
+export const getMakeCredChallenge =
+  () => async (dispatch: Dispatch<WebAuthnActionTypes>) => {
+    dispatch({ type: WEBAUTHN_REGISTER_REQUEST });
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/webauthn/register",
+        config
+      );
 
-    const payload = res.data;
-    const publicKey = preformatMakeCredReq(payload);
+      const payload = res.data;
+      const publicKey = preformatMakeCredReq(payload);
 
-    const attestation = (await navigator.credentials.create({
-      publicKey,
-    })) as Credential;
+      const attestation = (await navigator.credentials.create({
+        publicKey,
+      })) as Credential;
 
-    const body = convertCredToRes(attestation);
+      const body = convertCredToRes(attestation);
 
-    store.dispatch(sendWebAuthnResponse(body));
+      store.dispatch(sendWebAuthnResponse(body));
 
-    dispatch({ type: WEBAUTHN_REGISTER_SUCCESS });
-  } catch (err) {
-    dispatch({ type: WEBAUTHN_REGISTER_FAIL, payload: err });
-  }
-};
+      dispatch({ type: WEBAUTHN_REGISTER_SUCCESS });
+    } catch (err) {
+      dispatch({ type: WEBAUTHN_REGISTER_FAIL, payload: err });
+    }
+  };
 
-export const getGetAssertionChallenge = () => async (
-  dispatch: Dispatch<WebAuthnActionTypes>
-) => {
-  dispatch({ type: WEBAUTHN_LOGIN_REQUEST });
-  try {
-    const res = await axios.get("http://localhost:5000/webauthn/login", config);
-    const payload = res.data;
+export const getGetAssertionChallenge =
+  () => async (dispatch: Dispatch<WebAuthnActionTypes>) => {
+    dispatch({ type: WEBAUTHN_LOGIN_REQUEST });
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/webauthn/login",
+        config
+      );
+      const payload = res.data;
 
-    const publicKey = preformatGetAssertReq(payload);
+      const publicKey = preformatGetAssertReq(payload);
 
-    const assertion = (await navigator.credentials.get({
-      publicKey,
-    })) as Credential;
+      const assertion = (await navigator.credentials.get({
+        publicKey,
+      })) as Credential;
 
-    const body = convertCredToRes(assertion);
-    store.dispatch(sendWebAuthnResponse(body));
-    dispatch({ type: WEBAUTHN_LOGIN_SUCCESS });
-  } catch (err) {
-    dispatch({ type: WEBAUTHN_LOGIN_FAIL, payload: err });
-  }
-};
+      const body = convertCredToRes(assertion);
+      store.dispatch(sendWebAuthnResponse(body));
+      dispatch({ type: WEBAUTHN_LOGIN_SUCCESS });
+    } catch (err) {
+      dispatch({ type: WEBAUTHN_LOGIN_FAIL, payload: err });
+    }
+  };
 
-export const sendWebAuthnResponse = (body: WebAuthnResponse) => async (
-  dispatch: Dispatch<WebAuthnActionTypes>
-) => {
-  dispatch({ type: WEBAUTH_RESPONSE_REQUEST });
-  try {
-    const res = await axios.post(
-      "http://localhost:5000/webauthn/response",
-      body,
-      config
-    );
-    return res;
-  } catch (err) {
-    dispatch({ type: WEBAUTH_RESPONSE_FAIL, payload: err });
-  }
-};
+export const sendWebAuthnResponse =
+  (body: WebAuthnResponse) =>
+  async (dispatch: Dispatch<WebAuthnActionTypes>) => {
+    dispatch({ type: WEBAUTHN_RESPONSE_REQUEST });
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/webauthn/response",
+        body,
+        config
+      );
+      return res;
+    } catch (err) {
+      dispatch({ type: WEBAUTHN_RESPONSE_FAIL, payload: err });
+    }
+  };
+
+export const checkWebAuthnSession =
+  () => async (dispatch: Dispatch<WebAuthnActionTypes>) => {
+    dispatch({ type: WEBAUTHN_SESSION_REQUEST });
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/login/webauthn",
+        config
+      );
+      dispatch({ type: WEBAUTHN_SESSION_SUCCESS, payload: res });
+    } catch (err) {
+      dispatch({ type: WEBAUTHN_SESSION_FAIL, payload: err });
+    }
+  };

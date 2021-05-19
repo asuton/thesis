@@ -14,8 +14,11 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import { AuthActionTypes, AuthState } from "../redux/types/auth";
 
 const useStyles = makeStyles((theme: Theme) => ({
-  title: {
-    marginTop: theme.spacing(25),
+  container: {
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   form: {
     width: "100%",
@@ -59,8 +62,8 @@ const Login: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Typography component="h1" variant="h5" className={classes.title}>
+    <Container component="main" maxWidth="sm" className={classes.container}>
+      <Typography component="h1" variant="h5">
         Prijava
       </Typography>
       <form

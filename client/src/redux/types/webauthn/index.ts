@@ -6,53 +6,74 @@ export const WEBAUTHN_LOGIN_REQUEST = "WEBAUTHN_LOGIN_REQUEST";
 export const WEBAUTHN_LOGIN_SUCCESS = "WEBAUTHN_LOGIN_SUCCESS";
 export const WEBAUTHN_LOGIN_FAIL = "WEBAUTHN_LOGIN_FAIL";
 
-export const WEBAUTH_RESPONSE_REQUEST = "WEBAUTH_RESPONSE_REQUEST";
-export const WEBAUTH_RESPONSE_FAIL = "WEBAUTH_RESPONSE_FAIL";
+export const WEBAUTHN_RESPONSE_REQUEST = "WEBAUTHN_RESPONSE_REQUEST";
+export const WEBAUTHN_RESPONSE_FAIL = "WEBAUTHN_RESPONSE_FAIL";
 
-export interface WebAuthnRegisterRequest {
+export const WEBAUTHN_SESSION_REQUEST = "WEBAUTHN_SESSION_REQUEST";
+export const WEBAUTHN_SESSION_SUCCESS = "WEBAUTHN_SESSION_SUCCESS";
+export const WEBAUTHN_SESSION_FAIL = "WEBAUTHN_SESSION_FAIL";
+
+export interface WebAuthnRegisterRequestAction {
   type: typeof WEBAUTHN_REGISTER_REQUEST;
 }
 
-export interface WebAuthnRegisterSuccess {
+export interface WebAuthnRegisterSuccessAction {
   type: typeof WEBAUTHN_REGISTER_SUCCESS;
 }
 
-export interface WebAuthnRegisterFail {
+export interface WebAuthnRegisterFailAction {
   type: typeof WEBAUTHN_REGISTER_FAIL;
   payload: any;
 }
 
-export interface WebAuthnLoginRequest {
+export interface WebAuthnLoginRequestAction {
   type: typeof WEBAUTHN_LOGIN_REQUEST;
 }
 
-export interface WebAuthnLoginSuccess {
+export interface WebAuthnLoginSuccessAction {
   type: typeof WEBAUTHN_LOGIN_SUCCESS;
 }
 
-export interface WebAuthnLoginFail {
+export interface WebAuthnLoginFailAction {
   type: typeof WEBAUTHN_LOGIN_FAIL;
   payload: any;
 }
 
-export interface WebauthnResponseRequest {
-  type: typeof WEBAUTH_RESPONSE_REQUEST;
+export interface WebauthnResponseRequestAction {
+  type: typeof WEBAUTHN_RESPONSE_REQUEST;
 }
 
-export interface WebauthnResponseFail {
-  type: typeof WEBAUTH_RESPONSE_FAIL;
+export interface WebauthnResponseFailAction {
+  type: typeof WEBAUTHN_RESPONSE_FAIL;
+  payload: any;
+}
+
+export interface WebAuthnSessionRequestAction {
+  type: typeof WEBAUTHN_SESSION_REQUEST;
+}
+
+export interface WebAuthnSessionSuccessAction {
+  type: typeof WEBAUTHN_SESSION_SUCCESS;
+  payload: any;
+}
+
+export interface WebAuthnSessionFailAction {
+  type: typeof WEBAUTHN_SESSION_FAIL;
   payload: any;
 }
 
 export type WebAuthnActionTypes =
-  | WebAuthnRegisterRequest
-  | WebAuthnRegisterSuccess
-  | WebAuthnRegisterFail
-  | WebAuthnLoginRequest
-  | WebAuthnLoginSuccess
-  | WebAuthnLoginFail
-  | WebauthnResponseRequest
-  | WebauthnResponseFail;
+  | WebAuthnRegisterRequestAction
+  | WebAuthnRegisterSuccessAction
+  | WebAuthnRegisterFailAction
+  | WebAuthnLoginRequestAction
+  | WebAuthnLoginSuccessAction
+  | WebAuthnLoginFailAction
+  | WebauthnResponseRequestAction
+  | WebauthnResponseFailAction
+  | WebAuthnSessionRequestAction
+  | WebAuthnSessionSuccessAction
+  | WebAuthnSessionFailAction;
 
 export type WebAuthnState = {
   apiCall?: boolean;

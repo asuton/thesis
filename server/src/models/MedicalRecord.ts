@@ -40,27 +40,27 @@ export default class MedicalRecord extends BaseEntity {
   title!: string;
 
   @Column()
-  @Length(1, 500)
+  @Length(1, 1024)
   medicalHistory!: string;
 
   @Column()
-  @Length(1, 500)
+  @Length(1, 1024)
   physicalExamination!: string;
 
   @Column()
-  @Length(1, 500)
+  @Length(1, 1024)
   diagnosis!: string;
 
   @Column()
-  @Length(1, 500)
+  @Length(1, 1024)
   treatment!: string;
 
   @Column()
-  @Length(1, 500)
+  @Length(1, 1024)
   recommendation!: string;
 
   @Column({ nullable: true })
-  @Length(0, 500)
+  @Length(0, 1024)
   additionalNote!: string;
 
   @Column({ type: "timestamp" })

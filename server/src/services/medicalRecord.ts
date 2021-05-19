@@ -92,3 +92,16 @@ export const insertMedicalRecord = (
 
   return medicalRecord;
 };
+
+export const getMedicalRecordList = async (id: string) => {
+  const medicalRecords = await MedicalRecord.find({ patientId: id });
+  let result: any = medicalRecords.map((medicalRecord) => {
+    return {
+      title: medicalRecord.title,
+      id: medicalRecord.id,
+      patientId: medicalRecord.patientId,
+      createdAt: medicalRecord.createdAt,
+    };
+  });
+  return result;
+};

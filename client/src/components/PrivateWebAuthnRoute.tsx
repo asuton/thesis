@@ -21,7 +21,7 @@ const PrivateRoute: React.FC<Props> = ({
     <Route
       {...rest}
       render={(props: RouteComponentProps<any>): React.ReactNode =>
-        !authenticated.isAuthenticated &&
+        !authenticated.isAuthenticated ||
         !webAuthnAuthenticated.isAuthenticated ? (
           <Redirect to="/" />
         ) : (

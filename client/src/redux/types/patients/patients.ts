@@ -11,7 +11,6 @@ export interface IPatient {
   address: string;
   OIB: string;
   dateOfBirth: Date;
-  password: string;
 }
 
 export interface GetPatientsRequestAction {

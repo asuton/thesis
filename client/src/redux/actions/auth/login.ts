@@ -11,42 +11,43 @@ import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
 import store from "../../store";
 import { loadUser } from "./loadUser";
+import { config } from "../../types/config";
 
-export const login = ({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) => async (dispatch: Dispatch<AuthActionTypes>) => {
-  dispatch({ type: LOGIN_REQUEST });
+export const login =
+  ({ email, password }: { email: string; password: string }) =>
+  async (dispatch: Dispatch<AuthActionTypes>) => {
+    dispatch({ type: LOGIN_REQUEST });
 
-  const body = JSON.stringify({ email, password });
-  const send = {
-    headers: {
-      "Content-Type": "application/json",
-    },
+    const body = JSON.stringify({ email, password });
+    const send = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.post("http://localhost:5000/login", body, send);
+      const payload: IAuth = res.data;
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: payload,
+      });
+      setAuthToken(payload.token);
+      store.dispatch(loadUser());
+      window.location.reload();
+    } catch (err) {
+      dispatch({
+        type: LOGIN_FAIL,
+        payload: err,
+      });
+    }
   };
 
+export const logout = () => async (dispatch: Dispatch<AuthActionTypes>) => {
   try {
-    const res = await axios.post("http://localhost:5000/login", body, send);
-    const payload: IAuth = res.data;
-
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: payload,
-    });
-
-    setAuthToken(payload.token);
-    store.dispatch(loadUser());
+    dispatch({ type: LOGOUT });
+    const res = await axios.get("http://localhost:5000/login/logout", config);
   } catch (err) {
-    dispatch({
-      type: LOGIN_FAIL,
-      payload: err,
-    });
+    console.log(err);
   }
-};
-
-export const logout = () => (dispatch: Dispatch<AuthActionTypes>) => {
-  dispatch({ type: LOGOUT });
 };

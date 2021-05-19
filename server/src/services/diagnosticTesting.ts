@@ -33,16 +33,16 @@ export const getPatientsDiagnosticTesting = async (
     .where("DiagnosticTesting.patientId = :patientId", { patientId: patientId })
     .andWhere("DiagnosticTesting.id = :id", { id: id })
     .leftJoinAndMapOne(
-      "MedicalRecord.doctor",
+      "DiagnosticTesting.doctor",
       "Doctor",
       "Doctor",
-      "MedicalRecord.doctorId = Doctor.id"
+      "DiagnosticTesting.doctorId = Doctor.id"
     )
     .leftJoinAndMapOne(
-      "MedicalRecord.patient",
+      "DiagnosticTesting.patient",
       "Patient",
       "Patient",
-      "MedicalRecord.patientId = Patient.id"
+      "DiagnosticTesting.patientId = Patient.id"
     )
     .select([
       "DiagnosticTesting.id",
@@ -74,4 +74,17 @@ export const insertDiagnosticTesting = (
   diagnosticTesting.result = form.result;
 
   return diagnosticTesting;
+};
+
+export const getDiagnosticTestingsList = async (id: string) => {
+  const diagnosticTestings = await DiagnosticTesting.find({ patientId: id });
+  let result: any = diagnosticTestings.map((diagnosticTesting) => {
+    return {
+      test: diagnosticTesting.test,
+      id: diagnosticTesting.id,
+      patientId: diagnosticTesting.patientId,
+      createdAt: diagnosticTesting.createdAt,
+    };
+  });
+  return result;
 };

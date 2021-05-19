@@ -27,7 +27,7 @@ export const createAbility = (rules: RawRuleOf<AppAbility>[]) =>
   new Ability<AppAbilities>(rules);
 
 export const defineRulesFor = (user: User): RawRuleOf<AppAbility>[] => {
-  const { can, rules, cannot } = new AbilityBuilder<AppAbility>(AppAbility);
+  const { can, rules } = new AbilityBuilder<AppAbility>(AppAbility);
 
   can("read", "Doctor");
 

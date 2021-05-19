@@ -2,9 +2,13 @@ import { Patient, Doctor, Authenticator } from "../models";
 import { Authr } from "../types/webauthn";
 import { getPatientByIdQuery } from "./patient";
 import { getDoctorByIdQuery } from "./doctor";
+import { Authorization } from "../utils/constants";
 
 export const findUserById = async (id: string) => {
   let user: Patient | Doctor | undefined = await Patient.findOne(id);
+  if (user && user.authorization !== Authorization.Patient) {
+    throw new Error("Invalid authorization");
+  }
   if (!user) {
     user = await Doctor.findOne(id);
   }
@@ -15,6 +19,9 @@ export const findUserByEmail = async (email: string) => {
   let user: Patient | Doctor | undefined = await Patient.findOne({
     email: email,
   });
+  if (user && user.authorization !== Authorization.Patient) {
+    throw new Error("Invalid authorization");
+  }
   if (!user) {
     user = await Doctor.findOne({
       email: email,

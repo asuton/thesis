@@ -13,6 +13,8 @@ import {
 import { findUserByEmail } from "../services/user";
 import { hashPassword } from "../helpers/hash";
 import { signToken } from "../helpers/token";
+import { getMedicalRecordList } from "../services/medicalRecord";
+import { getDiagnosticTestingsList } from "../services/diagnosticTesting";
 
 export const getPatients = async (
   req: Request,
@@ -43,6 +45,10 @@ export const getPatient = async (
       "read",
       subject("Patient", patient)
     );
+    const medicalRecords = await getMedicalRecordList(patient.id);
+    const diagnosticTestings = await getDiagnosticTestingsList(patient.id);
+    patient.medicalRecord = medicalRecords;
+    patient.diagnosticTesting = diagnosticTestings;
     return res.json(patient);
   } catch (err) {
     return res.status(500).send(err.message);

@@ -55,8 +55,18 @@ export const session = async (req: Request, res: Response) => {
     if (req.session.user !== req.id) {
       return res.status(400).send("Invalid session");
     }
-    const user = await getUserById(req.session.user);
-    return res.json(user);
+    if (req.session.loggedIn) return res.json(req.session.loggedIn);
+  } catch (err) {
+    res.status(500).send("Server error");
+  }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    if (req.session && req.session.loggedIn) {
+      res.cookie("session", "", { maxAge: 0 });
+      return res.status(200).send("Logged out");
+    } else return res.status(200).send("Logged out");
   } catch (err) {
     res.status(500).send("Server error");
   }
