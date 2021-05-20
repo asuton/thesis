@@ -10,33 +10,21 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Can } from "./Can";
-import { subject } from "@casl/ability";
-import { AuthActionTypes, AuthState } from "../redux/types/auth";
-import { AppState } from "../redux/reducers/rootReducer";
-import { logout } from "../redux/actions/auth/login";
-import { ThunkDispatch } from "redux-thunk";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
 
 const headersData = [
   {
-    label: "Patients",
-    href: "/patients",
+    label: "Services",
+    href: "/services",
   },
   {
-    label: "Doctors",
-    href: "/doctors",
-  },
-  {
-    label: "Log Out",
-    href: "/logout",
+    label: "Medical Record",
+    href: "/",
   },
 ];
 
 const useStyles = makeStyles(() => ({
   header: {
-    backgroundColor: "primary",
+    backgroundColor: "transparent",
     paddingRight: "80px",
     paddingLeft: "80px",
     "@media (max-width: 900px)": {
@@ -46,7 +34,7 @@ const useStyles = makeStyles(() => ({
   logo: {
     fontFamily: "Work Sans, sans-serif",
     fontWeight: 600,
-    color: "#FFFFFF",
+    color: "#3f51b5",
     textAlign: "left",
   },
   menuButton: {
@@ -54,18 +42,18 @@ const useStyles = makeStyles(() => ({
     fontWeight: 700,
     size: "18px",
     marginLeft: "38px",
-    color: "#FFFFFF",
+    color: "#3f51b5",
     textDecoration: "none",
   },
   menuIcon: {
-    color: "#FFFFFF",
+    color: "#3f51b5",
   },
   drawerButton: {
     fontFamily: "Open Sans, sans-serif",
     fontWeight: 700,
     size: "18px",
     marginLeft: "38px",
-    color: "#000000",
+    color: "#3f51b5",
     textDecoration: "none",
   },
   toolbar: {
@@ -77,9 +65,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-type Props = MapStateToProps & MapDispatchToProps;
-
-const Navbar: React.FC<Props> = (props: Props) => {
+const NavbarHome = () => {
   const classes = useStyles();
 
   const [state, setState] = useState({
@@ -108,11 +94,6 @@ const Navbar: React.FC<Props> = (props: Props) => {
     );
   };
 
-  const logout = () => {
-    props.logout();
-    window.location.reload();
-  };
-
   const displayMobile = () => {
     const handleDrawerOpen = () =>
       setState((prevState) => ({ ...prevState, drawerOpen: true }));
@@ -133,83 +114,38 @@ const Navbar: React.FC<Props> = (props: Props) => {
   };
 
   const getDrawerChoices = () => {
-    return (
-      <>
-        <Can I="read" this={subject("Patient", { id: true })}>
-          <Link
-            className={classes.drawerButton}
-            key={"Patients"}
-            to={"/patients"}
-          >
-            <MenuItem>{"Patients"}</MenuItem>
-          </Link>
-        </Can>
-        <Can I="read" a="Doctor">
-          <Link
-            className={classes.drawerButton}
-            key={"Doctors"}
-            to={"/doctors"}
-          >
-            <MenuItem>{"Doctors"}</MenuItem>
-          </Link>
-        </Can>
-        <Link
-          className={classes.drawerButton}
-          key={"Logout"}
-          to={"/"}
-          onClick={logout}
-        >
-          <MenuItem>{"Log out"}</MenuItem>
+    return headersData.map(({ label, href }) => {
+      return (
+        <Link className={classes.menuButton} key={label} to={href}>
+          <MenuItem>{label}</MenuItem>
         </Link>
-      </>
-    );
+      );
+    });
   };
 
   const Logo = (
     <Typography variant="h6" component="h1" className={classes.logo}>
-      <Link key={"Home"} to={"/home"} className={classes.menuButton}>
-        MedClinic
-      </Link>
+      MedClinic
     </Typography>
   );
 
   const getMenuButtons = () => {
     return headersData.map(({ label, href }) => {
       return (
-        <Can I="read" this={subject("Patient", { id: true })}>
-          <Link className={classes.menuButton} key={label} to={href}>
-            {label}
-          </Link>
-        </Can>
+        <Link className={classes.menuButton} key={label} to={href}>
+          {label}
+        </Link>
       );
     });
   };
 
   return (
     <header>
-      <AppBar className={classes.header}>
+      <AppBar className={classes.header} elevation={0} position="absolute">
         {mobileView ? displayMobile() : displayDesktop()}
       </AppBar>
     </header>
   );
 };
 
-interface MapStateToProps {
-  authState: AuthState;
-}
-
-interface MapDispatchToProps {
-  logout: () => void;
-}
-
-const mapStateToProps = (state: AppState): MapStateToProps => ({
-  authState: state.auth,
-});
-
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<any, any, AuthActionTypes>
-): MapDispatchToProps => ({
-  logout: bindActionCreators(logout, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
+export default NavbarHome;

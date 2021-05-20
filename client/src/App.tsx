@@ -19,6 +19,7 @@ import DiagnosticTesting from "./components/DiagnosticTesting";
 import DiagnosticTestingForm from "./components/DiagnosticTestingForm";
 import Doctor from "./components/Doctor";
 import { checkWebAuthnSession } from "./redux/actions/webauthn";
+import FeaturedPost from "./components/Landing";
 
 const storage = localStorage.getItem("user");
 
@@ -37,6 +38,7 @@ function App() {
       <Provider store={store}>
         <Router>
           <Layout>
+            <Route exact path="/home" component={FeaturedPost}></Route>
             <Route exact path="/" component={Login} />
             <Route exact path="/register" component={Register} />
             <PrivateRoute exact path="/patients" component={Patients} />

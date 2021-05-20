@@ -27,11 +27,6 @@ const useStyles = makeStyles({
     maxWidth: 1200,
     margin: "auto",
   },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
   title: {
     fontSize: 14,
   },

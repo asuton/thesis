@@ -15,6 +15,7 @@ import { AuthActionTypes, AuthState } from "../redux/types/auth";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
+    paddingTop: "60px",
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
@@ -64,7 +65,7 @@ const Login: React.FC<Props> = (props: Props) => {
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
       <Typography component="h1" variant="h5">
-        Prijava
+        Login
       </Typography>
       <form
         className={classes.form}
@@ -86,7 +87,7 @@ const Login: React.FC<Props> = (props: Props) => {
           required
           fullWidth
           id="password"
-          label="Lozinka"
+          label="Password"
           type="password"
           value={password}
           onChange={(e) => onChange(e)}
@@ -98,12 +99,12 @@ const Login: React.FC<Props> = (props: Props) => {
           fullWidth
           className={classes.submit}
         >
-          Prijava
+          Login
         </Button>
         <Grid container justify="flex-start">
           <Grid item>
-            Nemate zdravstveni karton? Registrirajte se{" "}
-            <Link to="/register">ovdje</Link>.
+            Don't have a medical record? Register{" "}
+            <Link to="/register">here</Link>.
           </Grid>
         </Grid>
       </form>

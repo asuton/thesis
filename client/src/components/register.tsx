@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(3, 0, 1),
   },
   container: {
+    paddingTop: "60px",
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
@@ -63,16 +64,8 @@ const Register: React.FC<Props> = (props: Props) => {
     phone: "",
   });
 
-  const {
-    name,
-    surname,
-    email,
-    password,
-    OIB,
-    dateOfBirth,
-    address,
-    phone,
-  } = formData;
+  const { name, surname, email, password, OIB, dateOfBirth, address, phone } =
+    formData;
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -90,7 +83,7 @@ const Register: React.FC<Props> = (props: Props) => {
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
       <Typography component="h1" variant="h5" className={classes.title}>
-        Registracija
+        Register
       </Typography>
       <form
         className={classes.form}
@@ -105,7 +98,7 @@ const Register: React.FC<Props> = (props: Props) => {
               required
               fullWidth
               id="name"
-              label="Ime"
+              label="Name"
               value={name}
               onChange={(e) => onChange(e)}
             />
@@ -116,7 +109,7 @@ const Register: React.FC<Props> = (props: Props) => {
               required
               fullWidth
               id="surname"
-              label="Prezime"
+              label="Surname"
               value={surname}
               onChange={(e) => onChange(e)}
             />
@@ -138,7 +131,7 @@ const Register: React.FC<Props> = (props: Props) => {
               required
               fullWidth
               id="address"
-              label="Adresa"
+              label="Address"
               value={address}
               onChange={(e) => onChange(e)}
             />
@@ -149,7 +142,7 @@ const Register: React.FC<Props> = (props: Props) => {
               required
               fullWidth
               id="phone"
-              label="Kontakt"
+              label="Phone number"
               value={phone}
               onChange={(e) => onChange(e)}
             />
@@ -161,7 +154,7 @@ const Register: React.FC<Props> = (props: Props) => {
               fullWidth
               type="date"
               id="dateOfBirth"
-              label="Datum rođenja"
+              label="Date of birth"
               InputLabelProps={{
                 shrink: true,
               }}
@@ -186,7 +179,7 @@ const Register: React.FC<Props> = (props: Props) => {
               required
               fullWidth
               id="password"
-              label="Lozinka"
+              label="Password"
               type="password"
               value={password}
               onChange={(e) => onChange(e)}
@@ -200,11 +193,11 @@ const Register: React.FC<Props> = (props: Props) => {
           fullWidth
           className={classes.submit}
         >
-          Prijava
+          Register
         </Button>
         <Grid container justify="flex-start" className={classes.link}>
           <Grid item>
-            Imate zdravstveni karton? Prijavite se <Link to="/">ovdje</Link>.{" "}
+            Already have a medical record? Login <Link to="/">here</Link>.{" "}
           </Grid>
         </Grid>
       </form>
