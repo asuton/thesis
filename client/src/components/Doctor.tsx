@@ -8,9 +8,7 @@ import { subject } from "@casl/ability";
 import { RouteComponentProps } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { Divider } from "@material-ui/core";
 import {
@@ -19,6 +17,10 @@ import {
 } from "../redux/types/doctors/doctor";
 import { getDoctorById } from "../redux/actions/doctors/doctor";
 import { AuthState } from "../redux/types/auth";
+import Loading from "./Loading";
+import { WebAuthnState } from "../redux/types/webauthn";
+import WebAuthnLogin from "./WebAuthnLogin";
+import WebAuthnRegister from "./WebAuthnRegister";
 
 const useStyles = makeStyles({
   root: {
@@ -70,6 +72,19 @@ const useStyles = makeStyles({
       cursor: "pointer",
     },
   },
+  button: {
+    width: "inherit",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: "25px",
+    flexWrap: "wrap",
+  },
+  section: {
+    maxWidth: 1200,
+    marginTop: "20px",
+    margin: "auto",
+  },
 });
 
 interface MatchParams {
@@ -81,16 +96,19 @@ type Props = MapStateToProps &
   RouteComponentProps<MatchParams>;
 
 export const Doctor: React.FC<Props> = (props: Props) => {
-  useEffect(() => {
-    props.getDoctorById(props.match.params.id);
-  }, [props.getDoctorById]);
-
   const { doctor, loading } = props.doctorState;
+  const { user } = props.authState;
+  const { getDoctorById } = props;
+  const { params } = props.match;
+
+  useEffect(() => {
+    getDoctorById(params.id);
+  }, [getDoctorById]);
 
   const classes = useStyles();
 
   return loading || !doctor ? (
-    <div>"Loading"</div>
+    <Loading></Loading>
   ) : (
     <Can I="read" this={subject("Doctor", doctor)}>
       <Card className={classes.root} variant="outlined">
@@ -116,13 +134,44 @@ export const Doctor: React.FC<Props> = (props: Props) => {
           <Typography className={classes.pos} color="textSecondary">
             Qualification: {doctor.qualification}
           </Typography>
-        </CardContent>
-        {props.authState.user?.id === props.match.params.id ? (
-          <CardActions>
-            <Button size="small">Nadodat update/webauthn shemu odi</Button>{" "}
-          </CardActions>
-        ) : null}
+        </CardContent>{" "}
       </Card>
+      {user?.id === params.id ? (
+        <>
+          <div className={classes.section}>
+            <Typography variant="h5" style={{ textAlign: "left" }}>
+              Identity verification
+            </Typography>
+
+            <div className={classes.button}>
+              {props.webAuthnAuthenticated.isAuthenticated ? (
+                <>
+                  <div>
+                    <Typography variant="body1">
+                      Your identity is verified. You can add another credential
+                      for future verification.
+                    </Typography>
+                  </div>
+                  <div style={{ width: "150px" }}>
+                    <WebAuthnRegister></WebAuthnRegister>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <Typography variant="body1">
+                      To view sensitive information please verify your identity.
+                    </Typography>
+                  </div>
+                  <div style={{ width: "150px" }}>
+                    <WebAuthnLogin></WebAuthnLogin>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      ) : null}
     </Can>
   );
 };
@@ -130,6 +179,7 @@ export const Doctor: React.FC<Props> = (props: Props) => {
 interface MapStateToProps {
   doctorState: GetDoctorState;
   authState: AuthState;
+  webAuthnAuthenticated: WebAuthnState;
 }
 
 interface MapDispatchToProps {
@@ -139,6 +189,7 @@ interface MapDispatchToProps {
 const mapStateToProps = (state: AppState): MapStateToProps => ({
   doctorState: state.doctor,
   authState: state.auth,
+  webAuthnAuthenticated: state.webauthn,
 });
 
 const mapDispatchToProps = (

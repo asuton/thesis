@@ -1,6 +1,11 @@
 import { PackRule } from "@casl/ability/extra";
 import { RawRuleOf, ForcedSubject, Ability, AbilityClass } from "@casl/ability";
 
+export enum Authorization {
+  Doctor = "DOCTOR",
+  Patient = "PATIENT",
+}
+
 type Actions = "create" | "read" | "update" | "delete";
 type Subjects = "Patient" | "Doctor" | "MedicalRecord";
 
@@ -16,4 +21,5 @@ export interface IAuth {
   id: string;
   rules: PackRule<RawRuleOf<AppAbility>>[];
   token: string;
+  authorization: Authorization;
 }

@@ -12,6 +12,7 @@ import setAuthToken from "../../utils/setAuthToken";
 import store from "../../store";
 import { loadUser } from "./loadUser";
 import { config } from "../../types/config";
+import { setAlert } from "../alert";
 
 export const login =
   ({ email, password }: { email: string; password: string }) =>
@@ -36,10 +37,18 @@ export const login =
       store.dispatch(loadUser());
       window.location.reload();
     } catch (err) {
+      const errors = err.response?.data.error;
+
       dispatch({
         type: LOGIN_FAIL,
-        payload: err,
+        payload: errors ? errors : err,
       });
+
+      if (errors) {
+        errors.forEach((error: any) => {
+          store.dispatch(setAlert(error.msg, "error"));
+        });
+      }
     }
   };
 
@@ -47,7 +56,13 @@ export const logout = () => async (dispatch: Dispatch<AuthActionTypes>) => {
   try {
     dispatch({ type: LOGOUT });
     const res = await axios.get("http://localhost:5000/login/logout", config);
+    window.location.reload();
   } catch (err) {
-    console.log(err);
+    const errors = err.response?.data.error;
+    if (errors) {
+      errors.forEach((error: any) => {
+        store.dispatch(setAlert(error.msg, "error"));
+      });
+    }
   }
 };

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Can } from "./Can";
 import { subject } from "@casl/ability";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, withRouter } from "react-router";
 import { getMedicalRecord } from "../redux/actions/medicalRecords/medicalRecord";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -19,6 +19,7 @@ import { Divider } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import Loading from "./Loading";
 
 const useStyles = makeStyles({
   root: {
@@ -43,16 +44,18 @@ type Props = MapStateToProps &
   RouteComponentProps<MatchParams>;
 
 export const MedicalRecord: React.FC<Props> = (props: Props) => {
-  useEffect(() => {
-    props.getMedicalRecord(props.match.params.id, props.match.params.patId);
-  }, [props.getMedicalRecord]);
-  console.log(props);
+  const { params } = props.match;
+  const { getMedicalRecord } = props;
   const { medicalRecord, loading } = props.medicalRecordState;
+
+  useEffect(() => {
+    getMedicalRecord(params.id, params.patId);
+  }, [getMedicalRecord]);
 
   const classes = useStyles();
 
   return loading || !medicalRecord ? (
-    <div>"Loading"</div>
+    <Loading></Loading>
   ) : (
     <Can I="read" this={subject("MedicalRecord", medicalRecord)}>
       <Card className={classes.root} variant="outlined">
@@ -161,4 +164,7 @@ const mapDispatchToProps = (
   getMedicalRecord: bindActionCreators(getMedicalRecord, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MedicalRecord);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(MedicalRecord));

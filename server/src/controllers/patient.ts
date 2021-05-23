@@ -13,7 +13,7 @@ import {
 import { findUserByEmail } from "../services/user";
 import { hashPassword } from "../helpers/hash";
 import { signToken } from "../helpers/token";
-import { getMedicalRecordList } from "../services/medicalRecord";
+import { getMedicalRecordListPatient } from "../services/medicalRecord";
 import { getDiagnosticTestingsList } from "../services/diagnosticTesting";
 
 export const getPatients = async (
@@ -39,13 +39,19 @@ export const getPatient = async (
   try {
     const patient = await getPatientByIdQuery(req.params.id);
     if (!patient) {
-      return res.status(400).send("Patient not found");
+      return res.status(400).json({
+        error: [
+          {
+            msg: "Patient not found",
+          },
+        ],
+      });
     }
     ForbiddenError.from(req.ability).throwUnlessCan(
       "read",
       subject("Patient", patient)
     );
-    const medicalRecords = await getMedicalRecordList(patient.id);
+    const medicalRecords = await getMedicalRecordListPatient(patient.id);
     const diagnosticTestings = await getDiagnosticTestingsList(patient.id);
     patient.medicalRecord = medicalRecords;
     patient.diagnosticTesting = diagnosticTestings;
@@ -71,17 +77,26 @@ export const postPatient = async (
       !req.body.dateOfBirth ||
       !req.body.address
     ) {
-      return res
-        .status(500)
-        .send(
-          "Invalid request body, missing one or more of fields: name, surname, OIB, phone, email, password, dateOfBirth, address"
-        );
+      return res.status(500).json({
+        error: [
+          {
+            msg: `Invalid request body, missing one or more of fields: 
+            name, surname, OIB, phone, email, password, dateOfBirth, address`,
+          },
+        ],
+      });
     }
 
     const user = await findUserByEmail(req.body.email);
 
     if (user) {
-      return res.status(400).send("Email is already in use");
+      return res.status(400).json({
+        error: [
+          {
+            msg: "E-mail is already in use",
+          },
+        ],
+      });
     }
 
     let patient = insertPatientQuery(req.body);
@@ -115,16 +130,24 @@ export const putPatient = async (
 ): Promise<Response> => {
   try {
     if (!req.body || !req.body.phone || !req.body.address) {
-      return res
-        .status(500)
-        .send(
-          "Invalid request body, missing one or more of fields: phone, address"
-        );
+      return res.status(500).json({
+        error: [
+          {
+            msg: "Invalid request body, missing one or more of fields: phone, address",
+          },
+        ],
+      });
     }
     const patient = await updatePatientQuery(req.params.id, req.body);
 
     if (!patient) {
-      return res.status(400).send("Patient update error");
+      return res.status(400).json({
+        error: [
+          {
+            msg: "Patient update error",
+          },
+        ],
+      });
     }
 
     const errors = await validate(patient);

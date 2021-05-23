@@ -2,6 +2,14 @@ export const GET_DOCTOR_REQUEST = "GET_DOCTOR_REQUEST";
 export const GET_DOCTOR_SUCCESS = "GET_DOCTOR_SUCCESS";
 export const GET_DOCTOR_FAIL = "GET_DOCTOR_FAIL";
 
+interface IMedicalRecord {
+  title: string;
+  patientId: string;
+  createdAt: Date;
+  id: string;
+  doctorId: string;
+}
+
 export interface IDoctor {
   id: string;
   name: string;
@@ -11,6 +19,7 @@ export interface IDoctor {
   qualification: string;
   OIB: string;
   license: string;
+  medicalRecord: IMedicalRecord[];
 }
 
 export interface GetDoctorRequestAction {

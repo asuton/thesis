@@ -18,6 +18,7 @@ import Typography from "@material-ui/core/Typography";
 import { Divider, Grid } from "@material-ui/core";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import Loading from "./Loading";
 
 const useStyles = makeStyles({
   root: {
@@ -42,16 +43,18 @@ type Props = MapStateToProps &
   RouteComponentProps<MatchParams>;
 
 export const DiagnosticTesting: React.FC<Props> = (props: Props) => {
-  useEffect(() => {
-    props.getDiagnosticTesting(props.match.params.id, props.match.params.patId);
-  }, [props.getDiagnosticTesting]);
-
   const { diagnosticTesting, loading } = props.diagnosticTestingState;
+  const { params } = props.match;
+  const { getDiagnosticTesting } = props;
+
+  useEffect(() => {
+    getDiagnosticTesting(params.id, params.patId);
+  }, [getDiagnosticTesting]);
 
   const classes = useStyles();
 
   return loading || !diagnosticTesting ? (
-    <div>"Loading"</div>
+    <Loading></Loading>
   ) : (
     <Can I="read" this={subject("DiagnosticTesting", diagnosticTesting)}>
       <Card className={classes.root} variant="outlined">

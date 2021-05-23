@@ -33,7 +33,13 @@ export const getMedicalRecord = async (req: Request, res: Response) => {
     );
 
     if (!medicalRecord) {
-      return res.status(400).json({ msg: "Record not found" });
+      return res.status(400).json({
+        error: [
+          {
+            msg: "Record not found",
+          },
+        ],
+      });
     }
 
     ForbiddenError.from(req.ability).throwUnlessCan(
@@ -58,11 +64,14 @@ export const postMedicalRecord = async (req: Request, res: Response) => {
       !req.body.treatment ||
       !req.body.recommendation
     ) {
-      return res
-        .status(400)
-        .send(
-          "Invalid request body, missing one or more of fields: title, medical history, physical examination, diagnosis, treatment, recommendation"
-        );
+      return res.status(400).json({
+        error: [
+          {
+            msg: `Invalid request body, missing one or more of fields: 
+            title, medical history, physical examination, diagnosis, treatment, recommendation`,
+          },
+        ],
+      });
     }
 
     let medicalRecord = insertMedicalRecord(req.body, req.id, req.params.patId);

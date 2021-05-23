@@ -12,6 +12,8 @@ import { DiagnosticTestingFormState } from "../../../components/DiagnosticTestin
 import { Dispatch } from "redux";
 import axios from "axios";
 import { config } from "../../types/config";
+import store from "../../store";
+import { setAlert } from "../alert";
 
 export const getDiagnosticTesting =
   (id: string, patId: string) =>
@@ -49,6 +51,17 @@ export const postDiagnosticTesting =
       );
       dispatch({ type: POST_DIAGNOSTIC_TESTING_SUCCESS });
     } catch (err) {
-      dispatch({ type: POST_DIAGNOSTIC_TESTING_FAIL, payload: err });
+      const errors = err.response?.data.error;
+
+      dispatch({
+        type: POST_DIAGNOSTIC_TESTING_FAIL,
+        payload: errors ? errors : err,
+      });
+
+      if (errors) {
+        errors.forEach((error: any) => {
+          store.dispatch(setAlert(error.msg, "error"));
+        });
+      }
     }
   };

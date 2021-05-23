@@ -31,6 +31,7 @@ export const getPatientByIdQuery = async (
       "patient.phone",
       "patient.email",
       "patient.dateOfBirth",
+      "patient.authorization",
     ])
     .from(Patient, "patient")
     .where("patient.id = :id", { id: id })

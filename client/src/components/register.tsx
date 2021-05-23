@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { AuthActionTypes, AuthState } from "../redux/types/auth";
+import { checkAuthorizationNav } from "../helpers/authorization";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -52,6 +53,7 @@ interface RegisterFormState {
 type Props = MapStateToProps & MapDispatchToProps;
 
 const Register: React.FC<Props> = (props: Props) => {
+  const { isAuthenticated, user } = props.authState;
   const classes = useStyles();
   const [formData, setFormData] = useState<RegisterFormState>({
     name: "",
@@ -76,8 +78,8 @@ const Register: React.FC<Props> = (props: Props) => {
     props.register(formData);
   };
 
-  if (props.authState.isAuthenticated) {
-    return <Redirect to="/patients" />;
+  if (isAuthenticated && user) {
+    return <Redirect to={checkAuthorizationNav(user)} />;
   }
 
   return (
@@ -197,7 +199,7 @@ const Register: React.FC<Props> = (props: Props) => {
         </Button>
         <Grid container justify="flex-start" className={classes.link}>
           <Grid item>
-            Already have a medical record? Login <Link to="/">here</Link>.{" "}
+            Already have a medical record? Login <Link to="/login">here</Link>.{" "}
           </Grid>
         </Grid>
       </form>

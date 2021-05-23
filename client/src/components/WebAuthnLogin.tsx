@@ -23,7 +23,7 @@ const WebAuthnLogin: React.FC<Props> = (props: Props) => {
       fullWidth
       onClick={(e) => register(e)}
     >
-      Login
+      Verify
     </Button>
   );
 };
@@ -37,7 +37,7 @@ interface MapDispatchToProps {
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  webAuthnState: state.webatuhn,
+  webAuthnState: state.webauthn,
 });
 
 const mapDispatchToProps = (

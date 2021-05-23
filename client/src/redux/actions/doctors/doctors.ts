@@ -7,6 +7,8 @@ import {
 import { IDoctor } from "../../types/doctors/doctors";
 import { Dispatch } from "redux";
 import axios from "axios";
+import store from "../../store";
+import { setAlert } from "../alert";
 
 export const getDoctors =
   () => async (dispatch: Dispatch<GetDoctorsActionTypes>) => {
@@ -21,9 +23,17 @@ export const getDoctors =
         payload: payload,
       });
     } catch (err) {
+      const errors = err.response?.data.error;
+
       dispatch({
         type: GET_DOCTORS_FAIL,
-        payload: err,
+        payload: errors ? errors : err,
       });
+
+      if (errors) {
+        errors.forEach((error: any) => {
+          store.dispatch(setAlert(error.msg, "error"));
+        });
+      }
     }
   };

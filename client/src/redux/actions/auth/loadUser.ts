@@ -3,6 +3,8 @@ import { IAuth } from "../../types/auth/user";
 import { Dispatch } from "redux";
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
+import store from "../../store";
+import { setAlert } from "../alert";
 
 export const loadUser = () => async (dispatch: Dispatch<AuthActionTypes>) => {
   const storage = localStorage.getItem("user");
@@ -21,9 +23,15 @@ export const loadUser = () => async (dispatch: Dispatch<AuthActionTypes>) => {
       payload: payload,
     });
   } catch (err) {
+    const errors = err.response?.data.error;
     dispatch({
       type: AUTH_ERROR,
-      payload: err,
+      payload: errors ? errors : err,
     });
+    if (errors) {
+      errors.forEach((error: any) => {
+        store.dispatch(setAlert(error.msg, "error"));
+      });
+    }
   }
 };

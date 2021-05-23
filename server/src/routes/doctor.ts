@@ -5,12 +5,13 @@ import {
   postDoctor,
   putDoctor,
 } from "../controllers/doctor";
+import { authJWT } from "../middleware/auth";
 
 const router = express.Router();
 
-router.get("/", getDoctors);
-router.get("/:id", getDoctor);
-router.post("/", postDoctor);
-router.put("/:id", putDoctor);
+router.get("/", authJWT, getDoctors);
+router.get("/:id", authJWT, getDoctor);
+router.post("/", authJWT, postDoctor);
+router.put("/:id", authJWT, putDoctor);
 
 export default router;

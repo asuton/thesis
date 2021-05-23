@@ -29,6 +29,7 @@ const webAuthnReducer = (
     case WEBAUTHN_SESSION_REQUEST:
       return {
         apiCall: true,
+        isAuthenticated: state.isAuthenticated,
       };
     case WEBAUTHN_REGISTER_SUCCESS:
     case WEBAUTHN_LOGIN_SUCCESS:
@@ -42,6 +43,7 @@ const webAuthnReducer = (
     case WEBAUTHN_SESSION_FAIL:
       return {
         errors: action.payload,
+        isAuthenticated: state.isAuthenticated,
       };
     default:
       return state;

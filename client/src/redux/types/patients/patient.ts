@@ -7,6 +7,7 @@ interface IMedicalRecord {
   patientId: string;
   createdAt: Date;
   id: string;
+  doctorId: string;
 }
 
 interface IDiagnosticTesting {

@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(15, 10, 0),
     },
     [theme.breakpoints.down("sm")]: {
-      padding: theme.spacing(53, 4, 0),
+      padding: theme.spacing(57, 4, 0),
     },
   },
   contact: {
@@ -182,7 +182,7 @@ export default function MainFeatured() {
         >
           About us
         </Typography>
-        <Typography variant="body1" color="primary" paragraph>
+        <Typography variant="body1" paragraph>
           "At vero eos et accusamus et iusto odio dignissimos ducimus qui
           blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
           et quas molestias excepturi sint occaecati cupiditate non provident,
@@ -213,7 +213,7 @@ export default function MainFeatured() {
             >
               Contact
             </Typography>
-            <Typography variant="body1" color="primary" paragraph>
+            <Typography variant="body1" paragraph>
               "At vero eos et accusamus et iusto odio dignissimos ducimus qui
               blanditiis praesentium voluptatum deleniti atque corrupti quos
               dolores et quas molestias excepturi sint occaecati cupiditate non
@@ -227,7 +227,7 @@ export default function MainFeatured() {
                 <LocalPhoneOutlinedIcon
                   className={classes.contactIcon}
                 ></LocalPhoneOutlinedIcon>
-                <Typography variant="subtitle1" color="primary" paragraph>
+                <Typography variant="subtitle1" paragraph>
                   +385991234567
                 </Typography>
               </div>
@@ -235,7 +235,7 @@ export default function MainFeatured() {
                 <RoomOutlinedIcon
                   className={classes.contactIcon}
                 ></RoomOutlinedIcon>
-                <Typography variant="subtitle1" color="primary" paragraph>
+                <Typography variant="subtitle1" paragraph>
                   Ulica Ruđera Boškovića 1, 21000 Split
                 </Typography>
               </div>
@@ -243,7 +243,7 @@ export default function MainFeatured() {
                 <MailOutlineOutlinedIcon
                   className={classes.contactIcon}
                 ></MailOutlineOutlinedIcon>
-                <Typography variant="subtitle1" color="primary" paragraph>
+                <Typography variant="subtitle1" paragraph>
                   patient.support@medclinic.hr
                 </Typography>
               </div>

@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
 import { AppState } from "../redux/reducers/rootReducer";
 import { bindActionCreators } from "redux";
-import { RouteComponentProps } from "react-router";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
+import { RouteComponentProps, useHistory } from "react-router";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { AuthActionTypes, AuthState } from "../redux/types/auth";
 import { postMedicalRecord } from "../redux/actions/medicalRecords/medicalRecord";
 import { MedicalRecordState } from "../redux/types/medicalRecords/medicalRecord";
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Grid,
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -58,6 +59,9 @@ type Props = MapStateToProps &
   RouteComponentProps<MatchParams>;
 
 const MedicalRecordForm: React.FC<Props> = (props: Props) => {
+  const { id } = props.match.params;
+  const { postMedicalRecord } = props;
+  const history = useHistory();
   const classes = useStyles();
   const [formData, setFormData] = useState<MedicalRecordFormState>({
     title: "",
@@ -85,7 +89,7 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    props.postMedicalRecord(formData, props.match.params.id);
+    postMedicalRecord(formData, id, history);
   };
 
   return (
@@ -202,7 +206,7 @@ interface MapStateToProps {
 }
 
 interface MapDispatchToProps {
-  postMedicalRecord: (form: any, id: string) => void;
+  postMedicalRecord: (form: any, id: string, history: any) => void;
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({

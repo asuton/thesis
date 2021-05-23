@@ -31,6 +31,7 @@ export const getDoctorByIdQuery = async (
       "doctor.OIB",
       "doctor.phone",
       "doctor.email",
+      "doctor.authorization",
     ])
     .from(Doctor, "doctor")
     .where("doctor.id = :id", { id: id })
@@ -71,7 +72,7 @@ export const insertDoctorQuery = (form: Doctor): Doctor => {
   return doctor;
 };
 
-export const updatePatientQuery = async (
+export const updateDoctorQuery = async (
   id: string,
   form: Doctor
 ): Promise<Doctor | undefined> => {

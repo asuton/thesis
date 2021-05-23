@@ -23,6 +23,7 @@ import {
 import axios from "axios";
 import { Dispatch } from "redux";
 import store from "../../store";
+import { setAlert } from "../alert";
 
 export const getMakeCredChallenge =
   () => async (dispatch: Dispatch<WebAuthnActionTypes>) => {
@@ -45,8 +46,20 @@ export const getMakeCredChallenge =
       store.dispatch(sendWebAuthnResponse(body));
 
       dispatch({ type: WEBAUTHN_REGISTER_SUCCESS });
+      store.dispatch(setAlert("WebAuthn register success", "success"));
     } catch (err) {
-      dispatch({ type: WEBAUTHN_REGISTER_FAIL, payload: err });
+      const errors = err.response?.data.error;
+
+      dispatch({
+        type: WEBAUTHN_REGISTER_FAIL,
+        payload: errors ? errors : err,
+      });
+
+      if (errors) {
+        errors.forEach((error: any) => {
+          store.dispatch(setAlert(error.msg, "error"));
+        });
+      }
     }
   };
 
@@ -69,8 +82,17 @@ export const getGetAssertionChallenge =
       const body = convertCredToRes(assertion);
       store.dispatch(sendWebAuthnResponse(body));
       dispatch({ type: WEBAUTHN_LOGIN_SUCCESS });
+      store.dispatch(setAlert("WebAuthn login success", "success"));
     } catch (err) {
-      dispatch({ type: WEBAUTHN_LOGIN_FAIL, payload: err });
+      const errors = err.response?.data.error;
+
+      dispatch({ type: WEBAUTHN_LOGIN_FAIL, payload: errors ? errors : err });
+
+      if (errors) {
+        errors.forEach((error: any) => {
+          store.dispatch(setAlert(error.msg, "error"));
+        });
+      }
     }
   };
 

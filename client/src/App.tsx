@@ -19,7 +19,8 @@ import DiagnosticTesting from "./components/DiagnosticTesting";
 import DiagnosticTestingForm from "./components/DiagnosticTestingForm";
 import Doctor from "./components/Doctor";
 import { checkWebAuthnSession } from "./redux/actions/webauthn";
-import FeaturedPost from "./components/Landing";
+import Landing from "./components/Landing";
+import Alert from "./components/Alert";
 
 const storage = localStorage.getItem("user");
 
@@ -38,8 +39,9 @@ function App() {
       <Provider store={store}>
         <Router>
           <Layout>
-            <Route exact path="/home" component={FeaturedPost}></Route>
-            <Route exact path="/" component={Login} />
+            <Alert></Alert>
+            <Route exact path="/" component={Landing} />
+            <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
             <PrivateRoute exact path="/patients" component={Patients} />
             <PrivateRoute exact path="/doctors" component={Doctors} />
@@ -50,7 +52,7 @@ function App() {
               path="/patients/:patId/record/:id"
               component={MedicalRecord}
             />
-            <PrivateRoute
+            <PrivateWebAuthnRoute
               exact
               path="/patients/:id/new-medical"
               component={MedicalRecordForm}
@@ -60,7 +62,7 @@ function App() {
               path="/patients/:patId/test/:id"
               component={DiagnosticTesting}
             />
-            <PrivateRoute
+            <PrivateWebAuthnRoute
               exact
               path="/patients/:id/new-test"
               component={DiagnosticTestingForm}

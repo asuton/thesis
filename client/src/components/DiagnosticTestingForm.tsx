@@ -55,6 +55,8 @@ type Props = MapStateToProps &
   RouteComponentProps<MatchParams>;
 
 const DiagnosticTestingForm: React.FC<Props> = (props: Props) => {
+  const { id } = props.match.params;
+
   const classes = useStyles();
   const [formData, setFormData] = useState<DiagnosticTestingFormState>({
     test: "",
@@ -69,7 +71,7 @@ const DiagnosticTestingForm: React.FC<Props> = (props: Props) => {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    props.postDiagnosticTesting(formData, props.match.params.id);
+    props.postDiagnosticTesting(formData, id);
   };
 
   return (

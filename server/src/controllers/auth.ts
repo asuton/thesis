@@ -11,20 +11,22 @@ export const login = async (req: Request, res: Response) => {
   let rules: PackRule<RawRuleOf<AppAbility>>[];
 
   if (!req.body || !req.body.email || !req.body.password) {
-    return res.status(400).send("Missing email and/or password");
+    return res
+      .status(400)
+      .json({ error: [{ msg: "Missing email and/or password" }] });
   }
   const { email, password } = req.body;
 
   const user = await findUserByEmail(email);
 
   if (!user) {
-    return res.status(401).send("Invalid Credentials");
+    return res.status(401).json({ error: [{ msg: "Invalid credentials" }] });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    return res.status(401).send("Invalid Credentials");
+    return res.status(401).json({ error: [{ msg: "Invalid credentials" }] });
   }
 
   rules = packRules(defineRulesFor(user));
@@ -68,6 +70,6 @@ export const logout = async (req: Request, res: Response) => {
       return res.status(200).send("Logged out");
     } else return res.status(200).send("Logged out");
   } catch (err) {
-    res.status(500).send("Server error");
+    res.status(500).json({ error: [{ msg: "Server error logging out" }] });
   }
 };

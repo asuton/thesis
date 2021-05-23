@@ -18,21 +18,7 @@ import { logout } from "../redux/actions/auth/login";
 import { ThunkDispatch } from "redux-thunk";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-
-const headersData = [
-  {
-    label: "Patients",
-    href: "/patients",
-  },
-  {
-    label: "Doctors",
-    href: "/doctors",
-  },
-  {
-    label: "Log Out",
-    href: "/logout",
-  },
-];
+import { checkAuthorizationNav } from "../helpers/authorization";
 
 const useStyles = makeStyles(() => ({
   header: {
@@ -79,7 +65,10 @@ const useStyles = makeStyles(() => ({
 
 type Props = MapStateToProps & MapDispatchToProps;
 
-const Navbar: React.FC<Props> = (props: Props) => {
+const NavbarRecord: React.FC<Props> = (props: Props) => {
+  const { isAuthenticated, user } = props.authState;
+  const { logout } = props;
+
   const classes = useStyles();
 
   const [state, setState] = useState({
@@ -108,11 +97,6 @@ const Navbar: React.FC<Props> = (props: Props) => {
     );
   };
 
-  const logout = () => {
-    props.logout();
-    window.location.reload();
-  };
-
   const displayMobile = () => {
     const handleDrawerOpen = () =>
       setState((prevState) => ({ ...prevState, drawerOpen: true }));
@@ -135,6 +119,15 @@ const Navbar: React.FC<Props> = (props: Props) => {
   const getDrawerChoices = () => {
     return (
       <>
+        {isAuthenticated && user ? (
+          <Link
+            className={classes.drawerButton}
+            key={"Profile"}
+            to={checkAuthorizationNav(user)}
+          >
+            <MenuItem>My account</MenuItem>
+          </Link>
+        ) : null}
         <Can I="read" this={subject("Patient", { id: true })}>
           <Link
             className={classes.drawerButton}
@@ -167,22 +160,48 @@ const Navbar: React.FC<Props> = (props: Props) => {
 
   const Logo = (
     <Typography variant="h6" component="h1" className={classes.logo}>
-      <Link key={"Home"} to={"/home"} className={classes.menuButton}>
+      <Link key={"Home"} to={"/"} className={classes.menuButton}>
         MedClinic
       </Link>
     </Typography>
   );
 
   const getMenuButtons = () => {
-    return headersData.map(({ label, href }) => {
-      return (
+    return (
+      <>
+        {isAuthenticated && user ? (
+          <Link
+            className={classes.menuButton}
+            key={"Profile"}
+            to={checkAuthorizationNav(user)}
+          >
+            My account
+          </Link>
+        ) : null}
         <Can I="read" this={subject("Patient", { id: true })}>
-          <Link className={classes.menuButton} key={label} to={href}>
-            {label}
+          <Link
+            className={classes.menuButton}
+            key={"Patients"}
+            to={"/patients"}
+          >
+            Patients
           </Link>
         </Can>
-      );
-    });
+        <Can I="read" a="Doctor">
+          <Link className={classes.menuButton} key={"Doctors"} to={"/doctors"}>
+            Doctors
+          </Link>
+        </Can>
+        <Link
+          className={classes.menuButton}
+          key={"Logout"}
+          to={"/"}
+          onClick={logout}
+        >
+          Log out
+        </Link>
+      </>
+    );
   };
 
   return (
@@ -212,4 +231,4 @@ const mapDispatchToProps = (
   logout: bindActionCreators(logout, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(NavbarRecord);

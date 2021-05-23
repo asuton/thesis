@@ -23,6 +23,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import { Typography } from "@material-ui/core";
+import Loading from "./Loading";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,9 +67,12 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = MapStateToProps & MapDispatchToProps;
 
 export const Patients: React.FC<Props> = (props: Props) => {
+  const { patients, loading } = props.patientsState;
+  const { getPatients } = props;
+
   useEffect(() => {
-    props.getPatients();
-  }, [props.getPatients]);
+    getPatients();
+  }, [getPatients]);
 
   const [Search, setSearch] = useState({
     search: "",
@@ -76,8 +80,8 @@ export const Patients: React.FC<Props> = (props: Props) => {
 
   const { search } = Search;
   let filteredPatients: IPatient[] = [];
-  if (props.patientsState.patients) {
-    filteredPatients = props.patientsState.patients.filter(
+  if (patients) {
+    filteredPatients = patients.filter(
       (patients) =>
         (patients.name + " " + patients.surname)
           .toLowerCase()
@@ -94,17 +98,9 @@ export const Patients: React.FC<Props> = (props: Props) => {
 
   const classes = useStyles();
 
-  if (
-    props.patientsState.loading ||
-    props.patientsState.patients === undefined
-  ) {
-    return (
-      <>
-        <div>"Restricted"</div>
-      </>
-    );
-  }
-  return (
+  return loading || !patients ? (
+    <Loading></Loading>
+  ) : (
     <Can I="read" this={subject("Patient", { id: true })}>
       <div className={classes.root}>
         <TextField

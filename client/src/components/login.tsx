@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { AuthActionTypes, AuthState } from "../redux/types/auth";
+import { checkAuthorizationNav } from "../helpers/authorization";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -40,6 +41,8 @@ interface LoginFormState {
 type Props = MapStateToProps & MapDispatchToProps;
 
 const Login: React.FC<Props> = (props: Props) => {
+  const { isAuthenticated, user } = props.authState;
+
   const classes = useStyles();
 
   const [formData, setFormData] = useState<LoginFormState>({
@@ -58,8 +61,8 @@ const Login: React.FC<Props> = (props: Props) => {
     props.login(formData);
   };
 
-  if (props.authState.isAuthenticated) {
-    return <Redirect to="/patients" />;
+  if (isAuthenticated && user) {
+    return <Redirect to={checkAuthorizationNav(user)} />;
   }
 
   return (

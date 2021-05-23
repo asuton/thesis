@@ -23,7 +23,7 @@ const WebAuthnRegister: React.FC<Props> = (props: Props) => {
       fullWidth
       onClick={(e) => register(e)}
     >
-      Prijava
+      Register
     </Button>
   );
 };
@@ -37,7 +37,7 @@ interface MapDispatchToProps {
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  webAuthnState: state.webatuhn,
+  webAuthnState: state.webauthn,
 });
 
 const mapDispatchToProps = (

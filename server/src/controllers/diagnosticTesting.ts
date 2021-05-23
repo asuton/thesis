@@ -35,7 +35,13 @@ export const getDiagnosticTest = async (req: Request, res: Response) => {
     );
 
     if (!diagnosticTest) {
-      return res.status(400).send("Test not found");
+      return res.status(400).json({
+        error: [
+          {
+            msg: "Test not found",
+          },
+        ],
+      });
     }
 
     ForbiddenError.from(req.ability).throwUnlessCan(
@@ -52,11 +58,13 @@ export const getDiagnosticTest = async (req: Request, res: Response) => {
 export const postDiagnosticTest = async (req: Request, res: Response) => {
   try {
     if (!req.body || !req.body.test || !req.body.result) {
-      return res
-        .status(400)
-        .send(
-          "Invalid request body, missing one or more of fields: test, result"
-        );
+      return res.status(400).json({
+        error: [
+          {
+            msg: "Invalid request body, missing one or more of fields: test, result",
+          },
+        ],
+      });
     }
 
     let diagnosticTest = insertDiagnosticTesting(

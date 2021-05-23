@@ -18,7 +18,7 @@ const headersData = [
   },
   {
     label: "Medical Record",
-    href: "/",
+    href: "/login",
   },
 ];
 
@@ -125,7 +125,9 @@ const NavbarHome = () => {
 
   const Logo = (
     <Typography variant="h6" component="h1" className={classes.logo}>
-      MedClinic
+      <Link key={"Home"} to={"/"} className={classes.menuButton}>
+        MedClinic
+      </Link>
     </Typography>
   );
 

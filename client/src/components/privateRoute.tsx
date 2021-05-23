@@ -11,6 +11,7 @@ const PrivateRoute: React.FC<Props> = ({
   authenticated,
   ...rest
 }) => {
+  const { isAuthenticated } = authenticated;
   if (!component) {
     throw Error("Component is not defined");
   }
@@ -19,11 +20,7 @@ const PrivateRoute: React.FC<Props> = ({
     <Route
       {...rest}
       render={(props: RouteComponentProps<any>): React.ReactNode =>
-        !authenticated.isAuthenticated ? (
-          <Redirect to="/" />
-        ) : (
-          <Component {...props} />
-        )
+        !isAuthenticated ? <Redirect to="/login" /> : <Component {...props} />
       }
     />
   );

@@ -20,6 +20,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { TextField, Typography } from "@material-ui/core";
+import Loading from "./Loading";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,19 +61,23 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = MapStateToProps & MapDispatchToProps;
 
 export const Doctors: React.FC<Props> = (props: Props) => {
+  const { getDoctors } = props;
+  const { doctors, loading } = props.doctorsState;
+
   const classes = useStyles();
   useEffect(() => {
-    props.getDoctors();
-  }, [props.getDoctors]);
+    getDoctors();
+  }, [getDoctors]);
 
   const [Search, setSearch] = useState({
     search: "",
   });
 
   const { search } = Search;
+
   let filteredDoctors: IDoctor[] = [];
-  if (props.doctorsState.doctors) {
-    filteredDoctors = props.doctorsState.doctors.filter(
+  if (doctors) {
+    filteredDoctors = doctors.filter(
       (doctor) =>
         (doctor.name + " " + doctor.surname)
           .toLowerCase()
@@ -88,8 +93,8 @@ export const Doctors: React.FC<Props> = (props: Props) => {
     });
   };
 
-  return props.doctorsState.loading || !props.doctorsState.doctors ? (
-    <div>"Loading"</div>
+  return loading || !doctors ? (
+    <Loading></Loading>
   ) : (
     <Can I="read" a="Doctor">
       <div className={classes.root}>

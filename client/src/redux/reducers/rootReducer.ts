@@ -5,18 +5,20 @@ import authReducer from "./auth";
 import getDoctorsReducer from "./doctors/doctors";
 import getPatientReducer from "./patients/patient";
 import MedicalRecordReducer from "./medicalRecords/medicalRecord";
-import DiagnosticTestingReducer from "./diagnosticTestings/diagnosticTesting";
+import DiagnosticTestingReducer from "./diagnosticTestings";
 import getDoctorReducer from "./doctors/doctor";
+import AlertReducer from "./alert";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   patients: getPatientsReducer,
   doctors: getDoctorsReducer,
-  webatuhn: webAuthnReducer,
+  webauthn: webAuthnReducer,
   patient: getPatientReducer,
   medicalRecord: MedicalRecordReducer,
   diagnosticTesting: DiagnosticTestingReducer,
   doctor: getDoctorReducer,
+  alert: AlertReducer,
 });
 
 //kasnije spojit patients i patient, doctors i doctor

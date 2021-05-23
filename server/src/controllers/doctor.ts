@@ -6,18 +6,24 @@ import {
   getDoctorsQuery,
   getDoctorByIdQuery,
   insertDoctorQuery,
-  updatePatientQuery,
+  updateDoctorQuery,
 } from "../services/doctor";
 import { hashPassword } from "../helpers/hash";
 import { findUserByEmail } from "../services/user";
+import { getMedicalRecordListDoctor } from "../services/medicalRecord";
 
 export const getDoctors = async (_req: Request, res: Response) => {
   try {
     const doctors = await getDoctorsQuery();
     return res.json(doctors);
   } catch (err) {
-    console.error(err.message);
-    return res.status(500).send(err.message);
+    return res.status(500).json({
+      error: [
+        {
+          msg: "Server error",
+        },
+      ],
+    });
   }
 };
 
@@ -26,7 +32,21 @@ export const getDoctor = async (req: Request, res: Response) => {
     const doctor = await getDoctorByIdQuery(req.params.id);
 
     if (!doctor) {
-      return res.status(400).json({ msg: "Doctor not found" });
+      return res.status(400).json({
+        error: [
+          {
+            msg: "Doctor not found",
+          },
+        ],
+      });
+    }
+    const medicalRecords = await getMedicalRecordListDoctor(doctor.id);
+
+    if (
+      req.ability &&
+      req.ability.can("read", subject("MedicalRecord", { patientId: true }))
+    ) {
+      doctor.medicalRecord = medicalRecords;
     }
 
     return res.json(doctor);
@@ -48,11 +68,14 @@ export const postDoctor = async (req: Request, res: Response) => {
       !req.body.OIB ||
       !req.body.phone
     ) {
-      return res
-        .status(400)
-        .send(
-          "Invalid request body, missing one or more of fields: name, surname, email, password, qualification, license, OIB, phone"
-        );
+      return res.status(400).json({
+        error: [
+          {
+            msg: `Invalid request body, missing one or more of fields: 
+              name, surname, email, password, qualification, license, OIB, phone`,
+          },
+        ],
+      });
     }
 
     const user = await findUserByEmail(req.body.email);
@@ -81,16 +104,25 @@ export const postDoctor = async (req: Request, res: Response) => {
 export const putDoctor = async (req: Request, res: Response) => {
   try {
     if (!req.body || !req.body.phone || !req.body.qualification) {
-      return res
-        .status(500)
-        .send(
-          "Invalid request body, missing one or more of fields: phone, qualification"
-        );
+      return res.status(500).json({
+        error: [
+          {
+            msg: "Invalid request body, missing one or more of fields: phone, qualification",
+          },
+        ],
+      });
     }
-    const doctor = await updatePatientQuery(req.params.id, req.body);
+
+    const doctor = await updateDoctorQuery(req.params.id, req.body);
 
     if (!doctor) {
-      return res.status(400).send("Doctor doesn't exist");
+      return res.status(400).json({
+        error: [
+          {
+            msg: "Doctor does not exist",
+          },
+        ],
+      });
     }
 
     const errors = await validate(doctor);

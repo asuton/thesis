@@ -12,6 +12,9 @@ import { MedicalRecordFormState } from "../../../components/MedicalRecordForm";
 import { Dispatch } from "redux";
 import axios from "axios";
 import { config } from "../../types/config";
+import store from "../../store";
+import { setAlert } from "../alert";
+import { useHistory } from "react-router";
 
 export const getMedicalRecord =
   (id: string, patId: string) =>
@@ -29,15 +32,21 @@ export const getMedicalRecord =
         payload: payload,
       });
     } catch (err) {
+      const errors = err.response.data.error;
       dispatch({
         type: GET_MEDICAL_RECORD_FAIL,
-        payload: err,
+        payload: errors,
       });
+      if (errors) {
+        errors.forEach((error: any) => {
+          store.dispatch(setAlert(error.msg, "error"));
+        });
+      }
     }
   };
 
 export const postMedicalRecord =
-  (form: MedicalRecordFormState, id: string) =>
+  (form: MedicalRecordFormState, id: string, history: any) =>
   async (dispatch: Dispatch<MedicalRecordActionTypes>) => {
     dispatch({ type: POST_MEDICAL_RECORD_REQUEST });
     try {
@@ -47,8 +56,23 @@ export const postMedicalRecord =
         body,
         config
       );
+
       dispatch({ type: POST_MEDICAL_RECORD_SUCCESS });
+
+      store.dispatch(setAlert("Record successfully created", "success"));
+      history.push(`/patients/${id}/`);
     } catch (err) {
-      dispatch({ type: POST_MEDICAL_RECORD_FAIL, payload: err });
+      const errors = err.response?.data.error;
+
+      dispatch({
+        type: POST_MEDICAL_RECORD_FAIL,
+        payload: errors ? errors : err,
+      });
+
+      if (errors) {
+        errors.forEach((error: any) => {
+          store.dispatch(setAlert(error.msg, "error"));
+        });
+      }
     }
   };

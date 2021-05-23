@@ -1677,7 +1677,7 @@
     "@types/yargs" "^15.0.0"
     "chalk" "^4.0.0"
 
-"@material-ui/core@^4.0.0", "@material-ui/core@^4.11.3":
+"@material-ui/core@^4.0.0", "@material-ui/core@^4.11.3", "@material-ui/core@^4.9.10":
   "integrity" "sha512-Adt40rGW6Uds+cAyk3pVgcErpzU/qxc7KBR94jFHBYretU4AtWZltYcNsbeMn9tXL86jjVL1kuGcIHsgLgFGRw=="
   "resolved" "https://registry.npmjs.org/@material-ui/core/-/core-4.11.3.tgz"
   "version" "4.11.3"
@@ -1701,6 +1701,17 @@
   "version" "4.11.2"
   dependencies:
     "@babel/runtime" "^7.4.4"
+
+"@material-ui/lab@*":
+  "integrity" "sha512-GKHlJqLxUeHH3L3dGQ48ZavYrqGOTXkFkiEiuYMAnAvXAZP4rhMIqeHOPXSUQan4Bd8QnafDcpovOSLnadDmKw=="
+  "resolved" "https://registry.npmjs.org/@material-ui/lab/-/lab-4.0.0-alpha.58.tgz"
+  "version" "4.0.0-alpha.58"
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@material-ui/utils" "^4.11.2"
+    "clsx" "^1.0.4"
+    "prop-types" "^15.7.2"
+    "react-is" "^16.8.0 || ^17.0.0"
 
 "@material-ui/styles@^4.11.3":
   "integrity" "sha512-HzVzCG+PpgUGMUYEJ2rTEmQYeonGh41BYfILNFb/1ueqma+p1meSdu4RX6NjxYBMhf7k+jgfHFTTz+L1SXL/Zg=="
@@ -2361,6 +2372,11 @@
   "version" "3.0.0"
   dependencies:
     "universal-cookie" "*"
+
+"@types/uuid@^8.3.0":
+  "integrity" "sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ=="
+  "resolved" "https://registry.npmjs.org/@types/uuid/-/uuid-8.3.0.tgz"
+  "version" "8.3.0"
 
 "@types/warning@^3.0.0":
   "integrity" "sha1-DSUBJorY+ZYrdA04fEZU9fjiPlI="
@@ -12613,7 +12629,7 @@
   "resolved" "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   "version" "1.0.1"
 
-"uuid@^3.3.2":
+"uuid@^3.3.2", "uuid@^3.3.3":
   "integrity" "sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ=="
   "resolved" "https://registry.npmjs.org/uuid/-/uuid-3.3.3.tgz"
   "version" "3.3.3"

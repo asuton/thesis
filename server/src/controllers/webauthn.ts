@@ -35,7 +35,13 @@ export const webAuthnLogin = async (req: Request, res: Response) => {
   const user = await findUserById(req.id);
 
   if (!user || !user.webAuthnRegistered)
-    return res.status(401).send("Not registered");
+    return res.status(401).json({
+      error: [
+        {
+          msg: "Not webauthn registered!",
+        },
+      ],
+    });
 
   const getAssertion = generateServerGetAssertion(await user.authenticator);
 
@@ -54,11 +60,14 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
     !req.body.type ||
     req.body.type !== "public-key"
   ) {
-    return res
-      .status(400)
-      .send(
-        "Response missing one or more of id/rawId/response/type fields or type is not public key"
-      );
+    return res.status(400).json({
+      error: [
+        {
+          msg: `Response missing one or more of 
+          id/rawId/response/type fields or type is not public key`,
+        },
+      ],
+    });
   }
 
   const webAuthnResponse = req.body as WebAuthnResponseAttestation &
@@ -91,14 +100,26 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
   } else if (webAuthnResponse.response.authenticatorData !== undefined) {
     const user = await findUserById(req.session.user);
     if (!user) {
-      return res.status(500).send("Could not find user");
+      return res.status(500).json({
+        error: [
+          {
+            msg: "Could not find user",
+          },
+        ],
+      });
     }
     result = await verifyAuthenticatorAssertionResponse(
       webAuthnResponse,
       await user.authenticator
     );
   } else {
-    res.status(400).send("Can not determine type of response!");
+    res.status(400).json({
+      error: [
+        {
+          msg: "Could not determine type of response!",
+        },
+      ],
+    });
   }
 
   if (result.signatureIsValid && result.response) {
@@ -109,6 +130,12 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
     req.session.loggedIn = true;
     return res.status(200).send("Logged in");
   } else {
-    return res.status(500).send("Can not authenticate signature!");
+    return res.status(500).json({
+      error: [
+        {
+          msg: "Can not authenticate signature!",
+        },
+      ],
+    });
   }
 };
