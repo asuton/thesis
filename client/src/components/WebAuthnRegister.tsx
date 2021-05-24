@@ -6,13 +6,15 @@ import { bindActionCreators } from "redux";
 import React from "react";
 import { WebAuthnState, WebAuthnActionTypes } from "../redux/types/webauthn/";
 import { getMakeCredChallenge } from "../redux/actions/webauthn/";
+import { useHistory } from "react-router";
 
 type Props = MapStateToProps & MapDispatchToProps;
 
 const WebAuthnRegister: React.FC<Props> = (props: Props) => {
+  const history = useHistory();
   const register = async (e: any) => {
     e.preventDefault();
-    props.getMakeCredChallenge();
+    props.getMakeCredChallenge(history);
   };
 
   return (
@@ -33,7 +35,7 @@ interface MapStateToProps {
 }
 
 interface MapDispatchToProps {
-  getMakeCredChallenge: () => void;
+  getMakeCredChallenge: (history: any) => void;
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({

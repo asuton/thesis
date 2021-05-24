@@ -26,7 +26,7 @@ import store from "../../store";
 import { setAlert } from "../alert";
 
 export const getMakeCredChallenge =
-  () => async (dispatch: Dispatch<WebAuthnActionTypes>) => {
+  (history: any) => async (dispatch: Dispatch<WebAuthnActionTypes>) => {
     dispatch({ type: WEBAUTHN_REGISTER_REQUEST });
     try {
       const res = await axios.get(
@@ -47,6 +47,10 @@ export const getMakeCredChallenge =
 
       dispatch({ type: WEBAUTHN_REGISTER_SUCCESS });
       store.dispatch(setAlert("WebAuthn register success", "success"));
+      if (history.location.pathname === "/register") {
+        store.dispatch(setAlert("User successfully created!", "success"));
+        window.location.reload();
+      }
     } catch (err) {
       const errors = err.response?.data.error;
 

@@ -39,7 +39,7 @@ export const getDiagnosticTesting =
   };
 
 export const postDiagnosticTesting =
-  (form: DiagnosticTestingFormState, id: string) =>
+  (form: DiagnosticTestingFormState, id: string, history: any) =>
   async (dispatch: Dispatch<DiagnosticTestingActionTypes>) => {
     dispatch({ type: POST_DIAGNOSTIC_TESTING_REQUEST });
     try {
@@ -50,6 +50,8 @@ export const postDiagnosticTesting =
         config
       );
       dispatch({ type: POST_DIAGNOSTIC_TESTING_SUCCESS });
+      store.dispatch(setAlert("Test successfully created", "success"));
+      history.push(`/patients/${id}/`);
     } catch (err) {
       const errors = err.response?.data.error;
 

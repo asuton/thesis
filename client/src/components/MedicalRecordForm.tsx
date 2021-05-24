@@ -5,7 +5,7 @@ import { AppState } from "../redux/reducers/rootReducer";
 import { bindActionCreators } from "redux";
 import { RouteComponentProps, useHistory } from "react-router";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { AuthActionTypes, AuthState } from "../redux/types/auth";
+import { AuthActionTypes } from "../redux/types/auth";
 import { postMedicalRecord } from "../redux/actions/medicalRecords/medicalRecord";
 import { MedicalRecordState } from "../redux/types/medicalRecords/medicalRecord";
 import {
@@ -50,6 +50,15 @@ export interface MedicalRecordFormState {
   additionalNote: string;
 }
 
+interface HelperState {
+  helperTextTitle: string;
+  helperTextPhysicalExamination: string;
+  helperTextMedicalHistory: string;
+  helperTextDiagnosis: string;
+  helperTextTreatment: string;
+  helperTextRecommendation: string;
+}
+
 interface MatchParams {
   id: string;
 }
@@ -63,6 +72,7 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
   const { postMedicalRecord } = props;
   const history = useHistory();
   const classes = useStyles();
+
   const [formData, setFormData] = useState<MedicalRecordFormState>({
     title: "",
     medicalHistory: "",
@@ -83,13 +93,75 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
     additionalNote,
   } = formData;
 
+  const [helperData, setHelperData] = useState<HelperState>({
+    helperTextTitle: "",
+    helperTextMedicalHistory: "",
+    helperTextPhysicalExamination: "",
+    helperTextDiagnosis: "",
+    helperTextTreatment: "",
+    helperTextRecommendation: "",
+  });
+
+  const {
+    helperTextTitle,
+    helperTextMedicalHistory,
+    helperTextPhysicalExamination,
+    helperTextDiagnosis,
+    helperTextTreatment,
+    helperTextRecommendation,
+  } = helperData;
+
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => setFormData({ ...formData, [e.target.id]: e.target.value });
+  ) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+    if (e.target.id === "title")
+      setHelperData({ ...helperData, helperTextTitle: "" });
+    else if (e.target.id === "medicalHistory")
+      setHelperData({ ...helperData, helperTextMedicalHistory: "" });
+    else if (e.target.id === "physicalExamination")
+      setHelperData({ ...helperData, helperTextPhysicalExamination: "" });
+    else if (e.target.id === "diagnosis")
+      setHelperData({ ...helperData, helperTextDiagnosis: "" });
+    else if (e.target.id === "treatment")
+      setHelperData({ ...helperData, helperTextTreatment: "" });
+    else if (e.target.id === "recommendation")
+      setHelperData({ ...helperData, helperTextRecommendation: "" });
+  };
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    postMedicalRecord(formData, id, history);
+    if (title === "") {
+      setHelperData({
+        ...helperData,
+        helperTextTitle: "Empty field!",
+      });
+    } else if (medicalHistory === "") {
+      setHelperData({
+        ...helperData,
+        helperTextMedicalHistory: "Empty field!",
+      });
+    } else if (physicalExamination === "") {
+      setHelperData({
+        ...helperData,
+        helperTextPhysicalExamination: "Empty field!",
+      });
+    } else if (diagnosis === "") {
+      setHelperData({
+        ...helperData,
+        helperTextDiagnosis: "Empty field!",
+      });
+    } else if (treatment === "") {
+      setHelperData({
+        ...helperData,
+        helperTextTreatment: "Empty field!",
+      });
+    } else if (recommendation === "") {
+      setHelperData({
+        ...helperData,
+        helperTextRecommendation: "Empty field!",
+      });
+    } else postMedicalRecord(formData, id, history);
   };
 
   return (
@@ -113,6 +185,8 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
               label="Title"
               value={title}
               onChange={(e) => onChange(e)}
+              error={helperTextTitle === "" ? false : true}
+              helperText={helperTextTitle}
             />
           </Grid>
           <Grid item xs={12}>
@@ -125,6 +199,8 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
               multiline
               value={medicalHistory}
               onChange={(e) => onChange(e)}
+              error={helperTextMedicalHistory === "" ? false : true}
+              helperText={helperTextMedicalHistory}
             />
           </Grid>
           <Grid item xs={12}>
@@ -137,6 +213,8 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
               multiline
               value={physicalExamination}
               onChange={(e) => onChange(e)}
+              error={helperTextPhysicalExamination === "" ? false : true}
+              helperText={helperTextPhysicalExamination}
             />
             <Grid item xs={12}>
               <TextField
@@ -148,6 +226,8 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
                 multiline
                 value={diagnosis}
                 onChange={(e) => onChange(e)}
+                error={helperTextDiagnosis === "" ? false : true}
+                helperText={helperTextDiagnosis}
               />
             </Grid>
             <Grid item xs={12}>
@@ -160,6 +240,8 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
                 multiline
                 value={treatment}
                 onChange={(e) => onChange(e)}
+                error={helperTextTreatment === "" ? false : true}
+                helperText={helperTextTreatment}
               />
             </Grid>
             <Grid item xs={12}>
@@ -172,6 +254,8 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
                 multiline
                 value={recommendation}
                 onChange={(e) => onChange(e)}
+                error={helperTextRecommendation === "" ? false : true}
+                helperText={helperTextRecommendation}
               />
             </Grid>
             <Grid item xs={12}>

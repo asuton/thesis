@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import { AppState } from "../redux/reducers/rootReducer";
 import { bindActionCreators } from "redux";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, useHistory } from "react-router";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
@@ -46,6 +46,11 @@ export interface DiagnosticTestingFormState {
   result: string;
 }
 
+interface HelperState {
+  helperTextTest: string;
+  helperTextResult: string;
+}
+
 interface MatchParams {
   id: string;
 }
@@ -58,20 +63,44 @@ const DiagnosticTestingForm: React.FC<Props> = (props: Props) => {
   const { id } = props.match.params;
 
   const classes = useStyles();
+  const history = useHistory();
+
   const [formData, setFormData] = useState<DiagnosticTestingFormState>({
     test: "",
     result: "",
   });
 
+  const [helperData, setHelperData] = useState<HelperState>({
+    helperTextTest: "",
+    helperTextResult: "",
+  });
+
   const { test, result } = formData;
+  const { helperTextTest, helperTextResult } = helperData;
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => setFormData({ ...formData, [e.target.id]: e.target.value });
+  ) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+    if (e.target.id === "test")
+      setHelperData({ ...helperData, helperTextTest: "" });
+    else if (e.target.id === "result")
+      setHelperData({ ...helperData, helperTextResult: "" });
+  };
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    props.postDiagnosticTesting(formData, id);
+    if (test === "")
+      setHelperData({
+        ...helperData,
+        helperTextTest: "Empty field!",
+      });
+    else if (result === "")
+      setHelperData({
+        ...helperData,
+        helperTextResult: "Empty field!",
+      });
+    else props.postDiagnosticTesting(formData, id, history);
   };
 
   return (
@@ -95,6 +124,8 @@ const DiagnosticTestingForm: React.FC<Props> = (props: Props) => {
               label="Test"
               value={test}
               onChange={(e) => onChange(e)}
+              error={helperTextTest === "" ? false : true}
+              helperText={helperTextTest}
             />
           </Grid>
           <Grid item xs={12}>
@@ -107,6 +138,8 @@ const DiagnosticTestingForm: React.FC<Props> = (props: Props) => {
               multiline
               value={result}
               onChange={(e) => onChange(e)}
+              error={helperTextResult === "" ? false : true}
+              helperText={helperTextResult}
             />
           </Grid>
           <Button
@@ -129,7 +162,7 @@ interface MapStateToProps {
 }
 
 interface MapDispatchToProps {
-  postDiagnosticTesting: (form: any, id: string) => void;
+  postDiagnosticTesting: (form: any, id: string, history: any) => void;
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({

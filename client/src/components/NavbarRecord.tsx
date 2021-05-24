@@ -19,6 +19,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { checkAuthorizationNav } from "../helpers/authorization";
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   header: {
@@ -68,6 +69,13 @@ type Props = MapStateToProps & MapDispatchToProps;
 const NavbarRecord: React.FC<Props> = (props: Props) => {
   const { isAuthenticated, user } = props.authState;
   const { logout } = props;
+
+  const usePathname = () => {
+    const location = useLocation();
+    return location.pathname;
+  };
+
+  const register = usePathname() !== "/register" ? true : false;
 
   const classes = useStyles();
 
@@ -119,7 +127,7 @@ const NavbarRecord: React.FC<Props> = (props: Props) => {
   const getDrawerChoices = () => {
     return (
       <>
-        {isAuthenticated && user ? (
+        {isAuthenticated && user && register ? (
           <Link
             className={classes.drawerButton}
             key={"Profile"}
@@ -146,14 +154,16 @@ const NavbarRecord: React.FC<Props> = (props: Props) => {
             <MenuItem>{"Doctors"}</MenuItem>
           </Link>
         </Can>
-        <Link
-          className={classes.drawerButton}
-          key={"Logout"}
-          to={"/"}
-          onClick={logout}
-        >
-          <MenuItem>{"Log out"}</MenuItem>
-        </Link>
+        {isAuthenticated && user && register ? (
+          <Link
+            className={classes.drawerButton}
+            key={"Logout"}
+            to={"/"}
+            onClick={logout}
+          >
+            <MenuItem>{"Log out"}</MenuItem>
+          </Link>
+        ) : null}
       </>
     );
   };
@@ -169,7 +179,7 @@ const NavbarRecord: React.FC<Props> = (props: Props) => {
   const getMenuButtons = () => {
     return (
       <>
-        {isAuthenticated && user ? (
+        {isAuthenticated && user && register ? (
           <Link
             className={classes.menuButton}
             key={"Profile"}
@@ -192,14 +202,16 @@ const NavbarRecord: React.FC<Props> = (props: Props) => {
             Doctors
           </Link>
         </Can>
-        <Link
-          className={classes.menuButton}
-          key={"Logout"}
-          to={"/"}
-          onClick={logout}
-        >
-          Log out
-        </Link>
+        {isAuthenticated && user && register ? (
+          <Link
+            className={classes.menuButton}
+            key={"Logout"}
+            to={"/"}
+            onClick={logout}
+          >
+            Log out
+          </Link>
+        ) : null}
       </>
     );
   };

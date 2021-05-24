@@ -12,6 +12,7 @@ import setAuthToken from "../../utils/setAuthToken";
 import store from "../../store";
 import { loadUser } from "./loadUser";
 import { setAlert } from "../alert";
+import { getMakeCredChallenge } from "../webauthn";
 
 interface RegisterFormState {
   name: string;
@@ -44,8 +45,7 @@ export const register =
         payload: payload,
       });
       setAuthToken(payload.token);
-      store.dispatch(loadUser());
-      window.location.reload();
+      await store.dispatch(loadUser());
     } catch (err) {
       const errors = err.response?.data.error;
 

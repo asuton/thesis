@@ -13,6 +13,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { AuthActionTypes, AuthState } from "../redux/types/auth";
 import { checkAuthorizationNav } from "../helpers/authorization";
+import { validateEmail } from "../helpers/validate";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -38,6 +39,11 @@ interface LoginFormState {
   password: string;
 }
 
+interface HelperState {
+  helperTextEmail: string;
+  helperTextPassword: string;
+}
+
 type Props = MapStateToProps & MapDispatchToProps;
 
 const Login: React.FC<Props> = (props: Props) => {
@@ -50,15 +56,42 @@ const Login: React.FC<Props> = (props: Props) => {
     password: "",
   });
 
+  const [helperData, setHelperData] = useState<HelperState>({
+    helperTextEmail: "",
+    helperTextPassword: "",
+  });
+
   const { email, password } = formData;
+  const { helperTextEmail, helperTextPassword } = helperData;
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => setFormData({ ...formData, [e.target.id]: e.target.value });
+  ) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+    if (e.target.id === "email")
+      setHelperData({ ...helperData, helperTextEmail: "" });
+    else if (e.target.id === "password")
+      setHelperData({ ...helperData, helperTextPassword: "" });
+  };
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    props.login(formData);
+    if (email === "")
+      setHelperData({
+        ...helperData,
+        helperTextEmail: "Empty field!",
+      });
+    else if (!validateEmail(email))
+      setHelperData({
+        ...helperData,
+        helperTextEmail: "Not a valid email address!",
+      });
+    else if (password.length < 7)
+      setHelperData({
+        ...helperData,
+        helperTextPassword: "Password has to be at least 7 characters long",
+      });
+    else props.login(formData);
   };
 
   if (isAuthenticated && user) {
@@ -84,6 +117,8 @@ const Login: React.FC<Props> = (props: Props) => {
           label="E-mail"
           value={email}
           onChange={(e) => onChange(e)}
+          error={helperTextEmail === "" ? false : true}
+          helperText={helperTextEmail}
         />
         <TextField
           className={classes.textField}
@@ -94,6 +129,8 @@ const Login: React.FC<Props> = (props: Props) => {
           type="password"
           value={password}
           onChange={(e) => onChange(e)}
+          error={helperTextPassword === "" ? false : true}
+          helperText={helperTextPassword}
         />
         <Button
           variant="contained"
