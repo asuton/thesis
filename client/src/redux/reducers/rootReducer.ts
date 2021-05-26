@@ -8,6 +8,7 @@ import MedicalRecordReducer from "./medicalRecords/medicalRecord";
 import DiagnosticTestingReducer from "./diagnosticTestings";
 import getDoctorReducer from "./doctors/doctor";
 import AlertReducer from "./alert";
+import AppointmentReducer from "./appointment/appointment";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   diagnosticTesting: DiagnosticTestingReducer,
   doctor: getDoctorReducer,
   alert: AlertReducer,
+  appointment: AppointmentReducer,
 });
 
 //kasnije spojit patients i patient, doctors i doctor

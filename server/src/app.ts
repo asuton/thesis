@@ -11,6 +11,7 @@ import {
   diagnosticTestRoute,
   auth,
   webauthn,
+  appointmentRoute,
 } from "./routes";
 import { COOKIE_KEY } from "./utils/constants";
 
@@ -42,4 +43,5 @@ app.use("/patients", medicalRecordRoute);
 app.use("/patients", diagnosticTestRoute);
 app.use("/login", auth);
 app.use("/webauthn", webauthn);
+app.use("/appointment", appointmentRoute);
 export default app;

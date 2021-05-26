@@ -5,6 +5,7 @@ import MedicalRecord from "./MedicalRecord";
 import DiagnosticTesting from "./DiagnosticTesting";
 import { Authorization } from "../utils/constants";
 import Authenticator from "./Authenticator";
+import Appointment from "./Appointment";
 
 @Entity({ name: "doctors" })
 export default class Doctor extends User {
@@ -27,6 +28,9 @@ export default class Doctor extends User {
 
   @OneToMany(() => Authenticator, (authenticator) => authenticator.doctor)
   authenticator!: Promise<Authenticator[]>;
+
+  @OneToMany(() => Appointment, (appointment) => appointment.patient)
+  appointment!: Appointment[];
 
   @BeforeInsert()
   setAuthorization() {

@@ -5,6 +5,7 @@ import MedicalRecord from "./MedicalRecord";
 import Patient from "./Patient";
 import User from "./User";
 import Authenticator from "./Authenticator";
+import Appointment from "./Appointment";
 
 export {
   Admin,
@@ -14,4 +15,5 @@ export {
   Patient,
   User,
   Authenticator,
+  Appointment,
 };

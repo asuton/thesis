@@ -4,11 +4,11 @@ import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import React from "react";
-import { WebAuthnState, WebAuthnActionTypes } from "../redux/types/webauthn/";
+import { WebAuthnActionTypes } from "../redux/types/webauthn/";
 import { getMakeCredChallenge } from "../redux/actions/webauthn/";
 import { useHistory } from "react-router";
 
-type Props = MapStateToProps & MapDispatchToProps;
+type Props = MapDispatchToProps;
 
 const WebAuthnRegister: React.FC<Props> = (props: Props) => {
   const history = useHistory();
@@ -30,17 +30,9 @@ const WebAuthnRegister: React.FC<Props> = (props: Props) => {
   );
 };
 
-interface MapStateToProps {
-  webAuthnState: WebAuthnState;
-}
-
 interface MapDispatchToProps {
   getMakeCredChallenge: (history: any) => void;
 }
-
-const mapStateToProps = (state: AppState): MapStateToProps => ({
-  webAuthnState: state.webauthn,
-});
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<any, any, WebAuthnActionTypes>
@@ -48,4 +40,4 @@ const mapDispatchToProps = (
   getMakeCredChallenge: bindActionCreators(getMakeCredChallenge, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WebAuthnRegister);
+export default connect(mapDispatchToProps)(WebAuthnRegister);

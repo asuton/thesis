@@ -21,6 +21,8 @@ import Doctor from "./components/Doctor";
 import { checkWebAuthnSession } from "./redux/actions/webauthn";
 import Landing from "./components/Landing";
 import Alert from "./components/Alert";
+import AppointmentForm from "./components/AppointmentForm";
+import Appointments from "./components/Appointments";
 
 const storage = localStorage.getItem("user");
 
@@ -47,6 +49,16 @@ function App() {
             <PrivateRoute exact path="/doctors" component={Doctors} />
             <PrivateRoute exact path="/patients/:id" component={Patient} />
             <PrivateRoute exact path="/doctors/:id/" component={Doctor} />
+            <PrivateRoute
+              exact
+              path="/doctors/:id/appointment"
+              component={AppointmentForm}
+            />
+            <PrivateRoute
+              exact
+              path="/appointments"
+              component={Appointments}
+            ></PrivateRoute>
             <PrivateWebAuthnRoute
               exact
               path="/patients/:patId/record/:id"

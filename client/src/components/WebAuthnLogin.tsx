@@ -4,10 +4,10 @@ import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import React from "react";
-import { WebAuthnState, WebAuthnActionTypes } from "../redux/types/webauthn/";
+import { WebAuthnActionTypes } from "../redux/types/webauthn/";
 import { getGetAssertionChallenge } from "../redux/actions/webauthn/";
 
-type Props = MapStateToProps & MapDispatchToProps;
+type Props = MapDispatchToProps;
 
 const WebAuthnLogin: React.FC<Props> = (props: Props) => {
   const register = async (e: any) => {
@@ -28,17 +28,9 @@ const WebAuthnLogin: React.FC<Props> = (props: Props) => {
   );
 };
 
-interface MapStateToProps {
-  webAuthnState: WebAuthnState;
-}
-
 interface MapDispatchToProps {
   getGetAssertionChallenge: () => void;
 }
-
-const mapStateToProps = (state: AppState): MapStateToProps => ({
-  webAuthnState: state.webauthn,
-});
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<any, any, WebAuthnActionTypes>
@@ -49,4 +41,4 @@ const mapDispatchToProps = (
   ),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WebAuthnLogin);
+export default connect(mapDispatchToProps)(WebAuthnLogin);

@@ -4,7 +4,12 @@ import { Ability, ForcedSubject, AbilityClass } from "@casl/ability";
 import { IAuth } from "../redux/types/auth/user";
 
 type Actions = "create" | "read" | "update" | "delete";
-type Subjects = "Patient" | "Doctor" | "MedicalRecord" | "DiagnosticTesting";
+type Subjects =
+  | "Patient"
+  | "Doctor"
+  | "MedicalRecord"
+  | "DiagnosticTesting"
+  | "Appointment";
 
 type AppAbilities = [
   Actions,

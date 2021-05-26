@@ -21,6 +21,7 @@ import Loading from "./Loading";
 import { WebAuthnState } from "../redux/types/webauthn";
 import WebAuthnLogin from "./WebAuthnLogin";
 import WebAuthnRegister from "./WebAuthnRegister";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -172,6 +173,7 @@ export const Doctor: React.FC<Props> = (props: Props) => {
           </div>
         </>
       ) : null}
+      <Link to={`/doctors/${doctor.id}/appointment`}>APPOINTMENT</Link>
     </Can>
   );
 };

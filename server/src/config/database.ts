@@ -10,6 +10,7 @@ import {
 } from "../utils/constants";
 import {
   Admin,
+  Appointment,
   Authenticator,
   DiagnosticTesting,
   Doctor,
@@ -33,6 +34,7 @@ const dbConfig: ConnectionOptions = {
     MedicalRecord,
     Patient,
     Authenticator,
+    Appointment,
   ],
   synchronize: true,
 };
