@@ -13,10 +13,11 @@ export const getAppointments = async (req: Request, res: Response) => {
   try {
     let appointments = await getAppointmentsQuery(req.id);
     if (appointments) {
-      ForbiddenError.from(req.ability).throwUnlessCan(
-        "read",
-        subject("Appointment", appointments)
-      );
+      if (appointments.length > 0)
+        ForbiddenError.from(req.ability).throwUnlessCan(
+          "read",
+          subject("Appointment", appointments)
+        );
       return res.status(200).json(appointments);
     } else
       return res.status(400).json({

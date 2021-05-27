@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { login } from "../redux/actions/auth/login";
+import { login } from "../redux/actions/auth";
 import { AppState } from "../redux/reducers/rootReducer";
 import { Link, Redirect } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";

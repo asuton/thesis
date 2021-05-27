@@ -13,6 +13,17 @@ export const AUTH_ERROR = "AUTH_ERROR";
 
 export const LOGOUT = "LOGOUT";
 
+export interface RegisterFormState {
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  OIB: string;
+  dateOfBirth: string;
+  address: string;
+  phone: string;
+}
+
 export interface RegisterRequestAction {
   type: typeof REGISTER_REQUEST;
 }

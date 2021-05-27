@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
-import { register } from "../redux/actions/auth/register";
+import { register } from "../redux/actions/auth";
 import { Link, Redirect } from "react-router-dom";
 import { AppState } from "../redux/reducers/rootReducer";
 import { bindActionCreators } from "redux";

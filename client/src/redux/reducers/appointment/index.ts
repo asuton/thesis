@@ -13,7 +13,7 @@ import {
   DELETE_APPOINTMENT_FAIL,
   DELETE_APPOINTMENT_SUCCESS,
   DELETE_APPOINTMENT_REQUEST,
-} from "../../types/appointment/appointment";
+} from "../../types/appointment";
 
 const initialState: AppointmentState = { loading: true };
 

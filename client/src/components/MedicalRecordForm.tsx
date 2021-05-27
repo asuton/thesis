@@ -6,8 +6,8 @@ import { bindActionCreators } from "redux";
 import { RouteComponentProps, useHistory } from "react-router";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { AuthActionTypes } from "../redux/types/auth";
-import { postMedicalRecord } from "../redux/actions/medicalRecords/medicalRecord";
-import { MedicalRecordState } from "../redux/types/medicalRecords/medicalRecord";
+import { postMedicalRecord } from "../redux/actions/medicalRecord";
+import { MedicalRecordState } from "../redux/types/medicalRecord";
 import {
   TextField,
   Button,

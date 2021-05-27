@@ -40,4 +40,4 @@ const mapDispatchToProps = (
   getMakeCredChallenge: bindActionCreators(getMakeCredChallenge, dispatch),
 });
 
-export default connect(mapDispatchToProps)(WebAuthnRegister);
+export default connect(null, mapDispatchToProps)(WebAuthnRegister);

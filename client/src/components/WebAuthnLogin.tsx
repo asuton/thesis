@@ -10,9 +10,10 @@ import { getGetAssertionChallenge } from "../redux/actions/webauthn/";
 type Props = MapDispatchToProps;
 
 const WebAuthnLogin: React.FC<Props> = (props: Props) => {
+  const { getGetAssertionChallenge } = props;
   const register = async (e: any) => {
     e.preventDefault();
-    props.getGetAssertionChallenge();
+    getGetAssertionChallenge();
   };
 
   return (
@@ -41,4 +42,4 @@ const mapDispatchToProps = (
   ),
 });
 
-export default connect(mapDispatchToProps)(WebAuthnLogin);
+export default connect(null, mapDispatchToProps)(WebAuthnLogin);

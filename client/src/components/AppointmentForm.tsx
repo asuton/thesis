@@ -1,7 +1,3 @@
-import {
-  getTakenAppointments,
-  postAppointment,
-} from "../redux/actions/appointment/appointment";
 import React, { useEffect, useState } from "react";
 import { AppState } from "../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
@@ -16,7 +12,11 @@ import {
   AppointmentActionTypes,
   AppointmentState,
   IAppointmentForm,
-} from "../redux/types/appointment/appointment";
+} from "../redux/types/appointment";
+import {
+  getTakenAppointments,
+  postAppointment,
+} from "../redux/actions/appointment";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,

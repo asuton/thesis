@@ -8,7 +8,7 @@ import PrivateWebAuthnRoute from "./components/PrivateWebAuthnRoute";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { useEffect } from "react";
-import { loadUser } from "./redux/actions/auth/loadUser";
+import { loadUser } from "./redux/actions/auth";
 import { IAuth } from "./redux/types/auth/user";
 import setAuthToken from "./redux/utils/setAuthToken";
 import Layout from "./components/Layout";

@@ -3,8 +3,8 @@ import { AppState } from "../redux/reducers/rootReducer";
 import {
   DiagnosticTestingActionTypes,
   DiagnosticTestingState,
-} from "../redux/types/diagnosticTestings/diagnosticTesting";
-import { getDiagnosticTesting } from "../redux/actions/diagnosticTesting/diagnosticTesting";
+} from "../redux/types/diagnosticTesting";
+import { getDiagnosticTesting } from "../redux/actions/diagnosticTesting";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";

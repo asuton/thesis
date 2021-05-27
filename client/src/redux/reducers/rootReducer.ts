@@ -1,29 +1,23 @@
 import { combineReducers } from "redux";
-import getPatientsReducer from "./patients/patients";
+import PatientReducer from "./patient";
 import webAuthnReducer from "./webauthn";
 import authReducer from "./auth";
-import getDoctorsReducer from "./doctors/doctors";
-import getPatientReducer from "./patients/patient";
-import MedicalRecordReducer from "./medicalRecords/medicalRecord";
-import DiagnosticTestingReducer from "./diagnosticTestings";
-import getDoctorReducer from "./doctors/doctor";
+import DoctorReducer from "./doctor/";
+import MedicalRecordReducer from "./medicalRecord";
+import DiagnosticTestingReducer from "./diagnosticTesting";
 import AlertReducer from "./alert";
-import AppointmentReducer from "./appointment/appointment";
+import AppointmentReducer from "./appointment";
 
 const rootReducer = combineReducers({
-  auth: authReducer,
-  patients: getPatientsReducer,
-  doctors: getDoctorsReducer,
-  webauthn: webAuthnReducer,
-  patient: getPatientReducer,
-  medicalRecord: MedicalRecordReducer,
-  diagnosticTesting: DiagnosticTestingReducer,
-  doctor: getDoctorReducer,
   alert: AlertReducer,
   appointment: AppointmentReducer,
+  auth: authReducer,
+  diagnosticTesting: DiagnosticTestingReducer,
+  doctor: DoctorReducer,
+  medicalRecord: MedicalRecordReducer,
+  patient: PatientReducer,
+  webauthn: webAuthnReducer,
 });
-
-//kasnije spojit patients i patient, doctors i doctor
 
 export default rootReducer;
 

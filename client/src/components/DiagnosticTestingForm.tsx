@@ -12,10 +12,10 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { AuthActionTypes, AuthState } from "../redux/types/auth";
-import { postMedicalRecord } from "../redux/actions/medicalRecords/medicalRecord";
-import { MedicalRecordState } from "../redux/types/medicalRecords/medicalRecord";
-import { DiagnosticTestingState } from "../redux/types/diagnosticTestings/diagnosticTesting";
-import { postDiagnosticTesting } from "../redux/actions/diagnosticTesting/diagnosticTesting";
+import { postMedicalRecord } from "../redux/actions/medicalRecord";
+import { MedicalRecordState } from "../redux/types/medicalRecord";
+import { DiagnosticTestingState } from "../redux/types/diagnosticTesting";
+import { postDiagnosticTesting } from "../redux/actions/diagnosticTesting";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {

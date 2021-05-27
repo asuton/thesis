@@ -1,9 +1,9 @@
 import {
-  GetPatientsActionTypes,
-  GetPatientsState,
-  IPatient,
-} from "../redux/types/patients/patients";
-import { getPatients } from "../redux/actions/patients/patients";
+  PatientActionTypes,
+  PatientState,
+  IPatients,
+} from "../redux/types/patient";
+import { getPatients } from "../redux/actions/patient";
 import React, { useEffect, useState } from "react";
 import { AppState } from "../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
@@ -79,10 +79,13 @@ export const Patients: React.FC<Props> = (props: Props) => {
   });
 
   const { search } = Search;
-  let filteredPatients: IPatient[] = [];
+  let filteredPatients: IPatients[] = [];
   if (patients) {
     filteredPatients = patients.filter(
       (patients) =>
+        (patients.surname + " " + patients.name)
+          .toLowerCase()
+          .indexOf(search.toLowerCase()) !== -1 ||
         (patients.name + " " + patients.surname)
           .toLowerCase()
           .indexOf(search.toLowerCase()) !== -1
@@ -126,10 +129,10 @@ export const Patients: React.FC<Props> = (props: Props) => {
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.tableCell}>
-                    <Typography variant="h6">Name</Typography>
+                    <Typography variant="h6">Surname</Typography>
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    <Typography variant="h6">Surname</Typography>
+                    <Typography variant="h6">Name</Typography>
                   </TableCell>
                   <TableCell className={(classes.tableCell, classes.mobile)}>
                     <Typography variant="h6">DOB</Typography>
@@ -140,36 +143,56 @@ export const Patients: React.FC<Props> = (props: Props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredPatients.map((patient) => {
-                  return (
-                    <TableRow
-                      key={patient.id}
-                      className={classes.tableRow}
-                      component={Link}
-                      to={`/patients/${patient.id}`}
-                      style={{ textDecoration: "none" }}
+                {filteredPatients.length > 0 ? (
+                  filteredPatients
+                    .sort((a, b) => {
+                      const aPat =
+                        a.surname.toLowerCase() + " " + a.name.toLowerCase();
+                      const bPat =
+                        b.surname.toLowerCase() + " " + b.name.toLowerCase();
+                      return aPat > bPat ? 1 : -1;
+                    })
+                    .map((patient) => {
+                      return (
+                        <TableRow
+                          key={patient.id}
+                          className={classes.tableRow}
+                          component={Link}
+                          to={`/patients/${patient.id}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <TableCell
+                            component="th"
+                            scope="row"
+                            className={classes.tableCell}
+                          >
+                            {patient.surname}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {patient.name}
+                          </TableCell>
+                          <TableCell
+                            className={(classes.tableCell, classes.mobile)}
+                          >
+                            {moment(patient.dateOfBirth).format("DD/MM/YYYY")}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {patient.OIB}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                ) : (
+                  <TableRow>
+                    <Typography
+                      variant="h6"
+                      color="textSecondary"
+                      style={{ margin: "30px" }}
                     >
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        className={classes.tableCell}
-                      >
-                        {patient.name}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {patient.surname}
-                      </TableCell>
-                      <TableCell
-                        className={(classes.tableCell, classes.mobile)}
-                      >
-                        {moment(patient.dateOfBirth).format("DD/MM/YYYY")}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {patient.OIB}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                      No available patients
+                    </Typography>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </Grid>
@@ -180,7 +203,7 @@ export const Patients: React.FC<Props> = (props: Props) => {
 };
 
 interface MapStateToProps {
-  patientsState: GetPatientsState;
+  patientsState: PatientState;
 }
 
 interface MapDispatchToProps {
@@ -188,11 +211,11 @@ interface MapDispatchToProps {
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  patientsState: state.patients,
+  patientsState: state.patient,
 });
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<any, any, GetPatientsActionTypes>
+  dispatch: ThunkDispatch<any, any, PatientActionTypes>
 ): MapDispatchToProps => ({
   getPatients: bindActionCreators(getPatients, dispatch),
 });

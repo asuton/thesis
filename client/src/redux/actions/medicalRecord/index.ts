@@ -6,8 +6,8 @@ import {
   POST_MEDICAL_RECORD_REQUEST,
   POST_MEDICAL_RECORD_FAIL,
   POST_MEDICAL_RECORD_SUCCESS,
-} from "../../types/medicalRecords/medicalRecord";
-import { IMedicalRecord } from "../../types/medicalRecords/medicalRecord";
+} from "../../types/medicalRecord";
+import { IMedicalRecord } from "../../types/medicalRecord";
 import { MedicalRecordFormState } from "../../../components/MedicalRecordForm";
 import { Dispatch } from "redux";
 import axios from "axios";

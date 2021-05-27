@@ -7,7 +7,7 @@ import {
   POST_DIAGNOSTIC_TESTING_FAIL,
   DiagnosticTestingActionTypes,
   DiagnosticTestingState,
-} from "../../types/diagnosticTestings/diagnosticTesting";
+} from "../../types/diagnosticTesting";
 
 const initialState: DiagnosticTestingState = { loading: true };
 

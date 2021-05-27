@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import { Can } from "./Can";
 import { subject } from "@casl/ability";
 import { RouteComponentProps, withRouter } from "react-router";
-import { getMedicalRecord } from "../redux/actions/medicalRecords/medicalRecord";
+import { getMedicalRecord } from "../redux/actions/medicalRecord";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -14,7 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import {
   MedicalRecordActionTypes,
   MedicalRecordState,
-} from "../redux/types/medicalRecords/medicalRecord";
+} from "../redux/types/medicalRecord";
 import { Divider } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import moment from "moment";

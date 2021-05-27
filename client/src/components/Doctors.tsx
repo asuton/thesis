@@ -1,9 +1,9 @@
 import {
-  GetDoctorsActionTypes,
-  GetDoctorState,
-  IDoctor,
-} from "../redux/types/doctors/doctors";
-import { getDoctors } from "../redux/actions/doctors/doctors";
+  DoctorActionTypes,
+  DoctorState,
+  IDoctors,
+} from "../redux/types/doctor";
+import { getDoctors } from "../redux/actions/doctor";
 import React, { useEffect, useState } from "react";
 import { AppState } from "../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
@@ -75,14 +75,18 @@ export const Doctors: React.FC<Props> = (props: Props) => {
 
   const { search } = Search;
 
-  let filteredDoctors: IDoctor[] = [];
+  let filteredDoctors: IDoctors[] = [];
   if (doctors) {
     filteredDoctors = doctors.filter(
       (doctor) =>
-        (doctor.name + " " + doctor.surname)
+        (doctor.surname + " " + doctor.name)
           .toLowerCase()
           .indexOf(search.toLowerCase()) !== -1 ||
-        doctor.qualification.toLowerCase().indexOf(search.toLowerCase()) !== -1
+        doctor.qualification.toLowerCase().indexOf(search.toLowerCase()) !==
+          -1 ||
+        (doctor.name + " " + doctor.surname)
+          .toLowerCase()
+          .indexOf(search.toLowerCase()) !== -1
     );
   }
 
@@ -120,10 +124,10 @@ export const Doctors: React.FC<Props> = (props: Props) => {
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.tableCell}>
-                    <Typography variant="h6">Name</Typography>
+                    <Typography variant="h6">Surname</Typography>
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    <Typography variant="h6">Surname</Typography>
+                    <Typography variant="h6">Name</Typography>
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     <Typography variant="h6">Qualification</Typography>
@@ -131,31 +135,51 @@ export const Doctors: React.FC<Props> = (props: Props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredDoctors.map((doctor) => {
-                  return (
-                    <TableRow
-                      key={doctor.id}
-                      className={classes.tableRow}
-                      component={Link}
-                      to={`/doctors/${doctor.id}`}
-                      style={{ textDecoration: "none" }}
+                {filteredDoctors.length > 0 ? (
+                  filteredDoctors
+                    .sort((a, b) => {
+                      const aDoc =
+                        a.surname.toLowerCase() + " " + a.name.toLowerCase();
+                      const bDoc =
+                        b.surname.toLowerCase() + " " + b.name.toLowerCase();
+                      return aDoc > bDoc ? 1 : -1;
+                    })
+                    .map((doctor) => {
+                      return (
+                        <TableRow
+                          key={doctor.id}
+                          className={classes.tableRow}
+                          component={Link}
+                          to={`/doctors/${doctor.id}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <TableCell
+                            component="th"
+                            scope="row"
+                            className={classes.tableCell}
+                          >
+                            {doctor.surname}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {doctor.name}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {doctor.qualification}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                ) : (
+                  <TableRow>
+                    <Typography
+                      variant="h6"
+                      color="textSecondary"
+                      style={{ margin: "30px" }}
                     >
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        className={classes.tableCell}
-                      >
-                        {doctor.name}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {doctor.surname}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {doctor.qualification}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                      No available doctors
+                    </Typography>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </Grid>
@@ -166,7 +190,7 @@ export const Doctors: React.FC<Props> = (props: Props) => {
 };
 
 interface MapStateToProps {
-  doctorsState: GetDoctorState;
+  doctorsState: DoctorState;
 }
 
 interface MapDispatchToProps {
@@ -174,11 +198,11 @@ interface MapDispatchToProps {
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  doctorsState: state.doctors,
+  doctorsState: state.doctor,
 });
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<any, any, GetDoctorsActionTypes>
+  dispatch: ThunkDispatch<any, any, DoctorActionTypes>
 ): MapDispatchToProps => ({
   getDoctors: bindActionCreators(getDoctors, dispatch),
 });

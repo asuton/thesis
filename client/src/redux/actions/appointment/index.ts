@@ -15,7 +15,7 @@ import {
   DELETE_APPOINTMENT_REQUEST,
   DELETE_APPOINTMENT_FAIL,
   DELETE_APPOINTMENT_SUCCESS,
-} from "../../types/appointment/appointment";
+} from "../../types/appointment";
 import { Dispatch } from "redux";
 import axios from "axios";
 import store from "../../store";
@@ -93,7 +93,7 @@ export const postAppointment =
       dispatch({ type: POST_APPOINTMENT_SUCCESS });
 
       store.dispatch(setAlert("Appointment successfully created", "success"));
-      history.push(`/doctors/${id}/`);
+      history.push(`/appointments`);
     } catch (err) {
       const errors = err.response?.data.error;
 
@@ -114,7 +114,7 @@ export const deleteAppointment =
   (id: string) => async (dispatch: Dispatch<AppointmentActionTypes>) => {
     dispatch({ type: DELETE_APPOINTMENT_REQUEST });
     try {
-      const res = await axios.delete(`http://localhost:5000/appointment/${id}`);
+      await axios.delete(`http://localhost:5000/appointment/${id}`);
 
       dispatch({ type: DELETE_APPOINTMENT_SUCCESS, payload: id });
 

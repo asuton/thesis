@@ -7,7 +7,7 @@ import {
   POST_DIAGNOSTIC_TESTING_FAIL,
   DiagnosticTestingActionTypes,
   IDiagnosticTesting,
-} from "../../types/diagnosticTestings/diagnosticTesting";
+} from "../../types/diagnosticTesting";
 import { DiagnosticTestingFormState } from "../../../components/DiagnosticTestingForm";
 import { Dispatch } from "redux";
 import axios from "axios";

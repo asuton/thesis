@@ -7,7 +7,7 @@ import {
   POST_MEDICAL_RECORD_REQUEST,
   POST_MEDICAL_RECORD_SUCCESS,
   POST_MEDICAL_RECORD_FAIL,
-} from "../../types/medicalRecords/medicalRecord";
+} from "../../types/medicalRecord";
 
 const initialState: MedicalRecordState = { loading: true };
 
