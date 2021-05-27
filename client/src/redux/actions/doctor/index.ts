@@ -6,12 +6,17 @@ import {
   GET_DOCTORS_REQUEST,
   GET_DOCTORS_SUCCESS,
   GET_DOCTORS_FAIL,
+  IPutDoctorForm,
+  PUT_DOCTOR_REQUEST,
+  PUT_DOCTOR_SUCCESS,
+  PUT_DOCTOR_FAIL,
 } from "../../types/doctor";
 import { IDoctor, IDoctors } from "../../types/doctor";
 import { Dispatch } from "redux";
 import axios from "axios";
 import store from "../../store";
 import { setAlert } from "../alert";
+import { config } from "../../types/config";
 
 export const getDoctorById =
   (id: string) => async (dispatch: Dispatch<DoctorActionTypes>) => {
@@ -58,6 +63,42 @@ export const getDoctors =
 
       dispatch({
         type: GET_DOCTORS_FAIL,
+        payload: errors ? errors : err,
+      });
+
+      if (errors) {
+        errors.forEach((error: any) => {
+          store.dispatch(setAlert(error.msg, "error"));
+        });
+      }
+    }
+  };
+
+export const putDoctor =
+  (id: string, form: IPutDoctorForm) =>
+  async (dispatch: Dispatch<DoctorActionTypes>) => {
+    dispatch({ type: PUT_DOCTOR_REQUEST });
+
+    try {
+      const body = JSON.stringify(form);
+      const res = await axios.put(
+        `http://localhost:5000/doctors/${id}`,
+        body,
+        config
+      );
+      const payload: IDoctor = res.data;
+
+      dispatch({
+        type: PUT_DOCTOR_SUCCESS,
+        payload: payload,
+      });
+
+      store.dispatch(setAlert("Account updated successfully", "success"));
+    } catch (err) {
+      const errors = err.response?.data.error;
+
+      dispatch({
+        type: PUT_DOCTOR_FAIL,
         payload: errors ? errors : err,
       });
 

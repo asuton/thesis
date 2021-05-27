@@ -6,7 +6,6 @@ import {
   getDoctorsQuery,
   getDoctorByIdQuery,
   insertDoctorQuery,
-  updateDoctorQuery,
 } from "../services/doctor";
 import { hashPassword } from "../helpers/hash";
 import { findUserByEmail } from "../services/user";
@@ -113,7 +112,8 @@ export const putDoctor = async (req: Request, res: Response) => {
       });
     }
 
-    const doctor = await updateDoctorQuery(req.params.id, req.body);
+    const { phone, qualification } = req.body;
+    let doctor = await getDoctorByIdQuery(req.params.id);
 
     if (!doctor) {
       return res.status(400).json({
@@ -125,9 +125,14 @@ export const putDoctor = async (req: Request, res: Response) => {
       });
     }
 
-    const errors = await validate(doctor);
-    if (errors.length > 0) {
-      return res.status(500).send(errors);
+    if (phone.length < 7 || qualification === "") {
+      return res.status(500).json({
+        error: [
+          {
+            msg: "Invalid length of phone or qualification field",
+          },
+        ],
+      });
     }
 
     ForbiddenError.from(req.ability).throwUnlessCan(
@@ -135,9 +140,12 @@ export const putDoctor = async (req: Request, res: Response) => {
       subject("Doctor", doctor)
     );
 
-    const response = await Doctor.save(doctor);
+    doctor.phone = phone;
+    doctor.qualification = qualification;
 
-    return res.json(response);
+    await Doctor.save(doctor);
+
+    return res.json(doctor);
   } catch (err) {
     return res.status(500).send(err.message);
   }

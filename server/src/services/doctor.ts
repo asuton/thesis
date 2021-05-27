@@ -71,16 +71,3 @@ export const insertDoctorQuery = (form: Doctor): Doctor => {
   doctor.password = form.password;
   return doctor;
 };
-
-export const updateDoctorQuery = async (
-  id: string,
-  form: Doctor
-): Promise<Doctor | undefined> => {
-  let doctor = await Doctor.findOne(id);
-  if (doctor) {
-    doctor.qualification = form.qualification;
-    doctor.phone = form.phone;
-    return doctor;
-  }
-  return doctor;
-};

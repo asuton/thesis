@@ -71,15 +71,3 @@ export const insertPatientQuery = (form: Patient): Patient => {
   patient.password = form.password;
   return patient;
 };
-
-export const updatePatientQuery = async (
-  id: string,
-  form: Patient
-): Promise<Patient | undefined> => {
-  let patient = await Patient.findOne(id);
-  if (patient) {
-    patient.address = form.address;
-    patient.phone = form.address;
-    return patient;
-  } else return patient;
-};

@@ -23,6 +23,8 @@ import Landing from "./components/Landing";
 import Alert from "./components/Alert";
 import AppointmentForm from "./components/AppointmentForm";
 import Appointments from "./components/Appointments";
+import PatientUpdateForm from "./components/PatientUpdateForm";
+import DoctorUpdateForm from "./components/DoctorUpdateForm";
 
 const storage = localStorage.getItem("user");
 
@@ -59,6 +61,16 @@ function App() {
               path="/appointments"
               component={Appointments}
             ></PrivateRoute>
+            <PrivateWebAuthnRoute
+              exact
+              path="/patients/:id/update"
+              component={PatientUpdateForm}
+            />
+            <PrivateWebAuthnRoute
+              exact
+              path="/doctors/:id/update"
+              component={DoctorUpdateForm}
+            ></PrivateWebAuthnRoute>
             <PrivateWebAuthnRoute
               exact
               path="/patients/:patId/record/:id"

@@ -8,7 +8,6 @@ import {
   getPatientsQuery,
   getPatientByIdQuery,
   insertPatientQuery,
-  updatePatientQuery,
 } from "../services/patient";
 import { findUserByEmail } from "../services/user";
 import { hashPassword } from "../helpers/hash";
@@ -138,21 +137,27 @@ export const putPatient = async (
         ],
       });
     }
-    const patient = await updatePatientQuery(req.params.id, req.body);
+    const { phone, address } = req.body;
+    let patient = await getPatientByIdQuery(req.params.id);
 
     if (!patient) {
       return res.status(400).json({
         error: [
           {
-            msg: "Patient update error",
+            msg: "Patient does not exist",
           },
         ],
       });
     }
 
-    const errors = await validate(patient);
-    if (errors.length > 0) {
-      return res.status(500).send(errors);
+    if (phone.length < 7 || address === "") {
+      return res.status(500).json({
+        error: [
+          {
+            msg: "Invalid length of phone or address field",
+          },
+        ],
+      });
     }
 
     ForbiddenError.from(req.ability).throwUnlessCan(
@@ -160,8 +165,16 @@ export const putPatient = async (
       subject("Patient", patient)
     );
 
-    const response = await Patient.save(patient);
-    return res.json(response);
+    patient.phone = phone;
+    patient.address = address;
+
+    await Patient.save(patient);
+
+    const medicalRecords = await getMedicalRecordListPatient(patient.id);
+    const diagnosticTestings = await getDiagnosticTestingsList(patient.id);
+    patient.medicalRecord = medicalRecords;
+    patient.diagnosticTesting = diagnosticTestings;
+    return res.json(patient);
   } catch (err) {
     return res.status(500).send(err.message);
   }

@@ -7,6 +7,9 @@ import {
   GET_PATIENTS_REQUEST,
   GET_PATIENTS_SUCCESS,
   GET_PATIENTS_FAIL,
+  PUT_PATIENT_REQUEST,
+  PUT_PATIENT_SUCCESS,
+  PUT_PATIENT_FAIL,
 } from "../../types/patient";
 
 const initialState: PatientState = { loading: true };
@@ -18,10 +21,12 @@ const PatientReducer = (
   switch (action.type) {
     case GET_PATIENT_REQUEST:
     case GET_PATIENTS_REQUEST:
+    case PUT_PATIENT_REQUEST:
       return {
         loading: true,
       };
     case GET_PATIENT_SUCCESS:
+    case PUT_PATIENT_SUCCESS:
       return {
         loading: false,
         patient: action.payload,
@@ -33,6 +38,7 @@ const PatientReducer = (
       };
     case GET_PATIENT_FAIL:
     case GET_PATIENTS_FAIL:
+    case PUT_PATIENT_FAIL:
       return {
         error: action.payload,
       };

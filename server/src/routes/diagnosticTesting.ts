@@ -5,11 +5,12 @@ import {
   postDiagnosticTest,
 } from "../controllers/diagnosticTesting";
 import { authJWT } from "../middleware/auth";
+import { webAuthn } from "../middleware/webauthn";
 
 const router = express.Router();
 
-router.get("/:patId/tests", authJWT, getDiagnosticTests);
-router.get("/:patId/tests/:testId", authJWT, getDiagnosticTest);
-router.post("/:patId/tests", authJWT, postDiagnosticTest);
+router.get("/:patId/tests", authJWT, webAuthn, getDiagnosticTests);
+router.get("/:patId/tests/:testId", authJWT, webAuthn, getDiagnosticTest);
+router.post("/:patId/tests", authJWT, webAuthn, postDiagnosticTest);
 
 export default router;

@@ -39,24 +39,16 @@ export const defineRulesFor = (user: User): RawRuleOf<AppAbility>[] => {
   if (user.authorization === Authorization.Patient) {
     can("read", "Patient", { id: user.id });
     can("update", "Patient", { id: user.id });
-    can("read", "MedicalRecord", { patientId: user.id });
-    can("read", "DiagnosticTesting", { patientId: user.id });
-    can("create", "Appointment");
-    can("read", "Appointment", { patientId: user.id });
-    can("delete", "Appointment", { patientId: user.id });
+    can("read", ["MedicalRecord", "DiagnosticTesting"], { patientId: user.id });
+    can(["read", "create", "delete"], "Appointment", { patientId: user.id });
   }
 
   if (user.authorization === Authorization.Doctor) {
     can("read", "Patient");
-    can("update", "Patient");
-
     can("update", "Doctor", { id: user.id });
     can(["read", "create"], ["MedicalRecord", "DiagnosticTesting"]);
-    can("update", ["MedicalRecord", "DiagnosticTesting"], {
-      doctorId: user.id,
-    });
-    can("read", "Appointment", { doctorId: user.id });
-    can("delete", "Appointment", { doctorId: user.id });
+    can("update", "MedicalRecord", { doctorId: user.id });
+    can(["read", "delete"], "Appointment", { doctorId: user.id });
   }
 
   return rules;

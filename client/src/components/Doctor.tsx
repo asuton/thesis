@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import { Button, Container, Divider } from "@material-ui/core";
+import { Button, Container, Divider, Grid } from "@material-ui/core";
 import { DoctorActionTypes, DoctorState } from "../redux/types/doctor";
 import { getDoctorById } from "../redux/actions/doctor/";
 import { AuthState } from "../redux/types/auth";
@@ -113,7 +113,29 @@ export const Doctor: React.FC<Props> = (props: Props) => {
         <Card className={classes.root} variant="outlined">
           <CardContent>
             <Typography variant="h5" component="h2">
-              {doctor.name + " " + doctor.surname}
+              <Grid
+                container
+                style={{ paddingLeft: "10px", paddingRight: "10px" }}
+              >
+                <Grid item xs={8} sm={11}>
+                  {doctor.name + " " + doctor.surname}
+                </Grid>
+                {user?.id === params.id ? (
+                  <Can I="update" this={subject("Doctor", doctor)}>
+                    <Grid item xs={4} sm={1}>
+                      <Button
+                        color="primary"
+                        type="submit"
+                        component={Link}
+                        to={`/doctors/${doctor.id}/update`}
+                        style={{ width: "100px" }}
+                      >
+                        Update
+                      </Button>
+                    </Grid>
+                  </Can>
+                ) : null}
+              </Grid>
             </Typography>
             <br></br>
             <Divider></Divider>

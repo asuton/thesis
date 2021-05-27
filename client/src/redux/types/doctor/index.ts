@@ -6,6 +6,10 @@ export const GET_DOCTORS_REQUEST = "GET_DOCTORS_REQUEST";
 export const GET_DOCTORS_SUCCESS = "GET_DOCTORS_SUCCESS";
 export const GET_DOCTORS_FAIL = "GET_DOCTORS_FAIL";
 
+export const PUT_DOCTOR_REQUEST = "PUT_DOCTOR_REQUEST";
+export const PUT_DOCTOR_SUCCESS = "PUT_DOCTOR_SUCCESS";
+export const PUT_DOCTOR_FAIL = "PUT_DOCTOR_FAIL";
+
 interface IMedicalRecord {
   title: string;
   patientId: string;
@@ -37,6 +41,11 @@ export interface IDoctors {
   license: string;
 }
 
+export interface IPutDoctorForm {
+  qualification: string;
+  phone: string;
+}
+
 export interface GetDoctorRequestAction {
   type: typeof GET_DOCTOR_REQUEST;
 }
@@ -65,13 +74,30 @@ export interface GetDoctorsSuccessFail {
   payload: any;
 }
 
+export interface PutDoctorRequestAction {
+  type: typeof PUT_DOCTOR_REQUEST;
+}
+
+export interface PutDoctorSuccessAction {
+  type: typeof PUT_DOCTOR_SUCCESS;
+  payload: IDoctor;
+}
+
+export interface PutDoctorSuccessFail {
+  type: typeof PUT_DOCTOR_FAIL;
+  payload: any;
+}
+
 export type DoctorActionTypes =
   | GetDoctorRequestAction
   | GetDoctorSuccessAction
   | GetDoctorSuccessFail
   | GetDoctorsRequestAction
   | GetDoctorsSuccessAction
-  | GetDoctorsSuccessFail;
+  | GetDoctorsSuccessFail
+  | PutDoctorRequestAction
+  | PutDoctorSuccessAction
+  | PutDoctorSuccessFail;
 
 export type DoctorState = {
   loading?: boolean;

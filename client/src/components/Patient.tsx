@@ -130,9 +130,28 @@ export const Patient: React.FC<Props> = (props: Props) => {
       <Container>
         <Card className={classes.root} variant="outlined">
           <CardContent>
-            <Typography variant="h5" component="h2">
-              {patient.name + " " + patient.surname}
-            </Typography>
+            <Grid container>
+              <Grid item xs={12} sm={11}>
+                <Typography variant="h5" component="h2">
+                  {patient.name + " " + patient.surname}
+                </Typography>
+              </Grid>
+              {user?.id === params.id ? (
+                <Can I="update" this={subject("Patient", patient)}>
+                  <Grid item xs={12} sm={1}>
+                    <Button
+                      color="primary"
+                      type="submit"
+                      component={Link}
+                      to={`/patients/${patient.id}/update`}
+                      style={{ width: "100px" }}
+                    >
+                      Update
+                    </Button>
+                  </Grid>
+                </Can>
+              ) : null}
+            </Grid>
             <br></br>
             <Divider></Divider>
             <br></br>
@@ -156,7 +175,7 @@ export const Patient: React.FC<Props> = (props: Props) => {
         {user?.id === params.id ? (
           <div className={classes.button}>
             {props.webAuthnAuthenticated.isAuthenticated ? (
-              <div>
+              <>
                 <div>
                   <Typography variant="body1">
                     Your identity is verified. You can add another credential
@@ -166,7 +185,7 @@ export const Patient: React.FC<Props> = (props: Props) => {
                 <div style={{ width: "150px" }}>
                   <WebAuthnRegister></WebAuthnRegister>
                 </div>
-              </div>
+              </>
             ) : (
               <>
                 <div>
