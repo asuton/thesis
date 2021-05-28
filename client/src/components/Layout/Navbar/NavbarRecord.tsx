@@ -10,15 +10,15 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Can } from "./Can";
+import { Can } from "../../Auth/Can";
 import { subject } from "@casl/ability";
-import { AuthActionTypes, AuthState } from "../redux/types/auth";
-import { AppState } from "../redux/reducers/rootReducer";
-import { logout } from "../redux/actions/auth";
+import { AuthActionTypes, AuthState } from "../../../redux/types/auth";
+import { AppState } from "../../../redux/reducers/rootReducer";
+import { logout } from "../../../redux/actions/auth";
 import { ThunkDispatch } from "redux-thunk";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { checkAuthorizationNav } from "../helpers/authorization";
+import { checkAuthorizationNav } from "../../../helpers/authorization";
 import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({

@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 
 const Map = () => {
   const position: LatLngExpression = [43.5113824, 16.4678809];
-  const zoom: number = 17;
+  const zoom: number = 18;
   const classes = useStyles();
 
   const DefaultIcon = L.icon({

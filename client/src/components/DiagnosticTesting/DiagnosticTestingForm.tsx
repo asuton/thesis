@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-import { AppState } from "../redux/reducers/rootReducer";
+import { AppState } from "../../redux/reducers/rootReducer";
 import { bindActionCreators } from "redux";
 import { RouteComponentProps, useHistory } from "react-router";
 import TextField from "@material-ui/core/TextField";
@@ -11,11 +11,11 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { AuthActionTypes, AuthState } from "../redux/types/auth";
-import { postMedicalRecord } from "../redux/actions/medicalRecord";
-import { MedicalRecordState } from "../redux/types/medicalRecord";
-import { DiagnosticTestingState } from "../redux/types/diagnosticTesting";
-import { postDiagnosticTesting } from "../redux/actions/diagnosticTesting";
+import { AuthActionTypes, AuthState } from "../../redux/types/auth";
+import { postMedicalRecord } from "../../redux/actions/medicalRecord";
+import { MedicalRecordState } from "../../redux/types/medicalRecord";
+import { DiagnosticTestingState } from "../../redux/types/diagnosticTesting";
+import { postDiagnosticTesting } from "../../redux/actions/diagnosticTesting";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {

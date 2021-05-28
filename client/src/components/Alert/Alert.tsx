@@ -1,6 +1,6 @@
 import React from "react";
-import { IAlert, AlertState } from "../redux/types/alert";
-import { AppState } from "../redux/reducers/rootReducer";
+import { IAlert, AlertState } from "../../redux/types/alert";
+import { AppState } from "../../redux/reducers/rootReducer";
 import { connect } from "react-redux";
 import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core";

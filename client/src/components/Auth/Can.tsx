@@ -1,4 +1,4 @@
-import { ability } from "../config/ability";
+import { ability } from "../../config/ability";
 import { createContext } from "react";
 import { createContextualCan } from "@casl/react";
 

@@ -1,5 +1,5 @@
-import NavbarRecord from "./NavbarRecord";
-import NavbarHome from "./NavbarHome";
+import NavbarRecord from "./Navbar/NavbarRecord";
+import NavbarHome from "./Navbar/NavbarHome";
 import { useLocation } from "react-router-dom";
 
 interface Props {

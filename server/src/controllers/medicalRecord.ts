@@ -27,10 +27,7 @@ export const getMedicalRecords = async (req: Request, res: Response) => {
 
 export const getMedicalRecord = async (req: Request, res: Response) => {
   try {
-    const medicalRecord = await getPatientsMedicalRecord(
-      req.params.medId,
-      req.params.patId
-    );
+    const medicalRecord = await getPatientsMedicalRecord(req.params.medId);
 
     if (!medicalRecord) {
       return res.status(400).json({

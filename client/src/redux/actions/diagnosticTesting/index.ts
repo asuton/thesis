@@ -8,7 +8,7 @@ import {
   DiagnosticTestingActionTypes,
   IDiagnosticTesting,
 } from "../../types/diagnosticTesting";
-import { DiagnosticTestingFormState } from "../../../components/DiagnosticTestingForm";
+import { DiagnosticTestingFormState } from "../../../components/DiagnosticTesting/DiagnosticTestingForm";
 import { Dispatch } from "redux";
 import axios from "axios";
 import { config } from "../../types/config";
@@ -22,7 +22,8 @@ export const getDiagnosticTesting =
 
     try {
       const res = await axios.get(
-        `http://localhost:5000/patients/${patId}/tests/${id}`
+        `http://localhost:5000/patients/tests/${id}`,
+        config
       );
       const payload: IDiagnosticTesting = res.data;
 

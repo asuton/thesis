@@ -2,12 +2,12 @@ import React from "react";
 import { Route, RouteProps, RouteComponentProps } from "react-router";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import { AppState } from "../redux/reducers/rootReducer";
-import { WebAuthnState } from "../redux/types/webauthn";
-import { AuthState } from "../redux/types/auth";
+import { AppState } from "../../redux/reducers/rootReducer";
+import { WebAuthnState } from "../../redux/types/webauthn";
+import { AuthState } from "../../redux/types/auth";
 import { Button, Container, makeStyles, Typography } from "@material-ui/core";
-import WebAuthnLogin from "./WebAuthnLogin";
-import image from "../shield.svg";
+import WebAuthnLogin from "../WebAuthn/WebAuthnLogin";
+import image from "../../assets/shield.svg";
 
 const useStyles = makeStyles({
   root: {

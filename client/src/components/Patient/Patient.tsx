@@ -1,17 +1,17 @@
-import { PatientActionTypes, PatientState } from "../redux/types/patient";
-import { getPatientById } from "../redux/actions/patient";
+import { PatientActionTypes, PatientState } from "../../redux/types/patient";
+import { getPatientById } from "../../redux/actions/patient";
 import React, { useEffect } from "react";
-import { AppState } from "../redux/reducers/rootReducer";
+import { AppState } from "../../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Can } from "./Can";
+import { Can } from "../Auth/Can";
 import { subject } from "@casl/ability";
 import { RouteComponentProps } from "react-router";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import WebAuthnRegister from "./WebAuthnRegister";
-import WebAuthnLogin from "./WebAuthnLogin";
+import WebAuthnRegister from "../WebAuthn/WebAuthnRegister";
+import WebAuthnLogin from "../WebAuthn/WebAuthnLogin";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -25,9 +25,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { WebAuthnState } from "../redux/types/webauthn";
-import { AuthState } from "../redux/types/auth";
-import Loading from "./Loading";
+import { WebAuthnState } from "../../redux/types/webauthn";
+import { AuthState } from "../../redux/types/auth";
+import Loading from "../Layout/Loading";
 
 const useStyles = makeStyles({
   root: {
@@ -240,28 +240,36 @@ export const Patient: React.FC<Props> = (props: Props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {patient.medicalRecord.map((record) => {
-                    return (
-                      <TableRow
-                        key={record.id}
-                        className={classes.tableRow}
-                        component={Link}
-                        to={`/patients/${patient.id}/record/${record.id}`}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <TableCell
-                          component="th"
-                          scope="row"
-                          className={classes.tableCell}
+                  {patient.medicalRecord
+                    .sort((a, b) => {
+                      const aDate = new Date(a.createdAt);
+                      const bDate = new Date(b.createdAt);
+                      return bDate.getTime() - aDate.getTime();
+                    })
+                    .map((record) => {
+                      return (
+                        <TableRow
+                          key={record.id}
+                          className={classes.tableRow}
+                          component={Link}
+                          to={`/patients/${patient.id}/record/${record.id}`}
+                          style={{ textDecoration: "none" }}
                         >
-                          {record.title}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {moment(record.createdAt).format("HH:mm  DD/MM/YYYY")}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                          <TableCell
+                            component="th"
+                            scope="row"
+                            className={classes.tableCell}
+                          >
+                            {record.title}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {moment(record.createdAt).format(
+                              "DD/MM/YYYY HH:mm"
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                 </TableBody>
               </Table>
             ) : (
@@ -313,28 +321,36 @@ export const Patient: React.FC<Props> = (props: Props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {patient.diagnosticTesting.map((testing) => {
-                    return (
-                      <TableRow
-                        key={testing.id}
-                        className={classes.tableRow}
-                        component={Link}
-                        to={`/patients/${patient.id}/test/${testing.id}`}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <TableCell
-                          component="th"
-                          scope="row"
-                          className={classes.tableCell}
+                  {patient.diagnosticTesting
+                    .sort((a, b) => {
+                      const aDate = new Date(a.createdAt);
+                      const bDate = new Date(b.createdAt);
+                      return bDate.getTime() - aDate.getTime();
+                    })
+                    .map((testing) => {
+                      return (
+                        <TableRow
+                          key={testing.id}
+                          className={classes.tableRow}
+                          component={Link}
+                          to={`/patients/${patient.id}/test/${testing.id}`}
+                          style={{ textDecoration: "none" }}
                         >
-                          {testing.test}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {moment(testing.createdAt).format("HH:mm DD/MM/YYYY")}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                          <TableCell
+                            component="th"
+                            scope="row"
+                            className={classes.tableCell}
+                          >
+                            {testing.test}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {moment(testing.createdAt).format(
+                              "DD/MM/YYYY HH:mm"
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                 </TableBody>
               </Table>
             ) : (

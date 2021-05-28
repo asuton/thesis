@@ -30,8 +30,7 @@ export const getDiagnosticTests = async (req: Request, res: Response) => {
 export const getDiagnosticTest = async (req: Request, res: Response) => {
   try {
     const diagnosticTest = await getPatientsDiagnosticTesting(
-      req.params.testId,
-      req.params.patId
+      req.params.testId
     );
 
     if (!diagnosticTest) {

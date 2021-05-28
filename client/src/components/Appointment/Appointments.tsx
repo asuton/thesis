@@ -1,24 +1,24 @@
 import {
   deleteAppointment,
   getAppointments,
-} from "../redux/actions/appointment";
+} from "../../redux/actions/appointment";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import React, { useEffect, useState } from "react";
-import { AppState } from "../redux/reducers/rootReducer";
+import { AppState } from "../../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { makeStyles } from "@material-ui/core/styles";
-import Loading from "./Loading";
+import Loading from "../Layout/Loading";
 import {
   AppointmentActionTypes,
   AppointmentState,
   IGetAppointment,
-} from "../redux/types/appointment";
+} from "../../redux/types/appointment";
 import {
   AppBar,
   Box,
@@ -34,7 +34,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import moment from "moment";
-import { Can } from "./Can";
+import { Can } from "../Auth/Can";
 import { subject } from "@casl/ability";
 import { Link } from "react-router-dom";
 
@@ -259,6 +259,7 @@ export const Appointments: React.FC<Props> = (props: Props) => {
                     <Button
                       onClick={() => {
                         deleteAppointment(appointment.id);
+                        handleClose();
                       }}
                       color="secondary"
                       autoFocus

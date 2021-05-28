@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { AppState } from "../redux/reducers/rootReducer";
+import { AppState } from "../../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Can } from "./Can";
+import { Can } from "../Auth/Can";
 import { subject } from "@casl/ability";
 import { RouteComponentProps, withRouter } from "react-router";
-import { getMedicalRecord } from "../redux/actions/medicalRecord";
+import { getMedicalRecord } from "../../redux/actions/medicalRecord";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -14,12 +14,12 @@ import Typography from "@material-ui/core/Typography";
 import {
   MedicalRecordActionTypes,
   MedicalRecordState,
-} from "../redux/types/medicalRecord";
-import { Divider } from "@material-ui/core";
+} from "../../redux/types/medicalRecord";
+import { Button, Divider } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "../Layout/Loading";
 
 const useStyles = makeStyles({
   root: {
@@ -35,7 +35,6 @@ const useStyles = makeStyles({
 });
 
 interface MatchParams {
-  patId: string;
   id: string;
 }
 
@@ -44,12 +43,12 @@ type Props = MapStateToProps &
   RouteComponentProps<MatchParams>;
 
 export const MedicalRecord: React.FC<Props> = (props: Props) => {
-  const { params } = props.match;
+  const { id } = props.match.params;
   const { getMedicalRecord } = props;
   const { medicalRecord, loading } = props.medicalRecordState;
 
   useEffect(() => {
-    getMedicalRecord(params.id, params.patId);
+    getMedicalRecord(id);
   }, [getMedicalRecord]);
 
   const classes = useStyles();
@@ -60,17 +59,36 @@ export const MedicalRecord: React.FC<Props> = (props: Props) => {
     <Can I="read" this={subject("MedicalRecord", medicalRecord)}>
       <Card className={classes.root} variant="outlined">
         <CardContent>
-          <Typography variant="h4" component="h2">
-            {medicalRecord.title}
-          </Typography>
-          <Typography color="textSecondary">
-            Created at:{" "}
-            {moment(medicalRecord.createdAt).format("HH:mm  DD/MM/YYYY")}
-          </Typography>
-          <Typography color="textSecondary">
-            Last updated at:{" "}
-            {moment(medicalRecord.updatedAt).format("HH:mm  DD/MM/YYYY")}
-          </Typography>
+          <Grid container>
+            <Grid item xs={8} sm={11}>
+              <Typography variant="h4" component="h2">
+                {medicalRecord.title}
+              </Typography>
+              <Typography color="textSecondary">
+                Created at:{" "}
+                {moment(medicalRecord.createdAt).format("DD/MM/YYYY HH:mm")}
+              </Typography>
+              <Typography color="textSecondary">
+                Last updated at:{" "}
+                {moment(medicalRecord.updatedAt).format("DD/MM/YYYY HH:mm")}
+              </Typography>
+            </Grid>
+            <Can I="update" this={subject("MedicalRecord", medicalRecord)}>
+              <Grid item xs={4} sm={1}>
+                <Button
+                  color="primary"
+                  type="submit"
+                  component={Link}
+                  to={`/patients/${medicalRecord.patientId}/record/${id}/update`}
+                  style={{ width: "100px" }}
+                >
+                  Update
+                </Button>
+              </Grid>
+            </Can>
+          </Grid>
+          <br></br>
+          <Divider></Divider>
           <br></br>
           <Grid container>
             <Grid item xs={12} sm={8}>
@@ -151,7 +169,7 @@ interface MapStateToProps {
 }
 
 interface MapDispatchToProps {
-  getMedicalRecord: (id: string, patId: string) => void;
+  getMedicalRecord: (id: string) => void;
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({

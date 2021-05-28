@@ -11,8 +11,8 @@ import { webAuthn } from "../middleware/webauthn";
 const router = express.Router();
 
 router.get("/:patId/records", authJWT, webAuthn, getMedicalRecords);
-router.get("/:patId/records/:medId", authJWT, webAuthn, getMedicalRecord);
+router.get("/records/:medId", authJWT, webAuthn, getMedicalRecord);
 router.post("/:patId/records", authJWT, webAuthn, postMedicalRecord);
-router.put("/:patId/records/:medId", authJWT, webAuthn, putMedicalRecord);
+router.put("/records/:medId", authJWT, webAuthn, putMedicalRecord);
 
 export default router;

@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-import { AppState } from "../redux/reducers/rootReducer";
+import { AppState } from "../../redux/reducers/rootReducer";
 import {
   DiagnosticTestingActionTypes,
   DiagnosticTestingState,
-} from "../redux/types/diagnosticTesting";
-import { getDiagnosticTesting } from "../redux/actions/diagnosticTesting";
+} from "../../redux/types/diagnosticTesting";
+import { getDiagnosticTesting } from "../../redux/actions/diagnosticTesting";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Can } from "./Can";
+import { Can } from "../Auth/Can";
 import { subject } from "@casl/ability";
 import { RouteComponentProps } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,7 +18,7 @@ import Typography from "@material-ui/core/Typography";
 import { Divider, Grid } from "@material-ui/core";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "../Layout/Loading";
 
 const useStyles = makeStyles({
   root: {
@@ -64,7 +64,7 @@ export const DiagnosticTesting: React.FC<Props> = (props: Props) => {
           </Typography>
           <Typography color="textSecondary">
             Created at:{" "}
-            {moment(diagnosticTesting.createdAt).format("HH:mm  DD/MM/YYYY")}
+            {moment(diagnosticTesting.createdAt).format("DD/MM/YYYY HH:mm")}
           </Typography>
           <br></br>
           <Grid container>

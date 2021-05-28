@@ -1,11 +1,10 @@
 import Button from "@material-ui/core/Button";
-import { AppState } from "../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import React from "react";
-import { WebAuthnActionTypes } from "../redux/types/webauthn/";
-import { getGetAssertionChallenge } from "../redux/actions/webauthn/";
+import { WebAuthnActionTypes } from "../../redux/types/webauthn";
+import { getGetAssertionChallenge } from "../../redux/actions/webauthn";
 
 type Props = MapDispatchToProps;
 

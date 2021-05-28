@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AppState } from "../redux/reducers/rootReducer";
+import { AppState } from "../../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -7,16 +7,16 @@ import { RouteComponentProps, useHistory } from "react-router";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import DateFnsUtils from "@date-io/date-fns";
 import Select from "@material-ui/core/Select";
-import Loading from "./Loading";
+import Loading from "../Layout/Loading";
 import {
   AppointmentActionTypes,
   AppointmentState,
   IAppointmentForm,
-} from "../redux/types/appointment";
+} from "../../redux/types/appointment";
 import {
   getTakenAppointments,
   postAppointment,
-} from "../redux/actions/appointment";
+} from "../../redux/actions/appointment";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,

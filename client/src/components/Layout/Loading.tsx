@@ -1,4 +1,4 @@
-import spinner from "../spinner.gif";
+import spinner from "../../assets/spinner.gif";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core";
 

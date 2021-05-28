@@ -1,4 +1,4 @@
-import image from "../front.jpg";
+import image from "../../assets/front.jpg";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";

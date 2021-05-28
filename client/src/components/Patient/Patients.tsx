@@ -1,17 +1,19 @@
 import {
-  DoctorActionTypes,
-  DoctorState,
-  IDoctors,
-} from "../redux/types/doctor";
-import { getDoctors } from "../redux/actions/doctor";
+  PatientActionTypes,
+  PatientState,
+  IPatients,
+} from "../../redux/types/patient";
+import { getPatients } from "../../redux/actions/patient";
 import React, { useEffect, useState } from "react";
-import { AppState } from "../redux/reducers/rootReducer";
+import { AppState } from "../../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Can } from "./Can";
+import { Can } from "../Auth/Can";
+import { subject } from "@casl/ability";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
+import moment from "moment";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -19,8 +21,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { TextField, Typography } from "@material-ui/core";
-import Loading from "./Loading";
+import TextField from "@material-ui/core/TextField";
+import { Typography } from "@material-ui/core";
+import Loading from "../Layout/Loading";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,6 +40,11 @@ const useStyles = makeStyles((theme: Theme) =>
         overflowX: "scroll",
       },
     },
+    mobile: {
+      "@media (max-width: 450px)": {
+        display: "none",
+      },
+    },
     search: {
       marginTop: "100px",
     },
@@ -44,9 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 320,
     },
     tableCell: {
-      paddingRight: 4,
-      paddingLeft: 4,
-      textAlign: "center",
+      textAlign: "start",
     },
     tableRow: {
       width: "100%",
@@ -60,31 +66,27 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type Props = MapStateToProps & MapDispatchToProps;
 
-export const Doctors: React.FC<Props> = (props: Props) => {
-  const { getDoctors } = props;
-  const { doctors, loading } = props.doctorsState;
+export const Patients: React.FC<Props> = (props: Props) => {
+  const { patients, loading } = props.patientsState;
+  const { getPatients } = props;
 
-  const classes = useStyles();
   useEffect(() => {
-    getDoctors();
-  }, [getDoctors]);
+    getPatients();
+  }, [getPatients]);
 
   const [Search, setSearch] = useState({
     search: "",
   });
 
   const { search } = Search;
-
-  let filteredDoctors: IDoctors[] = [];
-  if (doctors) {
-    filteredDoctors = doctors.filter(
-      (doctor) =>
-        (doctor.surname + " " + doctor.name)
+  let filteredPatients: IPatients[] = [];
+  if (patients) {
+    filteredPatients = patients.filter(
+      (patients) =>
+        (patients.surname + " " + patients.name)
           .toLowerCase()
           .indexOf(search.toLowerCase()) !== -1 ||
-        doctor.qualification.toLowerCase().indexOf(search.toLowerCase()) !==
-          -1 ||
-        (doctor.name + " " + doctor.surname)
+        (patients.name + " " + patients.surname)
           .toLowerCase()
           .indexOf(search.toLowerCase()) !== -1
     );
@@ -97,13 +99,15 @@ export const Doctors: React.FC<Props> = (props: Props) => {
     });
   };
 
-  return loading || !doctors ? (
+  const classes = useStyles();
+
+  return loading || !patients ? (
     <Loading></Loading>
   ) : (
-    <Can I="read" a="Doctor">
+    <Can I="read" this={subject("Patient", { id: true })}>
       <div className={classes.root}>
         <TextField
-          placeholder="Search doctors"
+          placeholder="Search patients"
           fullWidth
           InputLabelProps={{
             shrink: true,
@@ -117,9 +121,10 @@ export const Doctors: React.FC<Props> = (props: Props) => {
           <Grid item xs={12}>
             <Table className={classes.table}>
               <colgroup>
-                <col style={{ width: "33.33%" }} />
-                <col style={{ width: "33.33%" }} />
-                <col style={{ width: "33.33%" }} />
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "25%" }} />
               </colgroup>
               <TableHead>
                 <TableRow>
@@ -129,28 +134,31 @@ export const Doctors: React.FC<Props> = (props: Props) => {
                   <TableCell className={classes.tableCell}>
                     <Typography variant="h6">Name</Typography>
                   </TableCell>
+                  <TableCell className={(classes.tableCell, classes.mobile)}>
+                    <Typography variant="h6">DOB</Typography>
+                  </TableCell>
                   <TableCell className={classes.tableCell}>
-                    <Typography variant="h6">Qualification</Typography>
+                    <Typography variant="h6">OIB</Typography>
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredDoctors.length > 0 ? (
-                  filteredDoctors
+                {filteredPatients.length > 0 ? (
+                  filteredPatients
                     .sort((a, b) => {
-                      const aDoc =
+                      const aPat =
                         a.surname.toLowerCase() + " " + a.name.toLowerCase();
-                      const bDoc =
+                      const bPat =
                         b.surname.toLowerCase() + " " + b.name.toLowerCase();
-                      return aDoc > bDoc ? 1 : -1;
+                      return aPat > bPat ? 1 : -1;
                     })
-                    .map((doctor) => {
+                    .map((patient) => {
                       return (
                         <TableRow
-                          key={doctor.id}
+                          key={patient.id}
                           className={classes.tableRow}
                           component={Link}
-                          to={`/doctors/${doctor.id}`}
+                          to={`/patients/${patient.id}`}
                           style={{ textDecoration: "none" }}
                         >
                           <TableCell
@@ -158,13 +166,18 @@ export const Doctors: React.FC<Props> = (props: Props) => {
                             scope="row"
                             className={classes.tableCell}
                           >
-                            {doctor.surname}
+                            {patient.surname}
                           </TableCell>
                           <TableCell className={classes.tableCell}>
-                            {doctor.name}
+                            {patient.name}
+                          </TableCell>
+                          <TableCell
+                            className={(classes.tableCell, classes.mobile)}
+                          >
+                            {moment(patient.dateOfBirth).format("DD/MM/YYYY")}
                           </TableCell>
                           <TableCell className={classes.tableCell}>
-                            {doctor.qualification}
+                            {patient.OIB}
                           </TableCell>
                         </TableRow>
                       );
@@ -176,7 +189,7 @@ export const Doctors: React.FC<Props> = (props: Props) => {
                       color="textSecondary"
                       style={{ margin: "30px" }}
                     >
-                      No available doctors
+                      No available patients
                     </Typography>
                   </TableRow>
                 )}
@@ -190,21 +203,21 @@ export const Doctors: React.FC<Props> = (props: Props) => {
 };
 
 interface MapStateToProps {
-  doctorsState: DoctorState;
+  patientsState: PatientState;
 }
 
 interface MapDispatchToProps {
-  getDoctors: () => void;
+  getPatients: () => void;
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  doctorsState: state.doctor,
+  patientsState: state.patient,
 });
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<any, any, DoctorActionTypes>
+  dispatch: ThunkDispatch<any, any, PatientActionTypes>
 ): MapDispatchToProps => ({
-  getDoctors: bindActionCreators(getDoctors, dispatch),
+  getPatients: bindActionCreators(getPatients, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Doctors);
+export default connect(mapStateToProps, mapDispatchToProps)(Patients);

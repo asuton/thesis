@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
-import { AppState } from "../redux/reducers/rootReducer";
+import { AppState } from "../../redux/reducers/rootReducer";
 import { bindActionCreators } from "redux";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -9,14 +9,14 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import Loading from "./Loading";
-import { RouteComponentProps, useHistory } from "react-router";
-import { getDoctorById, putDoctor } from "../redux/actions/doctor";
 import {
-  DoctorActionTypes,
-  DoctorState,
-  IPutDoctorForm,
-} from "../redux/types/doctor";
+  IPutPatientForm,
+  PatientActionTypes,
+  PatientState,
+} from "../../redux/types/patient";
+import { getPatientById, putPatient } from "../../redux/actions/patient";
+import Loading from "../Layout/Loading";
+import { RouteComponentProps, useHistory } from "react-router";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -54,12 +54,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface UpdateForm {
-  qualification: string;
+  address: string;
   phone: string;
 }
 
 interface HelperState {
-  helperTextQualification: string;
+  helperTextAddress: string;
   helperTextPhone: string;
 }
 
@@ -71,47 +71,47 @@ type Props = MapStateToProps &
   MapDispatchToProps &
   RouteComponentProps<MatchParams>;
 
-const Register: React.FC<Props> = (props: Props) => {
-  const { putDoctor, getDoctorById } = props;
-  const { loading, doctor } = props.doctorState;
+const PatientUpdateForm: React.FC<Props> = (props: Props) => {
+  const { putPatient, getPatientById } = props;
+  const { patient, loading } = props.patientState;
   const { params } = props.match;
   const history = useHistory();
   const classes = useStyles();
 
   useEffect(() => {
-    getDoctorById(params.id);
-  }, [getDoctorById]);
+    getPatientById(params.id);
+  }, [getPatientById]);
 
   const [formData, setFormData] = useState<UpdateForm>({
-    qualification: loading || !doctor ? "" : doctor.qualification,
-    phone: loading || !doctor ? "" : doctor.phone,
+    address: loading || !patient ? "" : patient.address,
+    phone: loading || !patient ? "" : patient.phone,
   });
 
   const [helperData, setHelperData] = useState<HelperState>({
-    helperTextQualification: "",
+    helperTextAddress: "",
     helperTextPhone: "",
   });
 
-  const { qualification, phone } = formData;
+  const { address, phone } = formData;
 
-  const { helperTextQualification, helperTextPhone } = helperData;
+  const { helperTextAddress, helperTextPhone } = helperData;
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
     if (e.target.id === "address")
-      setHelperData({ ...helperData, helperTextQualification: "" });
+      setHelperData({ ...helperData, helperTextAddress: "" });
     else if (e.target.id === "phone")
       setHelperData({ ...helperData, helperTextPhone: "" });
   };
 
   const onSubmit = (e: any, id: string) => {
     e.preventDefault();
-    if (qualification === "") {
+    if (address === "") {
       setHelperData({
         ...helperData,
-        helperTextQualification: "Empty field!",
+        helperTextAddress: "Empty field!",
       });
     } else if (phone === "") {
       setHelperData({
@@ -124,11 +124,11 @@ const Register: React.FC<Props> = (props: Props) => {
         helperTextPhone: "Phone number has to be at least 7 characters long",
       });
     } else {
-      putDoctor(id, formData);
+      putPatient(id, formData);
     }
   };
 
-  return loading || !doctor ? (
+  return loading || !patient ? (
     <Loading></Loading>
   ) : (
     <Container component="main" maxWidth="sm" className={classes.container}>
@@ -139,7 +139,7 @@ const Register: React.FC<Props> = (props: Props) => {
         className={classes.form}
         noValidate
         autoComplete="off"
-        onSubmit={(e) => onSubmit(e, doctor.id)}
+        onSubmit={(e) => onSubmit(e, patient.id)}
       >
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -148,7 +148,7 @@ const Register: React.FC<Props> = (props: Props) => {
               fullWidth
               id="name"
               label="Name"
-              value={doctor.name}
+              value={patient.name}
               disabled={true}
             />
           </Grid>
@@ -158,7 +158,7 @@ const Register: React.FC<Props> = (props: Props) => {
               fullWidth
               id="surname"
               label="Surname"
-              value={doctor.surname}
+              value={patient.surname}
               disabled
             />
           </Grid>
@@ -168,7 +168,7 @@ const Register: React.FC<Props> = (props: Props) => {
               fullWidth
               id="OIB"
               label="OIB"
-              value={doctor.OIB}
+              value={patient.OIB}
               disabled
             />
           </Grid>
@@ -177,12 +177,12 @@ const Register: React.FC<Props> = (props: Props) => {
               className={classes.textField}
               fullWidth
               required
-              id="qualification"
-              label="Qualification"
-              value={qualification}
+              id="address"
+              label="Address"
+              value={address}
               onChange={(e) => onChange(e)}
-              error={helperTextQualification === "" ? false : true}
-              helperText={helperTextQualification}
+              error={helperTextAddress === "" ? false : true}
+              helperText={helperTextAddress}
             />
           </Grid>
           <Grid item xs={12}>
@@ -202,12 +202,13 @@ const Register: React.FC<Props> = (props: Props) => {
             <TextField
               className={classes.textField}
               fullWidth
-              id="license"
-              label="License"
+              type="date"
+              id="dateOfBirth"
+              label="Date of birth"
               InputLabelProps={{
                 shrink: true,
               }}
-              value={doctor.license}
+              value={patient.dateOfBirth.toString().slice(0, 10)}
               disabled
             />
           </Grid>
@@ -217,7 +218,7 @@ const Register: React.FC<Props> = (props: Props) => {
               fullWidth
               id="email"
               label="E-mail"
-              value={doctor.email}
+              value={patient.email}
               disabled
             />
           </Grid>
@@ -253,22 +254,22 @@ const Register: React.FC<Props> = (props: Props) => {
 };
 
 interface MapStateToProps {
-  doctorState: DoctorState;
+  patientState: PatientState;
 }
 
 interface MapDispatchToProps {
-  putDoctor: (id: string, form: IPutDoctorForm) => void;
-  getDoctorById: (id: string) => void;
+  putPatient: (id: string, form: IPutPatientForm) => void;
+  getPatientById: (id: string) => void;
 }
 
 const mapStateToProps = (state: AppState): MapStateToProps => ({
-  doctorState: state.doctor,
+  patientState: state.patient,
 });
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<any, any, DoctorActionTypes>
+  dispatch: ThunkDispatch<any, any, PatientActionTypes>
 ): MapDispatchToProps => ({
-  putDoctor: bindActionCreators(putDoctor, dispatch),
-  getDoctorById: bindActionCreators(getDoctorById, dispatch),
+  putPatient: bindActionCreators(putPatient, dispatch),
+  getPatientById: bindActionCreators(getPatientById, dispatch),
 });
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(PatientUpdateForm);

@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { AppState } from "../redux/reducers/rootReducer";
+import { AppState } from "../../redux/reducers/rootReducer";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Can } from "./Can";
+import { Can } from "../Auth/Can";
 import { subject } from "@casl/ability";
 import { RouteComponentProps } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,13 +11,13 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { Button, Container, Divider, Grid } from "@material-ui/core";
-import { DoctorActionTypes, DoctorState } from "../redux/types/doctor";
-import { getDoctorById } from "../redux/actions/doctor/";
-import { AuthState } from "../redux/types/auth";
-import Loading from "./Loading";
-import { WebAuthnState } from "../redux/types/webauthn";
-import WebAuthnLogin from "./WebAuthnLogin";
-import WebAuthnRegister from "./WebAuthnRegister";
+import { DoctorActionTypes, DoctorState } from "../../redux/types/doctor";
+import { getDoctorById } from "../../redux/actions/doctor";
+import { AuthState } from "../../redux/types/auth";
+import Loading from "../Layout/Loading";
+import { WebAuthnState } from "../../redux/types/webauthn";
+import WebAuthnLogin from "../WebAuthn/WebAuthnLogin";
+import WebAuthnRegister from "../WebAuthn/WebAuthnRegister";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({

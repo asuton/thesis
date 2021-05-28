@@ -26,12 +26,10 @@ export const getPatientsDiagnosticTestings = async (
 };
 
 export const getPatientsDiagnosticTesting = async (
-  id: string,
-  patientId: string
+  id: string
 ): Promise<DiagnosticTesting | undefined> => {
   return await createQueryBuilder<DiagnosticTesting>("DiagnosticTesting")
-    .where("DiagnosticTesting.patientId = :patientId", { patientId: patientId })
-    .andWhere("DiagnosticTesting.id = :id", { id: id })
+    .where("DiagnosticTesting.id = :id", { id: id })
     .leftJoinAndMapOne(
       "DiagnosticTesting.doctor",
       "Doctor",
