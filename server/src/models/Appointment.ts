@@ -16,11 +16,15 @@ export default class Appointment extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @ManyToOne(() => Doctor)
+  @ManyToOne(() => Doctor, (doctor) => doctor.authenticator, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   doctor!: Doctor;
 
-  @ManyToOne(() => Patient)
+  @ManyToOne(() => Patient, (patient) => patient.authenticator, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   patient!: Patient;
 

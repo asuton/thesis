@@ -48,7 +48,9 @@ export const getDiagnosticTest = async (req: Request, res: Response) => {
       subject("DiagnosticTesting", diagnosticTest)
     );
 
-    return res.json(diagnosticTest);
+    const { salt, ...test } = diagnosticTest;
+
+    return res.json(test);
   } catch (err) {
     return res.status(500).send(err.message);
   }

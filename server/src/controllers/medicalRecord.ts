@@ -44,7 +44,9 @@ export const getMedicalRecord = async (req: Request, res: Response) => {
       subject("MedicalRecord", medicalRecord)
     );
 
-    return res.json(medicalRecord);
+    const { salt, ...record } = medicalRecord;
+
+    return res.json(record);
   } catch (err) {
     return res.status(500).send(err.message);
   }

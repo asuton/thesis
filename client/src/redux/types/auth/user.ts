@@ -4,6 +4,7 @@ import { RawRuleOf, ForcedSubject, Ability, AbilityClass } from "@casl/ability";
 export enum Authorization {
   Doctor = "DOCTOR",
   Patient = "PATIENT",
+  Admin = "ADMIN",
 }
 
 type Actions = "create" | "read" | "update" | "delete";

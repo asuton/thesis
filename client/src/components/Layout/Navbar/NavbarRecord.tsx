@@ -128,13 +128,15 @@ const NavbarRecord: React.FC<Props> = (props: Props) => {
     return (
       <>
         {isAuthenticated && user && register ? (
-          <Link
-            className={classes.drawerButton}
-            key={"Account"}
-            to={checkAuthorizationNav(user)}
-          >
-            <MenuItem>My account</MenuItem>
-          </Link>
+          <Can I="read" a="Appointment">
+            <Link
+              className={classes.drawerButton}
+              key={"Account"}
+              to={checkAuthorizationNav(user)}
+            >
+              <MenuItem>My account</MenuItem>
+            </Link>
+          </Can>
         ) : null}
         <Can I="read" a="Appointment">
           <Link
@@ -189,13 +191,15 @@ const NavbarRecord: React.FC<Props> = (props: Props) => {
     return (
       <>
         {isAuthenticated && user && register ? (
-          <Link
-            className={classes.menuButton}
-            key={"Account"}
-            to={checkAuthorizationNav(user)}
-          >
-            My account
-          </Link>
+          <Can I="read" a="Appointment">
+            <Link
+              className={classes.menuButton}
+              key={"Account"}
+              to={checkAuthorizationNav(user)}
+            >
+              My account
+            </Link>
+          </Can>
         ) : null}
         <Can I="read" a="Appointment">
           <Link

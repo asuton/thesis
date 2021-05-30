@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(3, 0, 1),
   },
   container: {
-    minHeight: "100vh",
+    marginTop: "80px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",

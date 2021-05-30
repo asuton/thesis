@@ -28,15 +28,24 @@ export default class Authenticator extends BaseEntity {
   @Column()
   credId!: string;
 
-  @ManyToOne(() => Patient, { nullable: true })
+  @ManyToOne(() => Patient, (admin) => admin.authenticator, {
+    nullable: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   patient!: Promise<Patient>;
 
-  @ManyToOne(() => Doctor, { nullable: true })
+  @ManyToOne(() => Doctor, (doctor) => doctor.authenticator, {
+    nullable: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   doctor!: Promise<Doctor>;
 
-  @ManyToOne(() => Admin, { nullable: true })
+  @ManyToOne(() => Admin, (admin) => admin.authenticator, {
+    nullable: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   admin!: Promise<Admin>;
 }

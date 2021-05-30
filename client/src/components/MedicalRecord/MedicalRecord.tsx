@@ -29,6 +29,7 @@ const useStyles = makeStyles({
     minWidth: 275,
     maxWidth: 1200,
     margin: "auto",
+    marginBottom: "10px",
   },
   link: {
     textDecoration: "none",
@@ -61,7 +62,6 @@ export const MedicalRecord: React.FC<Props> = (props: Props) => {
     <Can I="read" this={subject("MedicalRecord", medicalRecord)}>
       <Container className={classes.root}>
         <Back link={`/patients/${medicalRecord.patientId}`} />
-
         <Card variant="outlined">
           <CardContent>
             <Grid container>

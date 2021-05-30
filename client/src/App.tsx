@@ -52,13 +52,12 @@ function App() {
               <PrivateRoute exact path="/patients" component={Patients} />
               <PrivateRoute exact path="/doctors" component={Doctors} />
               <PrivateRoute exact path="/patients/:id" component={Patient} />
-              <PrivateRoute exact path="/doctors/:id/" component={Doctor} />
               <PrivateRoute
                 exact
-                path="/doctor/create"
+                path="/doctors/create"
                 component={DoctorForm}
               />
-
+              <PrivateRoute exact path="/doctors/:id/" component={Doctor} />
               <PrivateRoute
                 exact
                 path="/appointments"

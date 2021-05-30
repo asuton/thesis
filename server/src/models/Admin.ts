@@ -1,39 +1,15 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  BaseEntity,
-  OneToMany,
-} from "typeorm";
+import { Entity, OneToMany, BeforeInsert } from "typeorm";
 import { Authorization } from "../utils/constants";
-import { IsEmail, Length } from "class-validator";
 import Authenticator from "./Authenticator";
+import User from "./User";
 
 @Entity({ name: "admin" })
-export default class Admin extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string;
-
-  @Column()
-  @Length(1, 255)
-  @IsEmail()
-  email!: string;
-
-  @Column()
-  @Length(7, 255)
-  password!: string;
-
-  @Column({
-    type: "enum",
-    enum: Authorization,
-    default: Authorization.Patient,
-    readonly: true,
-  })
-  authorization!: Authorization;
-
-  @Column({ default: false })
-  webAuthnRegistered!: boolean;
-
-  @OneToMany(() => Authenticator, (authenticator) => authenticator.doctor)
+export default class Admin extends User {
+  @OneToMany(() => Authenticator, (authenticator) => authenticator.admin)
   authenticator!: Promise<Authenticator[]>;
+
+  @BeforeInsert()
+  setAuthorization() {
+    this.authorization = Authorization.Admin;
+  }
 }

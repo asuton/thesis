@@ -49,6 +49,7 @@ export const getPatientsDiagnosticTesting = async (
       "DiagnosticTesting.test",
       "DiagnosticTesting.result",
       "DiagnosticTesting.createdAt",
+      "DiagnosticTesting.salt",
       "Doctor.name",
       "Doctor.surname",
       "Patient.name",

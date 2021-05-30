@@ -80,21 +80,28 @@ export const postDoctor = async (req: Request, res: Response) => {
     const user = await findUserByEmail(req.body.email);
 
     if (user) {
-      return res.status(400).send("Email is already in use");
+      return res.status(400).json({
+        error: [
+          {
+            msg: `E-mail already in use`,
+          },
+        ],
+      });
     }
 
     let doctor = insertDoctorQuery(req.body);
-
+    console.log(doctor);
     const errors = await validate(doctor);
+    console.log(errors);
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
 
     doctor.password = await hashPassword(doctor.password);
-
+    console.log(doctor.password);
     const response = await Doctor.save(doctor);
-
-    return res.json(response);
+    console.log(response);
+    return res.status(200).json(response);
   } catch (err) {
     return res.status(500).send(err.message);
   }

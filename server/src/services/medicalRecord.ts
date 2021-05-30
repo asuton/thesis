@@ -61,6 +61,7 @@ export const getPatientsMedicalRecord = async (
       "MedicalRecord.additionalNote",
       "MedicalRecord.createdAt",
       "MedicalRecord.updatedAt",
+      "MedicalRecord.salt",
       "Doctor.name",
       "Doctor.surname",
       "Patient.name",
