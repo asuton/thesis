@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/", authJWT, getDoctors);
 router.get("/:id", authJWT, getDoctor);
-router.post("/", authJWT, postDoctor);
+router.post("/", postDoctor);
 router.put("/:id", authJWT, webAuthn, putDoctor);
 
 export default router;

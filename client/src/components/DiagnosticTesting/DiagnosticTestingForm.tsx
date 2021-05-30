@@ -16,6 +16,7 @@ import { postMedicalRecord } from "../../redux/actions/medicalRecord";
 import { MedicalRecordState } from "../../redux/types/medicalRecord";
 import { DiagnosticTestingState } from "../../redux/types/diagnosticTesting";
 import { postDiagnosticTesting } from "../../redux/actions/diagnosticTesting";
+import Back from "../Layout/Back";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -106,6 +107,8 @@ const DiagnosticTestingForm: React.FC<Props> = (props: Props) => {
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
       <Typography component="h1" variant="h5" className={classes.title}>
+        <Back link={`/patients/${id}`} />
+        <br></br>
         New diagnostic testing
       </Typography>
       <form

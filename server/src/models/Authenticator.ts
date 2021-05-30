@@ -6,9 +6,9 @@ import {
   ManyToOne,
   JoinColumn,
 } from "typeorm";
-
-import Patient from "./Patient";
+import Admin from "./Admin";
 import Doctor from "./Doctor";
+import Patient from "./Patient";
 
 @Entity({ name: "authenticator" })
 export default class Authenticator extends BaseEntity {
@@ -35,4 +35,8 @@ export default class Authenticator extends BaseEntity {
   @ManyToOne(() => Doctor, { nullable: true })
   @JoinColumn()
   doctor!: Promise<Doctor>;
+
+  @ManyToOne(() => Admin, { nullable: true })
+  @JoinColumn()
+  admin!: Promise<Admin>;
 }

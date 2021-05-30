@@ -18,6 +18,7 @@ import {
   Typography,
   Grid,
 } from "@material-ui/core";
+import Back from "../Layout/Back";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -160,6 +161,8 @@ const MedicalRecordForm: React.FC<Props> = (props: Props) => {
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
       <Typography component="h1" variant="h5" className={classes.title}>
+        <Back link={`/patients/${id}`} />
+        <br></br>
         New medical record
       </Typography>
       <form

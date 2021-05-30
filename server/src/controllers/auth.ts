@@ -37,6 +37,7 @@ export const login = async (req: Request, res: Response) => {
     id: user.id,
     rules: rules,
     token,
+    webAuthnRegistered: user.webAuthnRegistered,
   });
 };
 
@@ -57,7 +58,8 @@ export const session = async (req: Request, res: Response) => {
     if (req.session.user !== req.id) {
       return res.status(400).send("Invalid session");
     }
-    if (req.session.loggedIn) return res.json(req.session.loggedIn);
+    if (req.session.loggedIn) return res.status(200).json(req.session.loggedIn);
+    else return res.status(400).send("Something went wrong");
   } catch (err) {
     res.status(500).send("Server error");
   }

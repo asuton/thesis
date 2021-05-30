@@ -15,15 +15,17 @@ import {
   MedicalRecordActionTypes,
   MedicalRecordState,
 } from "../../redux/types/medicalRecord";
-import { Button, Divider } from "@material-ui/core";
+import { Button, Container, Divider } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import Loading from "../Layout/Loading";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import Back from "../Layout/Back";
 
 const useStyles = makeStyles({
   root: {
-    marginTop: "100px",
+    marginTop: "80px",
     minWidth: 275,
     maxWidth: 1200,
     margin: "auto",
@@ -57,109 +59,115 @@ export const MedicalRecord: React.FC<Props> = (props: Props) => {
     <Loading></Loading>
   ) : (
     <Can I="read" this={subject("MedicalRecord", medicalRecord)}>
-      <Card className={classes.root} variant="outlined">
-        <CardContent>
-          <Grid container>
-            <Grid item xs={8} sm={11}>
-              <Typography variant="h4" component="h2">
-                {medicalRecord.title}
-              </Typography>
-              <Typography color="textSecondary">
-                Created at:{" "}
-                {moment(medicalRecord.createdAt).format("DD/MM/YYYY HH:mm")}
-              </Typography>
-              <Typography color="textSecondary">
-                Last updated at:{" "}
-                {moment(medicalRecord.updatedAt).format("DD/MM/YYYY HH:mm")}
-              </Typography>
-            </Grid>
-            <Can I="update" this={subject("MedicalRecord", medicalRecord)}>
-              <Grid item xs={4} sm={1}>
-                <Button
-                  color="primary"
-                  type="submit"
-                  component={Link}
-                  to={`/patients/${medicalRecord.patientId}/record/${id}/update`}
-                  style={{ width: "100px" }}
-                >
-                  Update
-                </Button>
+      <Container className={classes.root}>
+        <Back link={`/patients/${medicalRecord.patientId}`} />
+
+        <Card variant="outlined">
+          <CardContent>
+            <Grid container>
+              <Grid item xs={8} sm={11}>
+                <Typography variant="h4" component="h2">
+                  {medicalRecord.title}
+                </Typography>
+                <Typography color="textSecondary">
+                  Created at:{" "}
+                  {moment(medicalRecord.createdAt).format("DD/MM/YYYY HH:mm")}
+                </Typography>
+                <Typography color="textSecondary">
+                  Last updated at:{" "}
+                  {moment(medicalRecord.updatedAt).format("DD/MM/YYYY HH:mm")}
+                </Typography>
               </Grid>
-            </Can>
-          </Grid>
-          <br></br>
-          <Divider></Divider>
-          <br></br>
-          <Grid container>
-            <Grid item xs={12} sm={8}>
-              <Typography variant="subtitle1">
-                Patient:{" "}
-                <Link
-                  to={`/patients/${medicalRecord.patientId}`}
-                  className={classes.link}
-                >
-                  {medicalRecord.patient.name +
-                    " " +
-                    medicalRecord.patient.surname}
-                </Link>
-              </Typography>
-              <Typography variant="subtitle1">
-                Patient OIB: {medicalRecord.patient.OIB}
-              </Typography>
-              <Typography variant="subtitle1">
-                Date of birth:{" "}
-                {moment(medicalRecord.patient.dateOfBirth).format("DD/MM/YYYY")}
-              </Typography>
+              <Can I="update" this={subject("MedicalRecord", medicalRecord)}>
+                <Grid item xs={4} sm={1}>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    component={Link}
+                    to={`/patients/${medicalRecord.patientId}/record/${id}/update`}
+                    style={{ width: "100px" }}
+                  >
+                    Update
+                  </Button>
+                </Grid>
+              </Can>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography variant="subtitle1">
-                Doctor:{" "}
-                <Link
-                  to={`/doctors/${medicalRecord.doctorId}`}
-                  className={classes.link}
-                >
-                  {medicalRecord.doctor.name +
-                    " " +
-                    medicalRecord.doctor.surname}
-                </Link>
-              </Typography>
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+            <Grid container>
+              <Grid item xs={12} sm={8}>
+                <Typography variant="subtitle1">
+                  Patient:{" "}
+                  <Link
+                    to={`/patients/${medicalRecord.patientId}`}
+                    className={classes.link}
+                  >
+                    {medicalRecord.patient.name +
+                      " " +
+                      medicalRecord.patient.surname}
+                  </Link>
+                </Typography>
+                <Typography variant="subtitle1">
+                  Patient OIB: {medicalRecord.patient.OIB}
+                </Typography>
+                <Typography variant="subtitle1">
+                  Date of birth:{" "}
+                  {moment(medicalRecord.patient.dateOfBirth).format(
+                    "DD/MM/YYYY"
+                  )}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Typography variant="subtitle1">
+                  Doctor:{" "}
+                  <Link
+                    to={`/doctors/${medicalRecord.doctorId}`}
+                    className={classes.link}
+                  >
+                    {medicalRecord.doctor.name +
+                      " " +
+                      medicalRecord.doctor.surname}
+                  </Link>
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
-          <br></br>
-          <Divider></Divider>
-          <br></br>
-          <Typography variant="h6">Medical history</Typography>
-          <Typography variant="body1">
-            {medicalRecord.medicalHistory}
-          </Typography>
-          <br></br>
-          <Typography variant="h6">Physical Examinationy</Typography>
-          <Typography variant="body1">
-            {medicalRecord.physicalExamination}
-          </Typography>
-          <br></br>
-          <Typography variant="h6">Diagnosis</Typography>
-          <Typography variant="body1">{medicalRecord.diagnosis}</Typography>
-          <br></br>
-          <Typography variant="h6">Treatment</Typography>
-          <Typography variant="body1">{medicalRecord.treatment}</Typography>
-          <br></br>
-          <Typography variant="h6">Recommendation</Typography>
-          <Typography variant="body1">
-            {medicalRecord.recommendation}
-          </Typography>
-          <br></br>
-          {medicalRecord.additionalNote.length > 0 ? (
-            <>
-              {" "}
-              <Typography variant="h6">Additional note</Typography>{" "}
-              <Typography variant="body1">
-                {medicalRecord.additionalNote}
-              </Typography>
-            </>
-          ) : null}
-        </CardContent>
-      </Card>
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+            <Typography variant="h6">Medical history</Typography>
+            <Typography variant="body1">
+              {medicalRecord.medicalHistory}
+            </Typography>
+            <br></br>
+            <Typography variant="h6">Physical Examinationy</Typography>
+            <Typography variant="body1">
+              {medicalRecord.physicalExamination}
+            </Typography>
+            <br></br>
+            <Typography variant="h6">Diagnosis</Typography>
+            <Typography variant="body1">{medicalRecord.diagnosis}</Typography>
+            <br></br>
+            <Typography variant="h6">Treatment</Typography>
+            <Typography variant="body1">{medicalRecord.treatment}</Typography>
+            <br></br>
+            <Typography variant="h6">Recommendation</Typography>
+            <Typography variant="body1">
+              {medicalRecord.recommendation}
+            </Typography>
+            <br></br>
+            {medicalRecord.additionalNote.length > 0 ? (
+              <>
+                {" "}
+                <Typography variant="h6">Additional note</Typography>{" "}
+                <Typography variant="body1">
+                  {medicalRecord.additionalNote}
+                </Typography>
+              </>
+            ) : null}
+          </CardContent>
+        </Card>
+      </Container>
     </Can>
   );
 };

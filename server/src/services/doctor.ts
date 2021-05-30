@@ -12,6 +12,7 @@ export const getDoctorsQuery = async (): Promise<Doctor[] | undefined> => {
       "doctor.OIB",
       "doctor.phone",
       "doctor.email",
+      "doctor.webAuthnRegistered",
     ])
     .from(Doctor, "doctor")
     .getMany();
@@ -32,6 +33,7 @@ export const getDoctorByIdQuery = async (
       "doctor.phone",
       "doctor.email",
       "doctor.authorization",
+      "doctor.webAuthnRegistered",
     ])
     .from(Doctor, "doctor")
     .where("doctor.id = :id", { id: id })

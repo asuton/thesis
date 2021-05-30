@@ -14,4 +14,5 @@ export const COOKIE_KEY = process.env.COOKIE_KEY as string;
 export enum Authorization {
   Doctor = "DOCTOR",
   Patient = "PATIENT",
+  Admin = "ADMIN",
 }

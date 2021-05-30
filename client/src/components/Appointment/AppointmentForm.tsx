@@ -33,13 +33,10 @@ import {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      minHeight: "90vh",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
+      paddingLeft: "0px",
+      paddingRight: "0px",
     },
     form: {
-      margin: "auto",
       maxWidth: "600px",
       width: "inherit",
     },
@@ -51,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       marginTop: "16px",
-      marginBottom: "70px",
+      marginBottom: "35px",
     },
     input: {
       display: "flex",

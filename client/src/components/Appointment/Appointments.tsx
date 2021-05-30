@@ -275,12 +275,14 @@ export const Appointments: React.FC<Props> = (props: Props) => {
             <Typography variant="h6" color="textSecondary">
               No upcoming appointments
             </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              Book one by finding a doctor on the{" "}
-              <Link to={`/doctors`} className={classes.link}>
-                doctors page
-              </Link>
-            </Typography>
+            <Can I="create" a="Appointment">
+              <Typography variant="subtitle1" color="textSecondary">
+                Book one by finding a doctor on the{" "}
+                <Link to={`/doctors`} className={classes.link}>
+                  doctors page
+                </Link>
+              </Typography>
+            </Can>
           </Card>
         )}
       </TabPanel>

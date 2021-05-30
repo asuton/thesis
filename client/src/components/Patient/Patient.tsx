@@ -28,6 +28,7 @@ import Paper from "@material-ui/core/Paper";
 import { WebAuthnState } from "../../redux/types/webauthn";
 import { AuthState } from "../../redux/types/auth";
 import Loading from "../Layout/Loading";
+import Back from "../Layout/Back";
 
 const useStyles = makeStyles({
   root: {
@@ -127,8 +128,11 @@ export const Patient: React.FC<Props> = (props: Props) => {
     <Loading></Loading>
   ) : (
     <Can I="read" this={subject("Patient", patient)}>
-      <Container>
-        <Card className={classes.root} variant="outlined">
+      <Container className={classes.root}>
+        <Can I="read" this={subject("Patient", { id: true })}>
+          <Back link={"/patients"} text={"Patients"} />
+        </Can>
+        <Card variant="outlined">
           <CardContent>
             <Grid container>
               <Grid item xs={12} sm={11}>

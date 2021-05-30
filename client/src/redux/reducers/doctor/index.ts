@@ -10,8 +10,10 @@ import {
   PUT_DOCTOR_REQUEST,
   PUT_DOCTOR_SUCCESS,
   PUT_DOCTOR_FAIL,
+  POST_DOCTOR_REQUEST,
+  POST_DOCTOR_SUCCESS,
+  POST_DOCTOR_FAIL,
 } from "../../types/doctor";
-import { PUT_PATIENT_FAIL } from "../../types/patient";
 
 const initialState: DoctorState = { loading: true };
 
@@ -23,6 +25,7 @@ const DoctorReducer = (
     case GET_DOCTOR_REQUEST:
     case GET_DOCTORS_REQUEST:
     case PUT_DOCTOR_REQUEST:
+    case POST_DOCTOR_REQUEST:
       return {
         loading: true,
       };
@@ -37,9 +40,14 @@ const DoctorReducer = (
         loading: false,
         doctors: action.payload,
       };
+    case POST_DOCTOR_SUCCESS:
+      return {
+        loading: false,
+      };
     case GET_DOCTOR_FAIL:
     case GET_DOCTORS_FAIL:
     case PUT_DOCTOR_FAIL:
+    case POST_DOCTOR_FAIL:
       return {
         error: action.payload,
       };

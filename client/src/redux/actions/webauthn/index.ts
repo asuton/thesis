@@ -24,9 +24,10 @@ import axios from "axios";
 import { Dispatch } from "redux";
 import store from "../../store";
 import { setAlert } from "../alert";
+import { checkAuthorizationNav } from "../../../helpers/authorization";
 
 export const getMakeCredChallenge =
-  (history: any) => async (dispatch: Dispatch<WebAuthnActionTypes>) => {
+  (history?: any) => async (dispatch: Dispatch<WebAuthnActionTypes>) => {
     dispatch({ type: WEBAUTHN_REGISTER_REQUEST });
     try {
       const res = await axios.get(
@@ -43,14 +44,15 @@ export const getMakeCredChallenge =
 
       const body = convertCredToRes(attestation);
 
-      store.dispatch(sendWebAuthnResponse(body));
+      await store.dispatch(sendWebAuthnResponse(body));
 
       dispatch({ type: WEBAUTHN_REGISTER_SUCCESS });
-      store.dispatch(setAlert("WebAuthn register success", "success"));
       if (history.location.pathname === "/register") {
         store.dispatch(setAlert("User successfully created!", "success"));
-        window.location.reload();
+      } else {
+        store.dispatch(setAlert("WebAuthn register success", "success"));
       }
+      window.location.reload();
     } catch (err) {
       const errors = err.response?.data.error;
 

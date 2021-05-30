@@ -19,11 +19,13 @@ import { WebAuthnState } from "../../redux/types/webauthn";
 import WebAuthnLogin from "../WebAuthn/WebAuthnLogin";
 import WebAuthnRegister from "../WebAuthn/WebAuthnRegister";
 import { Link } from "react-router-dom";
+import AppointmentForm from "../Appointment/AppointmentForm";
+import Back from "../Layout/Back";
 
 const useStyles = makeStyles({
   root: {
     marginTop: "100px",
-    minWidth: 275,
+    minWidth: 200,
     maxWidth: 1200,
     margin: "auto",
   },
@@ -80,7 +82,7 @@ const useStyles = makeStyles({
   },
   section: {
     maxWidth: 1200,
-    marginTop: "20px",
+    marginTop: "30px",
     margin: "auto",
   },
 });
@@ -109,8 +111,9 @@ export const Doctor: React.FC<Props> = (props: Props) => {
     <Loading></Loading>
   ) : (
     <Can I="read" this={subject("Doctor", doctor)}>
-      <Container>
-        <Card className={classes.root} variant="outlined">
+      <Container className={classes.root}>
+        <Back link={"/doctors"} text={"Doctors"} />
+        <Card variant="outlined">
           <CardContent>
             <Typography variant="h5" component="h2">
               <Grid
@@ -195,15 +198,8 @@ export const Doctor: React.FC<Props> = (props: Props) => {
           </>
         ) : null}
         <Can I="create" a="Appointment">
-          <div className={classes.root}>
-            <Button
-              variant="contained"
-              color="primary"
-              component={Link}
-              to={`/doctors/${doctor.id}/appointment`}
-            >
-              Book an appointment
-            </Button>
+          <div className={classes.section}>
+            <AppointmentForm {...props}></AppointmentForm>
           </div>
         </Can>
       </Container>

@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import React from "react";
 import { WebAuthnActionTypes } from "../../redux/types/webauthn";
 import { getMakeCredChallenge } from "../../redux/actions/webauthn";
-import { useHistory } from "react-router";
+import { Redirect, useHistory } from "react-router";
 
 type Props = MapDispatchToProps;
 

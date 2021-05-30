@@ -15,10 +15,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import { Divider, Grid } from "@material-ui/core";
+import { Button, Container, Divider, Grid } from "@material-ui/core";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import Loading from "../Layout/Loading";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import Back from "../Layout/Back";
 
 const useStyles = makeStyles({
   root: {
@@ -57,60 +59,63 @@ export const DiagnosticTesting: React.FC<Props> = (props: Props) => {
     <Loading></Loading>
   ) : (
     <Can I="read" this={subject("DiagnosticTesting", diagnosticTesting)}>
-      <Card className={classes.root} variant="outlined">
-        <CardContent>
-          <Typography variant="h4" component="h2">
-            {diagnosticTesting.test}
-          </Typography>
-          <Typography color="textSecondary">
-            Created at:{" "}
-            {moment(diagnosticTesting.createdAt).format("DD/MM/YYYY HH:mm")}
-          </Typography>
-          <br></br>
-          <Grid container>
-            <Grid item xs={12} sm={8}>
-              <Typography variant="subtitle1">
-                Patient:{" "}
-                <Link
-                  to={`/patients/${diagnosticTesting.patientId}`}
-                  className={classes.link}
-                >
-                  {diagnosticTesting.patient.name +
-                    " " +
-                    diagnosticTesting.patient.surname}
-                </Link>
-              </Typography>
-              <Typography variant="subtitle1">
-                Patient OIB: {diagnosticTesting.patient.OIB}
-              </Typography>
-              <Typography variant="subtitle1">
-                Date of birth:{" "}
-                {moment(diagnosticTesting.patient.dateOfBirth).format(
-                  "DD/MM/YYYY"
-                )}
-              </Typography>
+      <Container className={classes.root}>
+        <Back link={`/patients/${diagnosticTesting.patientId}`}></Back>
+        <Card variant="outlined">
+          <CardContent>
+            <Typography variant="h4" component="h2">
+              {diagnosticTesting.test}
+            </Typography>
+            <Typography color="textSecondary">
+              Created at:{" "}
+              {moment(diagnosticTesting.createdAt).format("DD/MM/YYYY HH:mm")}
+            </Typography>
+            <br></br>
+            <Grid container>
+              <Grid item xs={12} sm={8}>
+                <Typography variant="subtitle1">
+                  Patient:{" "}
+                  <Link
+                    to={`/patients/${diagnosticTesting.patientId}`}
+                    className={classes.link}
+                  >
+                    {diagnosticTesting.patient.name +
+                      " " +
+                      diagnosticTesting.patient.surname}
+                  </Link>
+                </Typography>
+                <Typography variant="subtitle1">
+                  Patient OIB: {diagnosticTesting.patient.OIB}
+                </Typography>
+                <Typography variant="subtitle1">
+                  Date of birth:{" "}
+                  {moment(diagnosticTesting.patient.dateOfBirth).format(
+                    "DD/MM/YYYY"
+                  )}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Typography variant="subtitle1">
+                  Doctor:{" "}
+                  <Link
+                    to={`/doctors/${diagnosticTesting.doctorId}`}
+                    className={classes.link}
+                  >
+                    {diagnosticTesting.doctor.name +
+                      " " +
+                      diagnosticTesting.doctor.surname}
+                  </Link>
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography variant="subtitle1">
-                Doctor:{" "}
-                <Link
-                  to={`/doctors/${diagnosticTesting.doctorId}`}
-                  className={classes.link}
-                >
-                  {diagnosticTesting.doctor.name +
-                    " " +
-                    diagnosticTesting.doctor.surname}
-                </Link>
-              </Typography>
-            </Grid>
-          </Grid>
-          <br></br>
-          <Divider></Divider>
-          <br></br>
-          <Typography variant="h6">Result</Typography>
-          <Typography variant="body1">{diagnosticTesting.result}</Typography>
-        </CardContent>
-      </Card>
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+            <Typography variant="h6">Result</Typography>
+            <Typography variant="body1">{diagnosticTesting.result}</Typography>
+          </CardContent>
+        </Card>
+      </Container>
     </Can>
   );
 };

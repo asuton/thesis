@@ -8,8 +8,8 @@ import iconShadow from "leaflet/dist/images/marker-shadow.png";
 const useStyles = makeStyles({
   leafletContainer: {
     height: "380px",
-    width: "100%",
-    margin: 0,
+    width: "90%",
+    margin: "auto",
   },
 });
 
@@ -33,9 +33,8 @@ const Map = () => {
       className={classes.leafletContainer}
     >
       <TileLayer
-        attribution="&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors. Tiles courtesy of Humanitarian 
-        OpenStreetMap Team"
-        url="http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <Marker position={position} title={"medClinic"}>
         <Popup>

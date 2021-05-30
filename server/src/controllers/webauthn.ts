@@ -19,6 +19,7 @@ export const generateServerMakeCredRequest = async (
   res: Response
 ) => {
   const user = await findUserById(req.id);
+
   if (!user) {
     return res.status(500).send("Could not find user");
   }
@@ -125,7 +126,7 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
   if (result.signatureIsValid && result.response) {
     req.session.loggedIn = true;
     await insertAuthInfoQuery(result.response, req.id);
-    res.status(200).send("Registered");
+    return res.status(200).send("Registered");
   } else if (result.verified) {
     req.session.loggedIn = true;
     return res.status(200).send("Logged in");

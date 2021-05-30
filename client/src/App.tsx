@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import PrivateRoute from "./components/Route/PrivateRoute";
@@ -26,6 +26,7 @@ import Appointments from "./components/Appointment/Appointments";
 import PatientUpdateForm from "./components/Patient/PatientUpdateForm";
 import DoctorUpdateForm from "./components/Doctor/DoctorUpdateForm";
 import MedicalRecordUpdateForm from "./components/MedicalRecord/MedicalRecordUpdateForm";
+import DoctorForm from "./components/Doctor/DoctorForm";
 
 const storage = localStorage.getItem("user");
 
@@ -37,7 +38,6 @@ if (storage) {
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
-    store.dispatch(checkWebAuthnSession());
   }, []);
   return (
     <div>
@@ -45,58 +45,61 @@ function App() {
         <Router>
           <Layout>
             <Alert></Alert>
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
-            <PrivateRoute exact path="/patients" component={Patients} />
-            <PrivateRoute exact path="/doctors" component={Doctors} />
-            <PrivateRoute exact path="/patients/:id" component={Patient} />
-            <PrivateRoute exact path="/doctors/:id/" component={Doctor} />
-            <PrivateRoute
-              exact
-              path="/doctors/:id/appointment"
-              component={AppointmentForm}
-            />
-            <PrivateRoute
-              exact
-              path="/appointments"
-              component={Appointments}
-            ></PrivateRoute>
-            <PrivateWebAuthnRoute
-              exact
-              path="/patients/:id/update"
-              component={PatientUpdateForm}
-            />
-            <PrivateWebAuthnRoute
-              exact
-              path="/doctors/:id/update"
-              component={DoctorUpdateForm}
-            ></PrivateWebAuthnRoute>
-            <PrivateWebAuthnRoute
-              exact
-              path="/patients/:patId/record/:id"
-              component={MedicalRecord}
-            />
-            <PrivateWebAuthnRoute
-              exact
-              path="/patients/:id/new-medical"
-              component={MedicalRecordForm}
-            />
-            <PrivateWebAuthnRoute
-              exact
-              path="/patients/:patId/record/:id/update"
-              component={MedicalRecordUpdateForm}
-            />
-            <PrivateWebAuthnRoute
-              exact
-              path="/patients/:patId/test/:id"
-              component={DiagnosticTesting}
-            />
-            <PrivateWebAuthnRoute
-              exact
-              path="/patients/:id/new-test"
-              component={DiagnosticTestingForm}
-            />
+            <Switch>
+              <Route exact path="/" component={Landing} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+              <PrivateRoute exact path="/patients" component={Patients} />
+              <PrivateRoute exact path="/doctors" component={Doctors} />
+              <PrivateRoute exact path="/patients/:id" component={Patient} />
+              <PrivateRoute exact path="/doctors/:id/" component={Doctor} />
+              <PrivateRoute
+                exact
+                path="/doctor/create"
+                component={DoctorForm}
+              />
+
+              <PrivateRoute
+                exact
+                path="/appointments"
+                component={Appointments}
+              ></PrivateRoute>
+              <PrivateWebAuthnRoute
+                exact
+                path="/patients/:id/update"
+                component={PatientUpdateForm}
+              />
+              <PrivateWebAuthnRoute
+                exact
+                path="/doctors/:id/update"
+                component={DoctorUpdateForm}
+              ></PrivateWebAuthnRoute>
+              <PrivateWebAuthnRoute
+                exact
+                path="/patients/:patId/record/:id"
+                component={MedicalRecord}
+              />
+              <PrivateWebAuthnRoute
+                exact
+                path="/patients/:id/new-medical"
+                component={MedicalRecordForm}
+              />
+              <PrivateWebAuthnRoute
+                exact
+                path="/patients/:patId/record/:id/update"
+                component={MedicalRecordUpdateForm}
+              />
+              <PrivateWebAuthnRoute
+                exact
+                path="/patients/:patId/test/:id"
+                component={DiagnosticTesting}
+              />
+              <PrivateWebAuthnRoute
+                exact
+                path="/patients/:id/new-test"
+                component={DiagnosticTestingForm}
+              />
+            </Switch>
           </Layout>
         </Router>
       </Provider>

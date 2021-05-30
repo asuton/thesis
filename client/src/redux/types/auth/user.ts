@@ -7,7 +7,7 @@ export enum Authorization {
 }
 
 type Actions = "create" | "read" | "update" | "delete";
-type Subjects = "Patient" | "Doctor" | "MedicalRecord";
+type Subjects = "Patient" | "Doctor" | "MedicalRecord" | "DiagnosticTesting";
 
 export type AppAbilities = [
   Actions,
@@ -22,4 +22,5 @@ export interface IAuth {
   rules: PackRule<RawRuleOf<AppAbility>>[];
   token: string;
   authorization: Authorization;
+  webAuthnRegistered: boolean;
 }

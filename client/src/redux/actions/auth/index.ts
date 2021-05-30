@@ -18,6 +18,7 @@ import setAuthToken from "../../utils/setAuthToken";
 import store from "../../store";
 import { config } from "../../types/config";
 import { setAlert } from "../alert";
+import { checkWebAuthnSession, getMakeCredChallenge } from "../webauthn";
 
 export const register =
   (form: RegisterFormState) => async (dispatch: Dispatch<AuthActionTypes>) => {
@@ -125,6 +126,8 @@ export const loadUser = () => async (dispatch: Dispatch<AuthActionTypes>) => {
       type: USER_LOADED,
       payload: payload,
     });
+    if (payload.webAuthnRegistered)
+      await store.dispatch(checkWebAuthnSession());
   } catch (err) {
     const errors = err.response?.data.error;
     dispatch({

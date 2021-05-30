@@ -51,5 +51,9 @@ export const defineRulesFor = (user: User): RawRuleOf<AppAbility>[] => {
     can(["read", "delete"], "Appointment", { doctorId: user.id });
   }
 
+  if (user.authorization === Authorization.Admin) {
+    can("create", "Doctor");
+  }
+
   return rules;
 };

@@ -10,6 +10,10 @@ import {
   PUT_DOCTOR_REQUEST,
   PUT_DOCTOR_SUCCESS,
   PUT_DOCTOR_FAIL,
+  IPostDoctorForm,
+  POST_DOCTOR_REQUEST,
+  POST_DOCTOR_SUCCESS,
+  POST_DOCTOR_FAIL,
 } from "../../types/doctor";
 import { IDoctor, IDoctors } from "../../types/doctor";
 import { Dispatch } from "redux";
@@ -93,12 +97,48 @@ export const putDoctor =
         payload: payload,
       });
 
-      store.dispatch(setAlert("Account updated successfully", "success"));
+      store.dispatch(setAlert("Account successfully updated", "success"));
     } catch (err) {
       const errors = err.response?.data.error;
 
       dispatch({
         type: PUT_DOCTOR_FAIL,
+        payload: errors ? errors : err,
+      });
+
+      if (errors) {
+        errors.forEach((error: any) => {
+          store.dispatch(setAlert(error.msg, "error"));
+        });
+      }
+    }
+  };
+
+export const postDoctor =
+  (form: IPostDoctorForm, history: any) =>
+  async (dispatch: Dispatch<DoctorActionTypes>) => {
+    dispatch({ type: POST_DOCTOR_REQUEST });
+
+    try {
+      const body = JSON.stringify(form);
+      const res = await axios.post(
+        `http://localhost:5000/doctors`,
+        body,
+        config
+      );
+      const payload: IDoctor = res.data;
+
+      dispatch({
+        type: POST_DOCTOR_SUCCESS,
+        payload: payload,
+      });
+
+      store.dispatch(setAlert("Doctor successfully created", "success"));
+    } catch (err) {
+      const errors = err.response?.data.error;
+
+      dispatch({
+        type: POST_DOCTOR_FAIL,
         payload: errors ? errors : err,
       });
 

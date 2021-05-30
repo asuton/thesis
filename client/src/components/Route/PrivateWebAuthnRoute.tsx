@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, RouteProps, RouteComponentProps } from "react-router";
+import { Route, RouteProps, RouteComponentProps, Redirect } from "react-router";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { AppState } from "../../redux/reducers/rootReducer";
@@ -46,6 +46,7 @@ const PrivateRoute: React.FC<Props> = ({
   component,
   authenticated,
   webAuthnAuthenticated,
+
   ...rest
 }) => {
   if (!component) {
@@ -58,35 +59,39 @@ const PrivateRoute: React.FC<Props> = ({
     <Route
       {...rest}
       render={(props: RouteComponentProps<any>): React.ReactNode =>
-        !authenticated.isAuthenticated ||
-        !webAuthnAuthenticated.isAuthenticated ? (
-          <Container className={classes.root}>
-            <img src={image} className={classes.image} alt="webauthn" />
-            <Typography variant="h6" className={classes.text}>
-              {" "}
-              This page is protected and requires additional verification to be
-              viewed. Please verify your identity!
-            </Typography>
-            <div className={classes.buttonGroup}>
-              <div className={classes.button}>
-                <WebAuthnLogin></WebAuthnLogin>
+        authenticated.user && authenticated.user.webAuthnRegistered ? (
+          !authenticated.isAuthenticated ||
+          !webAuthnAuthenticated.isAuthenticated ? (
+            <Container className={classes.root}>
+              <img src={image} className={classes.image} alt="webauthn" />
+              <Typography variant="h6" className={classes.text}>
+                {" "}
+                This page is protected and requires additional verification to
+                be viewed. Please verify your identity!
+              </Typography>
+              <div className={classes.buttonGroup}>
+                <div className={classes.button}>
+                  <WebAuthnLogin></WebAuthnLogin>
+                </div>
+                <div className={classes.button}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                  >
+                    Go back
+                  </Button>
+                </div>
               </div>
-              <div className={classes.button}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  onClick={() => {
-                    history.goBack();
-                  }}
-                >
-                  Go back
-                </Button>
-              </div>
-            </div>
-          </Container>
+            </Container>
+          ) : (
+            <Component {...props} />
+          )
         ) : (
-          <Component {...props} />
+          <Redirect to="/complete"></Redirect>
         )
       }
     />

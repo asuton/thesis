@@ -19,7 +19,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { TextField, Typography } from "@material-ui/core";
+import { Button, TextField, Typography } from "@material-ui/core";
 import Loading from "../Layout/Loading";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 1200,
       margin: "auto",
       marginBottom: "50px",
+      paddingTop: "100px",
     },
     list: {
       display: "flex",
@@ -37,9 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
         overflowX: "scroll",
       },
     },
-    search: {
-      marginTop: "100px",
-    },
+
     table: {
       minWidth: 320,
     },
@@ -102,13 +101,24 @@ export const Doctors: React.FC<Props> = (props: Props) => {
   ) : (
     <Can I="read" a="Doctor">
       <div className={classes.root}>
+        <Can I="create" a="Doctor">
+          {" "}
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to={"doctors/create"}
+            style={{ marginBottom: "20px" }}
+          >
+            Create doctor
+          </Button>
+        </Can>
         <TextField
           placeholder="Search doctors"
           fullWidth
           InputLabelProps={{
             shrink: true,
           }}
-          className={classes.search}
           variant="outlined"
           value={search}
           onChange={(e) => updateSearch(e)}
