@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { validate } from "class-validator";
-import Patient from "../models/Patient";
+import Patient from "../entities/Patient";
 import { packRules } from "@casl/ability/extra";
 import { ForbiddenError, subject } from "@casl/ability";
 import { defineRulesFor } from "../services/abilities";
@@ -104,8 +104,6 @@ export const postPatient = async (
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
-
-    patient.password = await hashPassword(patient.password);
 
     await Patient.save(patient);
 

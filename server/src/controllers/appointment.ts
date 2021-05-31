@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Appointment } from "../models";
+import { Appointment } from "../entities";
 import { ForbiddenError, subject } from "@casl/ability";
 import {
   insertAppointment,

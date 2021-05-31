@@ -1,4 +1,4 @@
-import { Patient, Doctor, Authenticator, Admin } from "../models";
+import { Patient, Doctor, Authenticator, Admin } from "../entities";
 import { Authr } from "../types/webauthn";
 import { getPatientByIdQuery } from "./patient";
 import { getDoctorByIdQuery } from "./doctor";

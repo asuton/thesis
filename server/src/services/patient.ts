@@ -1,5 +1,5 @@
 import { createQueryBuilder } from "typeorm";
-import Patient from "../models/Patient";
+import Patient from "../entities/Patient";
 
 export const getPatientsQuery = async (): Promise<Patient[] | undefined> => {
   const patient = await createQueryBuilder<Patient>("Patient")

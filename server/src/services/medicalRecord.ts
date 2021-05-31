@@ -1,5 +1,5 @@
 import { createQueryBuilder } from "typeorm";
-import { MedicalRecord } from "../models";
+import { MedicalRecord } from "../entities";
 
 export const getPatientsMedicalRecords = async (
   id: string

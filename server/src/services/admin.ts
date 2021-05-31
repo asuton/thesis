@@ -1,5 +1,5 @@
 import { createQueryBuilder } from "typeorm";
-import { Admin } from "../models";
+import { Admin } from "../entities";
 
 export const getAdminByIdQuery = async (
   id: string

@@ -10,6 +10,27 @@ export const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD as string;
 export const JWT_SECRET = process.env.JWT_SECRET as string;
 export const KEY = process.env.KEY as string;
 export const COOKIE_KEY = process.env.COOKIE_KEY as string;
+export const ADMIN_MAIL = process.env.ADMIN_MAIL as string;
+export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD as string;
+
+export const medicalQualifications = [
+  "Allergy and immunology",
+  "Dermatology",
+  "Diagnostic radiology",
+  "Family medicine",
+  "Internal medicine",
+  "Medical genetics",
+  "Neurology",
+  "Nuclear medicine",
+  "Obstetrics and gynecology",
+  "Ophthalmology",
+  "Pediatrics",
+  "Physical medicine and rehabilitation",
+  "Psychiatry",
+  "Radiation oncology",
+  "Surgery",
+  "Urology",
+];
 
 export enum Authorization {
   Doctor = "DOCTOR",

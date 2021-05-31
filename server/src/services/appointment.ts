@@ -1,6 +1,6 @@
 import { createQueryBuilder } from "typeorm";
 import { getCurrentDate } from "../helpers/date";
-import { Appointment } from "../models";
+import { Appointment } from "../entities";
 
 interface Form {
   date: Date;
@@ -72,7 +72,7 @@ export const validateSlot = async (
 ): Promise<{ validate: boolean; errorMsg: string }> => {
   const hour = appointment.time.toString();
   let errorMsg = "";
-  console.log(hour, appointment.time);
+
   if (hour.slice(-2) !== "00" && hour.slice(-2) !== "30") {
     errorMsg = "Invalid slot";
   }

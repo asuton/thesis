@@ -30,14 +30,11 @@ export const verifyAuthenticatorAttestationResponse = async (
   };
 
   if (attestationStruct.fmt === "packed") {
-    console.log("packed");
     result = await verifyPackedAttestation(webAuthnResponse);
   } else if (attestationStruct.fmt === "none") {
     result = verifyNoneAttestation(webAuthnResponse);
-    console.log("none");
   } else if (attestationStruct.fmt === "fido-u2f") {
     result = await verifyU2FAttestation(webAuthnResponse);
-    console.log("fido-u2f");
   }
 
   return result;

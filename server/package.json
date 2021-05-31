@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
+    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
+    "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
+    "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +18,7 @@
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.11",
+    "@types/faker": "^5.5.5",
     "@types/morgan": "^1.9.2",
     "@types/node": "^14.14.35",
     "@types/pg": "^7.14.11",
@@ -50,7 +56,8 @@
     "node-rsa": "^1.1.1",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.31"
+    "typeorm": "^0.2.31",
+    "typeorm-seeding": "^1.6.1"
   },
   "nodemonConfig": {
     "watch": [

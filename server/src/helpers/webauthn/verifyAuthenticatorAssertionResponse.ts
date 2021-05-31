@@ -7,7 +7,7 @@ import {
 } from ".";
 import base64url from "base64url";
 import { WebAuthnResponseAssertion } from "../../types/webauthn";
-import { Authenticator } from "../../models";
+import { Authenticator } from "../../entities";
 
 export const verifyAuthenticatorAssertionResponse = async (
   webAuthnResponse: WebAuthnResponseAssertion,

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { validate } from "class-validator";
-import { DiagnosticTesting } from "../models";
+import { DiagnosticTesting } from "../entities";
 import { ForbiddenError, subject } from "@casl/ability";
 import {
   getPatientsDiagnosticTestings,

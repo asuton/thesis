@@ -3,7 +3,7 @@ import {
   AssertAuthData,
   GenerateServerGetAssertion,
 } from "../../types/webauthn";
-import { Authenticator, User } from "../../models";
+import { Authenticator, User } from "../../entities";
 import crypto from "crypto";
 import jsrsasign from "jsrsasign";
 import base64url from "base64url";

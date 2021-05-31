@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { validate } from "class-validator";
-import Doctor from "../models/Doctor";
+import Doctor from "../entities/Doctor";
 import { ForbiddenError, subject } from "@casl/ability";
 import {
   getDoctorsQuery,
@@ -90,17 +90,15 @@ export const postDoctor = async (req: Request, res: Response) => {
     }
 
     let doctor = insertDoctorQuery(req.body);
-    console.log(doctor);
+
     const errors = await validate(doctor);
-    console.log(errors);
+
     if (errors.length > 0) {
       return res.status(500).send(errors);
     }
 
-    doctor.password = await hashPassword(doctor.password);
-    console.log(doctor.password);
     const response = await Doctor.save(doctor);
-    console.log(response);
+
     return res.status(200).json(response);
   } catch (err) {
     return res.status(500).send(err.message);
