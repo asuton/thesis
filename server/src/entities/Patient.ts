@@ -1,10 +1,11 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany } from "typeorm";
 import { Length, IsDateString } from "class-validator";
 import User from "./User";
 import MedicalRecord from "./MedicalRecord";
 import DiagnosticTesting from "./DiagnosticTesting";
 import Authenticator from "./Authenticator";
 import Appointment from "./Appointment";
+import { Authorization } from "../utils/constants";
 
 @Entity({ name: "patients" })
 export default class Patient extends User {
@@ -30,4 +31,9 @@ export default class Patient extends User {
 
   @OneToMany(() => Appointment, (appointment) => appointment.patient)
   appointment!: Appointment[];
+
+  @BeforeInsert()
+  setAuthorization() {
+    this.authorization = Authorization.Patient;
+  }
 }

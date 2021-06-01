@@ -10,6 +10,7 @@ export const getAdminByIdQuery = async (
       "admin.email",
       "admin.authorization",
       "admin.webAuthnRegistered",
+      "admin.authTag",
     ])
     .from(Admin, "admin")
     .where("admin.id = :id", { id: id })

@@ -4,6 +4,7 @@ import { getPatientByIdQuery } from "./patient";
 import { getDoctorByIdQuery } from "./doctor";
 import { Authorization } from "../utils/constants";
 import { checkIfOnlyAdmin, getAdminByIdQuery } from "./admin";
+import { createSignature } from "./hmac";
 
 export const findUserById = async (id: string) => {
   let user: Patient | Doctor | Admin | undefined = await Patient.findOne(id);
@@ -58,11 +59,16 @@ export const insertAuthInfoQuery = async (
   if (!user) {
     throw new Error("Could not find user");
   }
+  const content = authr.pubKey + user.id;
+  const authTag = createSignature(content).toString("base64");
+  authr.authTag = authTag;
+
   (await user.authenticator).push(authr);
-
+  authr.save();
   user.webAuthnRegistered = true;
+  user.save();
 
-  return user.save();
+  return user;
 };
 
 export const getUserById = async (

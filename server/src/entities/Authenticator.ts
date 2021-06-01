@@ -5,7 +5,10 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  AfterUpdate,
+  AfterLoad,
 } from "typeorm";
+import { createSignature, verifySignature } from "../services/hmac";
 import Admin from "./Admin";
 import Doctor from "./Doctor";
 import Patient from "./Patient";
@@ -48,4 +51,7 @@ export default class Authenticator extends BaseEntity {
   })
   @JoinColumn()
   admin!: Promise<Admin>;
+
+  @Column({ nullable: true })
+  authTag!: string;
 }

@@ -1,15 +1,20 @@
 import {
-  PrimaryGeneratedColumn,
   Column,
   BaseEntity,
   BeforeInsert,
+  PrimaryColumn,
+  AfterLoad,
+  BeforeUpdate,
+  AfterUpdate,
 } from "typeorm";
 import { IsEmail, Length } from "class-validator";
 import { Authorization } from "../utils/constants";
 import { hashPassword } from "../helpers/hash";
+import { v4 as uuidv4 } from "uuid";
+import { createSignature, verifySignature } from "../services/hmac";
 
 export default abstract class User extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryColumn()
   id!: string;
 
   @Column()
@@ -48,8 +53,24 @@ export default abstract class User extends BaseEntity {
   @Column({ default: false })
   webAuthnRegistered!: boolean;
 
+  @Column()
+  authTag!: string;
+
   @BeforeInsert()
-  async setPassword() {
+  async setIdPasswordAuthTag() {
     this.password = await hashPassword(this.password);
+    this.id = uuidv4();
+    this.webAuthnRegistered = false;
+    const content =
+      this.id + this.authorization + this.webAuthnRegistered.toString();
+
+    this.authTag = createSignature(content).toString("base64");
+  }
+  @BeforeUpdate()
+  updateAuthTag() {
+    const content =
+      this.id + this.authorization + this.webAuthnRegistered.toString();
+
+    this.authTag = createSignature(content).toString("base64");
   }
 }

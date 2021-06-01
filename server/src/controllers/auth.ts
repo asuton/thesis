@@ -6,6 +6,7 @@ import { defineRulesFor, AppAbility } from "../services/abilities";
 import { findUserByEmail, getUserById } from "../services/user";
 import { packRules, PackRule } from "@casl/ability/extra";
 import { RawRuleOf } from "@casl/ability";
+import { verifySignature } from "../services/hmac";
 
 export const login = async (req: Request, res: Response) => {
   let rules: PackRule<RawRuleOf<AppAbility>>[];
@@ -29,6 +30,17 @@ export const login = async (req: Request, res: Response) => {
     return res.status(401).json({ error: [{ msg: "Invalid credentials" }] });
   }
 
+  const content =
+    user.id + user.authorization + user.webAuthnRegistered.toString();
+  const verified = verifySignature(
+    content,
+    Buffer.from(user.authTag, "base64")
+  );
+
+  if (!verified) {
+    res.status(400).send("Invalid");
+  }
+
   rules = packRules(defineRulesFor(user));
 
   const token = jwt.sign({ id: user.id, rules: rules }, JWT_SECRET);
@@ -37,14 +49,29 @@ export const login = async (req: Request, res: Response) => {
     id: user.id,
     rules: rules,
     token,
-    webAuthnRegistered: user.webAuthnRegistered,
   });
 };
 
 export const auth = async (req: Request, res: Response) => {
   try {
     const user = await getUserById(req.id);
-    res.json(user);
+    if (!user) {
+      return res.status(400).send("User not found");
+    }
+
+    const content =
+      user.id + user.authorization + user.webAuthnRegistered.toString();
+    const verified = verifySignature(
+      content,
+      Buffer.from(user.authTag, "base64")
+    );
+    if (!verified) {
+      res.status(400).send("Invalid");
+    }
+
+    const { authTag, ...account } = user;
+
+    res.status(200).json(account);
   } catch (err) {
     res.status(500).send("Server Error");
   }

@@ -86,7 +86,7 @@ export const getGetAssertionChallenge =
       })) as Credential;
 
       const body = convertCredToRes(assertion);
-      store.dispatch(sendWebAuthnResponse(body));
+      await store.dispatch(sendWebAuthnResponse(body));
       dispatch({ type: WEBAUTHN_LOGIN_SUCCESS });
       store.dispatch(setAlert("WebAuthn login success", "success"));
     } catch (err) {

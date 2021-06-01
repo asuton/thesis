@@ -13,7 +13,7 @@ export const verifyAuthenticatorAssertionResponse = async (
   webAuthnResponse: WebAuthnResponseAssertion,
   authenticators: Authenticator[]
 ) => {
-  const authr = findAuthr(webAuthnResponse.id, authenticators);
+  const authr = await findAuthr(webAuthnResponse.id, authenticators);
   const authenticatorData = base64url.toBuffer(
     webAuthnResponse.response.authenticatorData
   );

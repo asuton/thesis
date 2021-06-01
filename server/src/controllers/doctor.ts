@@ -7,7 +7,6 @@ import {
   getDoctorByIdQuery,
   insertDoctorQuery,
 } from "../services/doctor";
-import { hashPassword } from "../helpers/hash";
 import { findUserByEmail } from "../services/user";
 import { getMedicalRecordListDoctor } from "../services/medicalRecord";
 
@@ -39,16 +38,10 @@ export const getDoctor = async (req: Request, res: Response) => {
         ],
       });
     }
-    const medicalRecords = await getMedicalRecordListDoctor(doctor.id);
 
-    if (
-      req.ability &&
-      req.ability.can("read", subject("MedicalRecord", { patientId: true }))
-    ) {
-      doctor.medicalRecord = medicalRecords;
-    }
+    const { authTag, webAuthnRegistered, authorization, ...doc } = doctor;
 
-    return res.json(doctor);
+    return res.json(doc);
   } catch (err) {
     return res.status(500).send(err.message);
   }
@@ -99,7 +92,9 @@ export const postDoctor = async (req: Request, res: Response) => {
 
     const response = await Doctor.save(doctor);
 
-    return res.status(200).json(response);
+    const { authTag, webAuthnRegistered, authorization, ...doc } = response;
+
+    return res.status(200).json(doc);
   } catch (err) {
     return res.status(500).send(err.message);
   }
@@ -150,7 +145,9 @@ export const putDoctor = async (req: Request, res: Response) => {
 
     await Doctor.save(doctor);
 
-    return res.json(doctor);
+    const { authTag, webAuthnRegistered, authorization, ...doc } = doctor;
+
+    return res.json(doc);
   } catch (err) {
     return res.status(500).send(err.message);
   }

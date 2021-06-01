@@ -12,7 +12,9 @@ export const getDoctorsQuery = async (): Promise<Doctor[] | undefined> => {
       "doctor.OIB",
       "doctor.phone",
       "doctor.email",
+      "doctor.authorization",
       "doctor.webAuthnRegistered",
+      "doctor.authTag",
     ])
     .from(Doctor, "doctor")
     .getMany();
@@ -34,6 +36,7 @@ export const getDoctorByIdQuery = async (
       "doctor.email",
       "doctor.authorization",
       "doctor.webAuthnRegistered",
+      "doctor.authTag",
     ])
     .from(Doctor, "doctor")
     .where("doctor.id = :id", { id: id })
@@ -54,6 +57,8 @@ export const getDoctorByEmailQuery = async (
       "doctor.OIB",
       "doctor.phone",
       "doctor.email",
+      "doctor.webAuthnRegistered",
+      "doctor.authTag",
     ])
     .from(Doctor, "doctor")
     .where("doctor.email = :email", { email: email })

@@ -8,6 +8,7 @@ import crypto from "crypto";
 import jsrsasign from "jsrsasign";
 import base64url from "base64url";
 import cbor from "cbor";
+import { verifySignature as hmac } from "../../services/hmac";
 
 export const publicKeyCredentialCreation = (user: User) => {
   return {
@@ -123,9 +124,20 @@ export const COSEECDHAtoPKCS = (COSEPublicKey: Buffer) => {
   return Buffer.concat([tag, x, y]);
 };
 
-export const findAuthr = (credID: string, authenticators: Authenticator[]) => {
+export const findAuthr = async (
+  credID: string,
+  authenticators: Authenticator[]
+) => {
   for (let authr of authenticators) {
-    if (authr.credId === credID) return authr;
+    if (authr.credId === credID) {
+      let userId: string;
+      if (await authr.patient) userId = (await authr.patient).id;
+      else if (await authr.doctor) userId = (await authr.doctor).id;
+      else userId = (await authr.admin).id;
+      const content = authr.pubKey + userId;
+      hmac(content, Buffer.from(authr.authTag, "base64"));
+      return authr;
+    }
   }
 
   throw new Error(`Unknown authenticator with credID ${credID}!`);

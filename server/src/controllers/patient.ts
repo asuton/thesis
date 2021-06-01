@@ -54,7 +54,8 @@ export const getPatient = async (
     const diagnosticTestings = await getDiagnosticTestingsList(patient.id);
     patient.medicalRecord = medicalRecords;
     patient.diagnosticTesting = diagnosticTestings;
-    return res.json(patient);
+    const { authTag, webAuthnRegistered, authorization, ...pat } = patient;
+    return res.json(pat);
   } catch (err) {
     return res.status(500).send(err.message);
   }

@@ -33,6 +33,7 @@ export const getPatientByIdQuery = async (
       "patient.dateOfBirth",
       "patient.authorization",
       "patient.webAuthnRegistered",
+      "patient.authTag",
     ])
     .from(Patient, "patient")
     .where("patient.id = :id", { id: id })
@@ -54,6 +55,7 @@ export const getPatientByEmailQuery = async (
       "patient.email",
       "patient.dateOfBirth",
       "patient.webAuthnRegistered",
+      "patient.authTag",
     ])
     .from(Patient, "patient")
     .where("patient.email = :email", { email: email })
