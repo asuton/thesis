@@ -12,16 +12,15 @@ import { loadUser } from "./redux/actions/auth";
 import { IAuth } from "./redux/types/auth/user";
 import setAuthToken from "./redux/utils/setAuthToken";
 import Layout from "./components/Layout/Layout";
+import Services from "./components/Landing/Services";
 import Patient from "./components/Patient/Patient";
 import MedicalRecord from "./components/MedicalRecord/MedicalRecord";
 import MedicalRecordForm from "./components/MedicalRecord/MedicalRecordForm";
 import DiagnosticTesting from "./components/DiagnosticTesting/DiagnosticTesting";
 import DiagnosticTestingForm from "./components/DiagnosticTesting/DiagnosticTestingForm";
 import Doctor from "./components/Doctor/Doctor";
-import { checkWebAuthnSession } from "./redux/actions/webauthn";
-import Landing from "./components/Layout/Landing";
+import Landing from "./components/Landing/Landing";
 import Alert from "./components/Alert/Alert";
-import AppointmentForm from "./components/Appointment/AppointmentForm";
 import Appointments from "./components/Appointment/Appointments";
 import PatientUpdateForm from "./components/Patient/PatientUpdateForm";
 import DoctorUpdateForm from "./components/Doctor/DoctorUpdateForm";
@@ -47,6 +46,7 @@ function App() {
             <Alert></Alert>
             <Switch>
               <Route exact path="/" component={Landing} />
+              <Route exact path="/services" component={Services} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <PrivateRoute exact path="/patients" component={Patients} />

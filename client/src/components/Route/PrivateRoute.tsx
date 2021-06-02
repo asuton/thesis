@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { AppState } from "../../redux/reducers/rootReducer";
 import { AuthState } from "../../redux/types/auth";
 import WebAuthnRegister from "../WebAuthn/WebAuthnRegister";
-import { Button, Container, makeStyles, Typography } from "@material-ui/core";
+import { Container, makeStyles, Typography } from "@material-ui/core";
 import image from "../../assets/shield.svg";
 
 const useStyles = makeStyles({

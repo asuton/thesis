@@ -18,7 +18,7 @@ import setAuthToken from "../../utils/setAuthToken";
 import store from "../../store";
 import { config } from "../../types/config";
 import { setAlert } from "../alert";
-import { checkWebAuthnSession, getMakeCredChallenge } from "../webauthn";
+import { checkWebAuthnSession } from "../webauthn";
 
 export const register =
   (form: RegisterFormState) => async (dispatch: Dispatch<AuthActionTypes>) => {

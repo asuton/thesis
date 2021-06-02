@@ -109,6 +109,7 @@ const Register: React.FC<Props> = (props: Props) => {
     ];
   };
 
+  const today = new Date().toISOString().slice(0, 10);
   const steps = getSteps();
 
   const handleNext = () => {
@@ -335,6 +336,9 @@ const Register: React.FC<Props> = (props: Props) => {
                     label="Date of birth"
                     InputLabelProps={{
                       shrink: true,
+                    }}
+                    inputProps={{
+                      max: `${today}`,
                     }}
                     value={dateOfBirth}
                     onChange={(e) => onChange(e)}

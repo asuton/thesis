@@ -24,7 +24,6 @@ import axios from "axios";
 import { Dispatch } from "redux";
 import store from "../../store";
 import { setAlert } from "../alert";
-import { checkAuthorizationNav } from "../../../helpers/authorization";
 
 export const getMakeCredChallenge =
   (history?: any) => async (dispatch: Dispatch<WebAuthnActionTypes>) => {

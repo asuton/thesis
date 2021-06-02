@@ -11,9 +11,10 @@ const Layout: React.FC<Props> = (props: Props) => {
     const location = useLocation();
     return location.pathname;
   };
+  const home = ["/", "/services"];
   return (
     <>
-      {usePathname() === "/" ? (
+      {home.includes(usePathname()) ? (
         <NavbarHome></NavbarHome>
       ) : (
         <NavbarRecord></NavbarRecord>
