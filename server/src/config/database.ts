@@ -1,7 +1,7 @@
-import { createConnection } from "typeorm";
+import { createTypeormConnection } from "./createTypeormConnection";
 
 export const connectDB = async () => {
-  await createConnection()
+  await createTypeormConnection()
     .then((_connection) => {
       console.log("Connected to Postgres");
     })

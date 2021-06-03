@@ -10,7 +10,6 @@ import {
   insertPatientQuery,
 } from "../services/patient";
 import { findUserByEmail } from "../services/user";
-import { hashPassword } from "../helpers/hash";
 import { signToken } from "../helpers/token";
 import { getMedicalRecordListPatient } from "../services/medicalRecord";
 import { getDiagnosticTestingsList } from "../services/diagnosticTesting";
@@ -55,7 +54,7 @@ export const getPatient = async (
     patient.medicalRecord = medicalRecords;
     patient.diagnosticTesting = diagnosticTestings;
     const { authTag, webAuthnRegistered, authorization, ...pat } = patient;
-    return res.json(pat);
+    return res.status(200).json(pat);
   } catch (err) {
     return res.status(500).send(err.message);
   }
@@ -77,7 +76,7 @@ export const postPatient = async (
       !req.body.dateOfBirth ||
       !req.body.address
     ) {
-      return res.status(500).json({
+      return res.status(400).json({
         error: [
           {
             msg: `Invalid request body, missing one or more of fields: 
@@ -103,7 +102,7 @@ export const postPatient = async (
 
     const errors = await validate(patient);
     if (errors.length > 0) {
-      return res.status(500).send(errors);
+      return res.status(400).send(errors);
     }
 
     await Patient.save(patient);
@@ -128,7 +127,7 @@ export const putPatient = async (
 ): Promise<Response> => {
   try {
     if (!req.body || !req.body.phone || !req.body.address) {
-      return res.status(500).json({
+      return res.status(400).json({
         error: [
           {
             msg: "Invalid request body, missing one or more of fields: phone, address",
@@ -150,7 +149,7 @@ export const putPatient = async (
     }
 
     if (phone.length < 7 || address === "") {
-      return res.status(500).json({
+      return res.status(400).json({
         error: [
           {
             msg: "Invalid length of phone or address field",
@@ -173,7 +172,7 @@ export const putPatient = async (
     const diagnosticTestings = await getDiagnosticTestingsList(patient.id);
     patient.medicalRecord = medicalRecords;
     patient.diagnosticTesting = diagnosticTestings;
-    return res.json(patient);
+    return res.status(200).json(patient);
   } catch (err) {
     return res.status(500).send(err.message);
   }

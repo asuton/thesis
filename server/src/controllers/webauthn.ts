@@ -49,7 +49,7 @@ export const webAuthnLogin = async (req: Request, res: Response) => {
   req.session.challenge = getAssertion.challenge;
   req.session.user = user.id;
 
-  return res.status(201).send(getAssertion);
+  return res.status(200).send(getAssertion);
 };
 
 export const checkWebAuthnResponse = async (req: Request, res: Response) => {

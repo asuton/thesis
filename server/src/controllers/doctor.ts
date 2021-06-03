@@ -8,12 +8,12 @@ import {
   insertDoctorQuery,
 } from "../services/doctor";
 import { findUserByEmail } from "../services/user";
-import { getMedicalRecordListDoctor } from "../services/medicalRecord";
 
-export const getDoctors = async (_req: Request, res: Response) => {
+export const getDoctors = async (req: Request, res: Response) => {
   try {
     const doctors = await getDoctorsQuery();
-    return res.json(doctors);
+    ForbiddenError.from(req.ability).throwUnlessCan("read", "Doctor");
+    return res.status(200).json(doctors);
   } catch (err) {
     return res.status(500).json({
       error: [
@@ -39,9 +39,14 @@ export const getDoctor = async (req: Request, res: Response) => {
       });
     }
 
+    ForbiddenError.from(req.ability).throwUnlessCan(
+      "read",
+      subject("Doctor", doctor)
+    );
+
     const { authTag, webAuthnRegistered, authorization, ...doc } = doctor;
 
-    return res.json(doc);
+    return res.status(200).json(doc);
   } catch (err) {
     return res.status(500).send(err.message);
   }

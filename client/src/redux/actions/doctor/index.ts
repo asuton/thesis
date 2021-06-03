@@ -134,6 +134,7 @@ export const postDoctor =
       });
 
       store.dispatch(setAlert("Doctor successfully created", "success"));
+      history.push("/doctors");
     } catch (err) {
       const errors = err.response?.data.error;
 

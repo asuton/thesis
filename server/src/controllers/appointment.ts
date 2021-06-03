@@ -70,7 +70,7 @@ export const postAppointment = async (req: Request, res: Response) => {
     const { validate, errorMsg } = await validateSlot(appointment);
     if (validate) {
       const response = await Appointment.save(appointment);
-      return res.json(response);
+      return res.status(200).json(response);
     } else {
       return res.status(400).json({
         error: [
