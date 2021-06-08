@@ -67,4 +67,4 @@ See server/package.json for other commands regarding schema and tests
 
 ## Used libraries and technologies
 
-TypeScript, Express, TypeORM, TypeORM Seeding, CASL, React, Redux, Jest, Docker, Faker, Material-UI
+TypeScript, Express, PostgreSQL, TypeORM, TypeORM Seeding, CASL, React, Redux, Jest, Docker, Faker, Material-UI
