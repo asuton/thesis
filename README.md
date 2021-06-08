@@ -8,7 +8,7 @@ User access and capabilities are regulated by defined user roles and abilities f
 ## Installation
 
 ### Prerequisites 
-This project depends on npm, Node.js and PostgreSQL. The application implements WebAuthn so you will need to have an authenticator which supports CTAP2 or U2F. As an alternative you can use Virtual Authenticators which is a Chrome extenstion where you can add a new authenticator.
+This project depends on npm, Node.js and PostgreSQL. The application implements WebAuthn so you will need to have an authenticator which supports CTAP2 or U2F. As an alternative you can use Virtual Authenticators which is a Chrome extension where you can add a new authenticator.
 
 ### Getting started
 Clone repository  ```git clone https://github.com/asuton/thesis.git```
@@ -32,13 +32,13 @@ ADMIN_PASSWORD =
 
 Run ```npm install``` in thesis/server and thesis/client directory
 
-Create database in PostgreSQL
+Create a database in PostgreSQL
 
 ### Launch
 
 #### Server
 
-Before launching server you can run TypeORM seeding to add an admin and dummy doctor/patient accounts.
+Before launching the server you can run TypeORM seeding to add an admin and dummy doctor/patient accounts.
 
 ```npm run seed:run:development```
 
@@ -51,7 +51,7 @@ Run client
 ```npm start```
 
 ### Setup server using Docker
-Alternatively, you can run the server by running the command 
+Alternatively, you can run the server using Docker by running the command 
 ```
 docker-compose up
 ```
