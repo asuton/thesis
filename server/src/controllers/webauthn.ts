@@ -24,6 +24,12 @@ export const generateServerMakeCredRequest = async (
     return res.status(500).send("Could not find user");
   }
 
+  if (user.webAuthnRegistered && !req.session.loggedIn) {
+    return res
+      .status(500)
+      .send("User must be verified to add another credential");
+  }
+
   const publicKeyCredentialCreationOptions = publicKeyCredentialCreation(user);
 
   req.session.challenge = publicKeyCredentialCreationOptions.challenge;

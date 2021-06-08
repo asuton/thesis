@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cardContainer: {
     [theme.breakpoints.up("md")]: {
-      padding: theme.spacing(5, 10, 5),
+      padding: theme.spacing(7, 25, 5),
     },
     [theme.breakpoints.down("sm")]: {
       padding: theme.spacing(5, 4, 5),
@@ -49,28 +49,18 @@ const useStyles = makeStyles((theme) => ({
     borderBottomColor: "#c0c0c08f",
   },
   textFeatured: {
-    [theme.breakpoints.up("lg")]: {
+    [theme.breakpoints.up("md")]: {
       height: 650,
     },
-    [theme.breakpoints.down("md")]: {
-      height: 450,
+    [theme.breakpoints.down("sm")]: {
+      height: 350,
     },
     backgroundColor: theme.palette.grey[400],
     color: theme.palette.common.white,
     backgroundImage: `url(${textImage})`,
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
-    backgroundPosition: "center",
-  },
-  textFeaturedContent: {
-    position: "relative",
-    padding: theme.spacing(12, 5, 10),
-    [theme.breakpoints.up("md")]: {
-      padding: theme.spacing(5, 10, 0),
-    },
-    [theme.breakpoints.down("sm")]: {
-      padding: theme.spacing(5, 4, 0),
-    },
+    backgroundPosition: "right",
   },
 }));
 
@@ -120,6 +110,9 @@ export default function MainFeatured() {
             metus. Nullam accumsan lorem in dui.
             <br />
             <br />
+            <Grid container className={classes.textFeatured} />
+            <br />
+            <br />
             Cras ultricies mi eu turpis hendrerit fringilla. Vestibulum ante
             ipsum primis in faucibus orci luctus et ultrices posuere cubilia
             Curae; In ac dui quis mi consectetuer lacinia. Nam pretium turpis et
@@ -141,11 +134,6 @@ export default function MainFeatured() {
             congue, elit erat euismod orci.
           </Typography>
         </Grid>
-      </div>
-      <Grid container className={classes.textFeatured}>
-        <Grid item md={6} className={classes.textFeaturedContent}></Grid>
-      </Grid>
-      <div className={classes.cardContainer}>
         <Grid container>
           <Typography
             variant="h3"
