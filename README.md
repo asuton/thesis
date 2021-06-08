@@ -55,8 +55,7 @@ Alternatively, you can run the server using Docker by running the command
 ```
 docker-compose up
 ```
-in the thesis/server directory
-Before running the command go to Docker settings under resources/file sharing and add the path to the project directory
+in the thesis/server directory. Before running the command go to Docker settings under resources/file sharing and add the path to the project directory
 
 Run TypeORM seeding
 ```
