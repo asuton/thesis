@@ -94,4 +94,6 @@ export interface GenerateServerGetAssertion {
     transports: string[];
   }[];
   userVerification: string;
+  timeout: number;
+  rpId: string;
 }

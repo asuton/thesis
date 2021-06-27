@@ -59,13 +59,13 @@ export const postAppointment = async (req: Request, res: Response) => {
       });
     }
 
+    ForbiddenError.from(req.ability).throwUnlessCan("create", "Appointment");
+
     let appointment = await insertAppointment(
       req.body,
       req.id,
       req.params.docId
     );
-
-    ForbiddenError.from(req.ability).throwUnlessCan("create", "Appointment");
 
     const { validate, errorMsg } = await validateSlot(appointment);
     if (validate) {

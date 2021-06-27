@@ -52,7 +52,7 @@ export const verifyNoneAttestation = (
 
     signatureIsValid = true;
     response = {
-      fmt: "packed",
+      fmt: "none",
       pubKey: key.exportKey("pkcs1-public-pem"),
       counter: authDataStruct.counter,
       credId: base64url.encode(authDataStruct.credId),
@@ -63,7 +63,7 @@ export const verifyNoneAttestation = (
     const key = new elliptic.eddsa("ed25519");
 
     response = {
-      fmt: "packed",
+      fmt: "none",
       pubKey: base64url(key.keyFromPublic(x).getPublic()),
       counter: authDataStruct.counter,
       credId: base64url(authDataStruct.credId),

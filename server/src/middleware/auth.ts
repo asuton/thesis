@@ -24,10 +24,6 @@ export const authJWT = async (
 
     const response = jwt.verify(token, JWT_SECRET) as IAuthToken;
 
-    if (!response.id) {
-      return res.status(401).send("Authorization denied.");
-    }
-
     req.id = response.id;
     const rules = unpackRules(response.rules);
     req.ability = createAbility(rules);

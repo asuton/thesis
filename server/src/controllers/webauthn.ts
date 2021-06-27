@@ -103,8 +103,14 @@ export const checkWebAuthnResponse = async (req: Request, res: Response) => {
   } = { signatureIsValid: false, verified: false };
 
   if (webAuthnResponse.response.attestationObject !== undefined) {
+    if (clientData.type !== "webauthn.create") {
+      return res.status(400).send("Invalid type");
+    }
     result = await verifyAuthenticatorAttestationResponse(webAuthnResponse);
   } else if (webAuthnResponse.response.authenticatorData !== undefined) {
+    if (clientData.type !== "webauthn.get") {
+      return res.status(400).send("Invalid type");
+    }
     const user = await findUserById(req.session.user);
     if (!user) {
       return res.status(500).json({

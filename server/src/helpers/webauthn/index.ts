@@ -15,7 +15,7 @@ export const publicKeyCredentialCreation = (user: User) => {
     challenge: generateBase64BufferChallenge(),
     rp: {
       name: "thesis",
-      //id: "thesis",
+      id: "localhost",
     },
     user: {
       id: user.id,
@@ -221,6 +221,8 @@ export const generateServerGetAssertion = (
   return {
     challenge: generateBase64BufferChallenge(),
     allowCredentials: allowCredentials,
-    userVerification: "discouraged",
+    userVerification: "preferred",
+    timeout: 60000,
+    rpId: "localhost",
   };
 };
